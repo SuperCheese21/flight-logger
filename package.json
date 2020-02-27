@@ -3,8 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "eslint": "eslint .",
+    "format": "node_modules/.bin/prettier --config ./.prettierrc --write ./**/*.js",
     "start": "node ./bin/www",
-    "format": "node_modules/.bin/prettier --config ./.prettierrc --write ./**/*.js"
+    "update": "node ./utils/updateAirportData"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
