@@ -2,44 +2,32 @@
 
 const debug = require('debug')('flight-logger:server');
 const http = require('http');
+
 const app = require('../app');
+const { normalizePort } = require('../utils/serverUtils');
 
-/**
- * [normalizePort description]
- * @param  {[type]} val [description]
- * @return {[type]}     [description]
- */
-const normalizePort = val => {
-  const newPort = parseInt(val, 10);
-
-  if (Number.isNaN(newPort)) {
-    return val;
-  }
-
-  if (newPort >= 0) {
-    return newPort;
-  }
-
-  return false;
-};
-
+// Get normalized port
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
-const server = http.createServer(app);
 
-/**
- * [onError description]
- * @param  {[type]} error [description]
- * @return {[type]}       [description]
- */
-const onError = error => {
-  if (error.syscall !== 'listen') {
-    throw error;
+// Create http server and start listening
+const server = http.createServer(app);
+server.listen(port);
+
+// Create event listeners
+server.on('listening', () => {
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+  debug(`Listening on ${bind}`);
+});
+server.on('error', err => {
+  if (err.syscall !== 'listen') {
+    throw err;
   }
 
   const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
 
-  switch (error.code) {
+  switch (err.code) {
     case 'EACCES':
       console.error(`${bind} requires elevated privileges`);
       process.exit(1);
@@ -49,23 +37,6 @@ const onError = error => {
       process.exit(1);
       break;
     default:
-      throw error;
+      throw err;
   }
-};
-
-/**
- * [onListening description]
- * @return {[type]} [description]
- */
-const onListening = () => {
-  const addr = server.address();
-  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
-  debug(`Listening on ${bind}`);
-};
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+});
