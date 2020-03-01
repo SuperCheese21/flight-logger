@@ -105,3 +105,6 @@ dist
 
 # Database config file
 config.json
+
+# React build
+build/
