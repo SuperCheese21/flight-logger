@@ -3,10 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "eslint": "eslint .",
-    "format": "node_modules/.bin/prettier --config ./.prettierrc --write ./**/*.js",
-    "start": "node ./bin/www",
-    "update": "node ./utils/updateAirportData"
+    "start": "npm run start:server",
+    "start:server": "node ./server/bin/www",
+    "update:airports": "node ./server/utils/updateAirports"
   },
   "dependencies": {
     "bcrypt": "^4.0.0",

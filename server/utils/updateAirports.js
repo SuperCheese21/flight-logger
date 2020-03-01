@@ -1,18 +1,17 @@
+const url = require('url');
 const mongoose = require('mongoose');
 const User = require('../models/user');
 
-const DB_DOMAIN = 'flight-logger-1ocmv.mongodb.net';
-const DB_NAME = 'main';
-const DB_USER = 'root';
-const DB_PASSWORD = '43oVW2MAPoKz26TP';
+const { mongodb: dbConfig } = require('../config.json');
 
-const MONGO_URI = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_DOMAIN}/${DB_NAME}?retryWrites=true&w=majority`;
-
-mongoose.connect(MONGO_URI, {
+// Get URL and connect to database
+const mongoURL = url.format(dbConfig);
+mongoose.connect(mongoURL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
+// Set event listeners
 const db = mongoose.connection;
 db.on('error', () => {
   console.error('connection error');
