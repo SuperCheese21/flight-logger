@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "npm run build && npm run start:server",
-    "server": "node ./server/bin/www",
     "client": "cd client && npm start",
-    "build": "cd client && npm run build",
+    "prestart": "cd client && npm run build",
+    "server": "cd server && npm start",
+    "start": "npm run server",
     "update:airports": "node ./server/utils/updateAirports"
   }
 }

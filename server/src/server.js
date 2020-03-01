@@ -3,8 +3,8 @@
 const debug = require('debug')('flight-logger:server');
 const http = require('http');
 
-const app = require('../app');
-const { normalizePort } = require('../utils/serverUtils');
+const app = require('./app');
+const { normalizePort } = require('./utils/serverUtils');
 
 // Get normalized port
 const port = normalizePort(process.env.PORT || '3000');
