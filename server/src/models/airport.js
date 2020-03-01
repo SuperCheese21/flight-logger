@@ -1,13 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const AirportSchema = new mongoose.Schema({
   _id: String,
-  email: String,
-  password: String,
-  firstName: String,
-  lastName: String,
-  createdAt: Number,
-  updatedAt: Number,
 });
 
-module.exports = mongoose.model('Airport', AirportSchema);
+const AirportModel = mongoose.model('Airport', AirportSchema);
+
+export default AirportModel;

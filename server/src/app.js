@@ -1,11 +1,11 @@
+import path from 'path';
+
+import cookieParser from 'cookie-parser';
 import express from 'express';
+import logger from 'morgan';
 
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-
-const indexRouter = require('./routes/index');
-const apiRouter = require('./routes/api');
+import apiRouter from './routes/api';
+import indexRouter from './routes/index';
 
 const app = express();
 
@@ -18,4 +18,4 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
 
-module.exports = app;
+export default app;

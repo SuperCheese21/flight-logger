@@ -1,8 +1,8 @@
-const url = require('url');
-const mongoose = require('mongoose');
-const User = require('../models/user');
+import url from 'url';
+import mongoose from 'mongoose';
 
-const { mongodb: dbConfig } = require('../config.json');
+import User from '../models/user';
+import { mongodb as dbConfig } from '../../config.json';
 
 // Get URL and connect to database
 const mongoURL = url.format(dbConfig);

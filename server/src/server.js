@@ -1,10 +1,12 @@
-#!/usr/bin/env node
+import http from 'http';
 
-const debug = require('debug')('flight-logger:server');
-const http = require('http');
+import Debug from 'debug';
 
-const app = require('./app');
-const { normalizePort } = require('./utils/serverUtils');
+import app from './app';
+import { normalizePort } from './utils/serverUtils';
+
+// Initialize debug logger
+const debug = Debug('flight-logger:server');
 
 // Get normalized port
 const port = normalizePort(process.env.PORT || '3000');

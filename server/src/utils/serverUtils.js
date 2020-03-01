@@ -1,4 +1,5 @@
-const normalizePort = val => {
+// eslint-disable-next-line import/prefer-default-export
+export const normalizePort = val => {
   const newPort = parseInt(val, 10);
 
   if (Number.isNaN(newPort)) {
@@ -10,8 +11,4 @@ const normalizePort = val => {
   }
 
   return false;
-};
-
-module.exports = {
-  normalizePort,
 };
