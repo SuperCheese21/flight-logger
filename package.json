@@ -6,8 +6,7 @@
     "client": "cd client && npm start",
     "prestart": "cd client && npm run build",
     "server": "cd server && npm run dev",
-    "start": "cd server && npm start",
-    "update:airports": "node ./server/dist/utils/updateAirports"
+    "start": "cd server && npm start"
   },
   "devDependencies": {
     "babel-eslint": "10.0.3",

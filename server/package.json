@@ -4,16 +4,21 @@
     "dev": "node_modules/.bin/nodemon --exec node_modules/.bin/babel-node ./src/server.js",
     "prestart": "npm run transpile",
     "start": "node ./dist/server.js",
-    "transpile": "node_modules/.bin/babel src -d dist"
+    "transpile": "node_modules/.bin/babel src -d dist",
+    "update:airports": "npm run transpile && node ./dist/utils/updateData airports"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "bcrypt": "^4.0.0",
     "cookie-parser": "~1.4.4",
+    "csv-parse": "^4.8.8",
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "mongoose": "^5.9.2",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "regenerator-runtime": "^0.13.3",
+    "yargs": "^15.3.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
