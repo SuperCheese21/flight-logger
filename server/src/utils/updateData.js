@@ -113,7 +113,8 @@ const db = mongoose.connection;
 db.on('error', () => {
   console.error('  connection error');
 });
-db.once('open', () => {
+db.once('open', async () => {
   console.log('  Connected!');
-  updateData();
+  await updateData();
+  mongoose.disconnect();
 });
