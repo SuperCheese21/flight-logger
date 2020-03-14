@@ -25,9 +25,7 @@ export const AirportSchema = new Schema({
   },
 });
 
-const AirportModel = model('Airport', AirportSchema, 'airports');
-
-AirportModel.getUpdate = row => ({
+AirportSchema.static('getUpdate', row => ({
   _id: row[1],
   type: row[2],
   name: row[3],
@@ -47,6 +45,6 @@ AirportModel.getUpdate = row => ({
     iata: row[13],
     local: row[14],
   },
-});
+}));
 
-export default AirportModel;
+export default model('Airport', AirportSchema, 'airports');

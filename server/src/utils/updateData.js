@@ -92,14 +92,14 @@ const updateData = async () => {
 // Get formatted mongodb URL
 const mongoURL = url.format(dbConfig);
 
-// Initiate connection to database
-console.log(`Connecting to ${mongoURL}...`);
-mongoose.connect(mongoURL);
-
 // Configure database connection
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useUnifiedTopology', true);
+
+// Initiate connection to database
+console.log(`Connecting to ${mongoURL}...`);
+mongoose.connect(mongoURL);
 
 // Set connection event listeners
 const db = mongoose.connection;

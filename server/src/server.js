@@ -1,9 +1,13 @@
 import http from 'http';
+import url from 'url';
 
 import Debug from 'debug';
+import mongoose from 'mongoose';
 
 import app from './app';
 import { normalizePort } from './utils/serverUtils';
+
+import { mongodb as dbConfig } from '../config.json';
 
 // Initialize debug logger
 const debug = Debug('flight-logger:server');
@@ -11,6 +15,13 @@ const debug = Debug('flight-logger:server');
 // Get normalized port
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
+
+// Initialize database
+const mongoURL = url.format(dbConfig);
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useUnifiedTopology', true);
+mongoose.connect(mongoURL);
 
 // Create http server and start listening
 const server = http.createServer(app);
