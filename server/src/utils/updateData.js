@@ -17,36 +17,40 @@ mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useUnifiedTopology', true);
 
-const mongoURL = url.format(dbConfig);
-console.log(`Connecting to ${mongoURL}...`);
-mongoose.connect(mongoURL);
-
 const handleOutput = async (model, oldData, newData) => {
   console.log('Finding nonexistent documents...');
   await Promise.all(
-    oldData.map(async ({ _id: id }) => {
+    oldData.reduce((acc, { _id: id }) => {
       if (!newData.find(row => row[1] === id)) {
-        try {
-          await model.deleteOne({ _id: id });
+        const query = model.deleteOne({ _id: id }, e => {
+          if (e) {
+            console.error(e);
+          }
           console.log(`  Deleted ${id}`);
-        } catch (e) {
-          console.error(e);
-        }
+        });
+        acc.push(query.exec());
       }
-    }),
+      return acc;
+    }, []),
   );
   console.log('  Done!');
 
   console.log('Creating updated documents...');
   await Promise.all(
-    newData.map(async row => {
+    newData.map(row => {
       const update = model.getUpdate(row);
-      try {
-        await model.findByIdAndUpdate(row[1], update, { upsert: true });
-        console.log(`  Upserted ${row[1]}`);
-      } catch (e) {
-        console.error(e);
-      }
+      const query = model.findByIdAndUpdate(
+        row[1],
+        update,
+        { upsert: true },
+        e => {
+          if (e) {
+            console.error(e);
+          }
+          console.log(`  Upserted ${row[1]}`);
+        },
+      );
+      return query.exec();
     }),
   );
   console.log('  Done!');
@@ -71,6 +75,8 @@ const getDataUrl = collectionName =>
 const updateData = async () => {
   const collectionNames = argv._[0].split(',');
 
+  console.log(collectionNames);
+
   await Promise.all(
     collectionNames.map(async name => {
       const model = getModel(name);
@@ -81,7 +87,7 @@ const updateData = async () => {
       }
 
       console.log(`Retrieving ${name} from database...`);
-      const oldData = await model.find({});
+      const oldData = await model.find({}).exec();
       console.log(`  Done! Number of documents: ${oldData.length}`);
 
       console.log(`Fetching new data from ${dataUrl}...`);
@@ -94,6 +100,13 @@ const updateData = async () => {
     }),
   );
 };
+
+// Get formatted mongodb URL
+const mongoURL = url.format(dbConfig);
+
+// Initiate connection to database
+console.log(`Connecting to ${mongoURL}...`);
+mongoose.connect(mongoURL);
 
 // Set event listeners
 const db = mongoose.connection;
