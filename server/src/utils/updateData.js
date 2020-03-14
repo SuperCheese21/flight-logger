@@ -13,10 +13,6 @@ import Region from '../models/region';
 
 import { mongodb as dbConfig } from '../../config.json';
 
-mongoose.set('useNewUrlParser', true);
-mongoose.set('useFindAndModify', false);
-mongoose.set('useUnifiedTopology', true);
-
 const handleOutput = async (model, oldData, newData) => {
   console.log('Removing obsolete documents...');
   await Promise.all(
@@ -100,7 +96,12 @@ const mongoURL = url.format(dbConfig);
 console.log(`Connecting to ${mongoURL}...`);
 mongoose.connect(mongoURL);
 
-// Set event listeners
+// Configure database connection
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useUnifiedTopology', true);
+
+// Set connection event listeners
 const db = mongoose.connection;
 db.on('error', () => {
   console.error('  connection error');
@@ -116,5 +117,6 @@ db.once('open', async () => {
   const endTime = new Date() - startTime;
   console.log('All databases updated in %dms', endTime);
 
+  // Disconnect from database
   mongoose.disconnect();
 });
