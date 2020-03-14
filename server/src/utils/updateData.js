@@ -18,7 +18,7 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useUnifiedTopology', true);
 
 const handleOutput = async (model, oldData, newData) => {
-  console.log('Finding nonexistent documents...');
+  console.log('Removing obsolete documents...');
   await Promise.all(
     oldData.reduce((acc, { _id: id }) => {
       if (!newData.find(row => row[1] === id)) {
