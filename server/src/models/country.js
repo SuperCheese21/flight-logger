@@ -6,12 +6,10 @@ export const CountrySchema = new Schema({
   continent: String,
 });
 
-const CountryModel = model('Country', CountrySchema, 'countries');
-
-CountryModel.getUpdate = row => ({
+CountrySchema.static('getUpdate', row => ({
   _id: row[1],
   name: row[2],
   continent: row[3],
-});
+}));
 
-export default CountryModel;
+export default model('Country', CountrySchema, 'countries');
