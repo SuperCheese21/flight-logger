@@ -22,12 +22,9 @@ const handleOutput = async (model, oldData, newData) => {
   await Promise.all(
     oldData.reduce((acc, { _id: id }) => {
       if (!newData.find(row => row[1] === id)) {
-        const query = model.deleteOne({ _id: id }, e => {
-          if (e) {
-            console.error(e);
-          }
-          console.log(`  Deleted ${id}`);
-        });
+        const query = model.deleteOne({ _id: id }, e =>
+          e ? console.error(e) : console.log(`  Deleted ${id}`),
+        );
         acc.push(query.exec());
       }
       return acc;
@@ -43,12 +40,7 @@ const handleOutput = async (model, oldData, newData) => {
         row[1],
         update,
         { upsert: true },
-        e => {
-          if (e) {
-            console.error(e);
-          }
-          console.log(`  Upserted ${row[1]}`);
-        },
+        e => (e ? console.error(e) : console.log(`  Upserted ${row[1]}`)),
       );
       return query.exec();
     }),
@@ -115,6 +107,14 @@ db.on('error', () => {
 });
 db.once('open', async () => {
   console.log('  Connected!');
+
+  // Start timer and execute update
+  const startTime = new Date();
+
   await updateData();
+
+  const endTime = new Date() - startTime;
+  console.log('All databases updated in %dms', endTime);
+
   mongoose.disconnect();
 });
