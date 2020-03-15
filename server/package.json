@@ -5,7 +5,8 @@
     "prestart": "npm run transpile",
     "start": "node ./dist/server.js",
     "transpile": "node_modules/.bin/babel src -d dist",
-    "update": "npm run transpile && node ./dist/utils/updateData"
+    "update": "npm run transpile && node ./dist/utils/updateData",
+    "update:airlines": "npm run transpile && node ./dist/utils/updateAirlines"
   },
   "dependencies": {
     "axios": "^0.19.2",
