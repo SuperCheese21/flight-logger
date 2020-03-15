@@ -24,9 +24,8 @@ const updateData = async () => {
   await Promise.all(
     data.map(row => {
       const update = Airline.getUpdate(row);
-      const airline = new Airline(update);
-      return airline.save(e =>
-        e ? console.error(e) : console.log(`  Upserted ${row[0]}/${row[1]}`),
+      return Airline.create(update, e =>
+        e ? console.error(e) : console.log(`  Added ${row[0]}/${row[1]}`),
       );
     }),
   );
