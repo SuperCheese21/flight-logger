@@ -1,3 +1,5 @@
+import { readFileSync } from 'fs';
+
 import { model, Schema } from 'mongoose';
 
 import { CountrySchema } from './country';
@@ -9,6 +11,11 @@ export const AirlineSchema = new Schema({
   callsign: String,
   country: CountrySchema,
   comments: String,
+});
+
+AirlineSchema.static('getData', () => {
+  const csv = readFileSync(`./data/airline.csv`);
+  return csv;
 });
 
 AirlineSchema.static('getUpdate', row => ({
