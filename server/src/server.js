@@ -1,5 +1,4 @@
 import http from 'http';
-import url from 'url';
 
 import Debug from 'debug';
 import mongoose from 'mongoose';
@@ -17,7 +16,7 @@ const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 // Initialize database
-const mongoURL = url.format(dbConfig);
+const { main: mongoURL } = dbConfig;
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useUnifiedTopology', true);
