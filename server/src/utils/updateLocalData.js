@@ -1,15 +1,12 @@
 import 'regenerator-runtime/runtime';
 
-import url from 'url';
-
 import parse from 'csv-parse/lib/sync';
-import mongoose from 'mongoose';
 import { argv } from 'yargs';
+
+import { connectDatabase } from './serverUtils';
 
 import Aircraft from '../models/aircraft';
 import Airline from '../models/airline';
-
-import { mongodb as dbConfig } from '../../config.json';
 
 const handleOutput = async (model, csv) => {
   const data = parse(csv, { skip_empty_lines: true }).slice(1);
@@ -61,24 +58,5 @@ const updateData = async () => {
   );
 };
 
-// Get formatted mongodb URL
-const mongoURL = url.format(dbConfig);
-
-// Configure database connection
-mongoose.set('useNewUrlParser', true);
-mongoose.set('useFindAndModify', false);
-mongoose.set('useUnifiedTopology', true);
-
-// Initiate connection to database
-console.log(`Connecting to ${mongoURL}...`);
-mongoose.connect(mongoURL);
-
-// Set connection event listeners
-const db = mongoose.connection;
-db.on('error', () => {
-  console.error('  connection error');
-});
-db.once('open', async () => {
-  console.log('  Connected!');
-  updateData();
-});
+// Initialize Database
+connectDatabase(updateData);

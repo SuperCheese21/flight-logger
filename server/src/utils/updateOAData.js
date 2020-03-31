@@ -1,17 +1,14 @@
 import 'regenerator-runtime/runtime';
 
-import url from 'url';
-
 import axios from 'axios';
 import parse from 'csv-parse/lib/sync';
-import mongoose from 'mongoose';
 import { argv } from 'yargs';
 
 import Airport from '../models/airport';
 import Country from '../models/country';
 import Region from '../models/region';
 
-import { mongodb as dbConfig } from '../../config.json';
+import { connectDatabase } from './serverUtils';
 
 const handleOutput = async (model, oldData, newData) => {
   console.log('Removing obsolete documents...');
@@ -26,7 +23,7 @@ const handleOutput = async (model, oldData, newData) => {
       return acc;
     }, []),
   );
-  console.log('  Done!');
+  console.log('Done!');
 
   console.log('Creating updated documents...');
   await Promise.all(
@@ -41,7 +38,7 @@ const handleOutput = async (model, oldData, newData) => {
       return query.exec();
     }),
   );
-  console.log('  Done!');
+  console.log('Done!');
 };
 
 const getModel = collectionName => {
@@ -89,34 +86,5 @@ const updateData = async () => {
   );
 };
 
-// Get formatted mongodb URL
-const mongoURL = url.format(dbConfig);
-
-// Configure database connection
-mongoose.set('useNewUrlParser', true);
-mongoose.set('useFindAndModify', false);
-mongoose.set('useUnifiedTopology', true);
-
-// Initiate connection to database
-console.log(`Connecting to ${mongoURL}...`);
-mongoose.connect(mongoURL);
-
-// Set connection event listeners
-const db = mongoose.connection;
-db.on('error', () => {
-  console.error('  connection error');
-});
-db.once('open', async () => {
-  console.log('  Connected!');
-
-  // Start timer and execute update
-  const startTime = new Date();
-
-  await updateData();
-
-  const endTime = new Date() - startTime;
-  console.log('All databases updated in %dms', endTime);
-
-  // Disconnect from database
-  mongoose.disconnect();
-});
+// Initialize Database
+connectDatabase(updateData);
