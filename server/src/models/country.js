@@ -6,6 +6,8 @@ export const CountrySchema = new Schema({
   continent: String,
 });
 
+CountrySchema.static('dataUrl', 'https://ourairports.com/data/countries.csv');
+
 CountrySchema.static('getUpdate', row => ({
   _id: row[1],
   name: row[2],

@@ -1,22 +1,27 @@
-import { readFileSync } from 'fs';
-
 import { model, Schema } from 'mongoose';
 
 export const AircraftSchema = new Schema({
+  _id: String,
   iata: String,
   icao: String,
-  model: String,
+  names: [String],
 });
 
-AircraftSchema.static('getData', () => {
-  const csv = readFileSync(`./data/aircraft.csv`);
-  return csv;
-});
+AircraftSchema.static(
+  'dataUrl',
+  'https://en.wikipedia.org/wiki/List_of_aircraft_type_designators',
+);
 
-AircraftSchema.static('getUpdate', row => ({
-  iata: row[0],
-  icao: row[1],
-  model: row[2],
-}));
+AircraftSchema.static('getUpdate', ($, tds) => {
+  const icao = tds.eq(0).text();
+  const iata = tds.eq(1).text();
+  const _id = `${icao}_${iata}`; // eslint-disable-line no-underscore-dangle
+  const names = tds
+    .eq(2)
+    .children('a')
+    .map((j, a) => $(a).text())
+    .get();
+  return { _id, icao, iata, names };
+});
 
 export default model('Aircraft', AircraftSchema, 'aircraft');

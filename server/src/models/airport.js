@@ -25,6 +25,8 @@ export const AirportSchema = new Schema({
   },
 });
 
+AirportSchema.static('dataUrl', 'https://ourairports.com/data/airports.csv');
+
 AirportSchema.static('getUpdate', row => ({
   _id: row[1],
   type: row[2],

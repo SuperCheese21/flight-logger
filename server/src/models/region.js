@@ -10,6 +10,8 @@ export const RegionSchema = new Schema({
   country: CountrySchema,
 });
 
+RegionSchema.static('dataUrl', 'https://ourairports.com/data/regions.csv');
+
 RegionSchema.static('getUpdate', row => ({
   _id: row[1],
   localCode: row[2],
