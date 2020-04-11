@@ -22,6 +22,11 @@ AircraftSchema.static('getUpdate', item => {
   const tds = $('td');
   const icao = tds.eq(0).text();
   const iata = tds.eq(1).text();
+
+  if (!icao || !iata) {
+    return null;
+  }
+
   const _id = `${icao}_${iata}`; // eslint-disable-line no-underscore-dangle
   const names = tds
     .eq(2)
