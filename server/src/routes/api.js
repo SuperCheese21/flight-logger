@@ -2,6 +2,8 @@ import 'regenerator-runtime/runtime';
 
 import express from 'express';
 
+import Aircraft from '../models/aircraft';
+import Airline from '../models/airline';
 import Airport from '../models/airport';
 import Country from '../models/country';
 import Region from '../models/region';
@@ -10,6 +12,28 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   res.json({ message: 'API home page' });
+});
+
+router.get('/aircraft', async (req, res) => {
+  const { q } = req.query;
+  if (q) {
+    const query = Aircraft.find({});
+    const aircraft = await query.exec();
+    res.json(aircraft);
+  } else {
+    res.sendStatus(400);
+  }
+});
+
+router.get('/airlines', async (req, res) => {
+  const { q } = req.query;
+  if (q) {
+    const query = Airline.find({});
+    const airlines = await query.exec();
+    res.json(airlines);
+  } else {
+    res.sendStatus(400);
+  }
 });
 
 router.get('/airports/:id', async (req, res) => {

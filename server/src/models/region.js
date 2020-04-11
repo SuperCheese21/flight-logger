@@ -2,6 +2,8 @@ import { model, Schema } from 'mongoose';
 
 import { CountrySchema } from './country';
 
+import { parseOurAirportsData } from '../db/parseData';
+
 export const RegionSchema = new Schema({
   _id: String,
   localCode: String,
@@ -9,6 +11,10 @@ export const RegionSchema = new Schema({
   continent: String,
   country: CountrySchema,
 });
+
+RegionSchema.static('dataUrl', 'https://ourairports.com/data/regions.csv');
+
+RegionSchema.static('parseData', parseOurAirportsData);
 
 RegionSchema.static('getUpdate', row => ({
   _id: row[1],
