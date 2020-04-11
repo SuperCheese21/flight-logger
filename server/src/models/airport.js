@@ -1,3 +1,4 @@
+import parse from 'csv-parse/lib/sync';
 import { model, Schema } from 'mongoose';
 
 import { CountrySchema } from './country';
@@ -26,6 +27,12 @@ export const AirportSchema = new Schema({
 });
 
 AirportSchema.static('dataUrl', 'https://ourairports.com/data/airports.csv');
+
+AirportSchema.static('parseData', data => {
+  return parse(data, { skip_empty_lines: true })
+    .slice(1)
+    .map(row => model.getUpdate(row));
+});
 
 AirportSchema.static('getUpdate', row => ({
   _id: row[1],
