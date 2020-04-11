@@ -56,7 +56,13 @@ const updateData = async () => {
       const res = await axios.get(dataUrl);
       console.log('  Done!');
 
-      const data = parseData(res.data).map(item => getUpdate(item));
+      const data = parseData(res.data).reduce((acc, item) => {
+        const update = getUpdate(item);
+        if (update) {
+          acc.push(update);
+        }
+        return acc;
+      }, []);
 
       return updateModels(model, data);
     }),
