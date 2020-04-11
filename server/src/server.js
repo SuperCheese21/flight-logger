@@ -3,7 +3,8 @@ import http from 'http';
 import Debug from 'debug';
 
 import app from './app';
-import { connectDatabase, normalizePort } from './utils/serverUtils';
+import connectDatabase from './db/connect';
+import { normalizePort } from './utils/serverUtils';
 
 // Initialize debug logger
 const debug = Debug('flight-logger:server');

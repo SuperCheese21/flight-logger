@@ -1,18 +1,12 @@
-import Aircraft from '../models/aircraft';
-import Airline from '../models/airline';
-import Airport from '../models/airport';
-import Country from '../models/country';
-import Region from '../models/region';
+import 'regenerator-runtime/runtime';
 
-export const models = {
-  aircraft: Aircraft,
-  airlines: Airline,
-  airports: Airport,
-  countries: Country,
-  regions: Region,
-};
+import axios from 'axios';
+import { argv } from 'yargs';
 
-export const updateDatabase = async (model, newData) => {
+import connectDatabase from './connect';
+import models from './models';
+
+const updateModels = async (model, newData) => {
   console.log(`Retrieving old data from database...`);
   const oldData = await model.find({}).exec();
   console.log(`  Done! Number of documents: ${oldData.length}`);
@@ -43,3 +37,31 @@ export const updateDatabase = async (model, newData) => {
   );
   console.log('Done!');
 };
+
+const updateData = async () => {
+  const collectionNames = argv._[0].split(',');
+
+  console.log(collectionNames);
+
+  await Promise.all(
+    collectionNames.map(async name => {
+      const model = models[name];
+      if (!model) {
+        return console.error(`Collection ${name} not found! Skipping...`);
+      }
+
+      const { dataUrl, getUpdate, parseData } = model;
+
+      console.log(`Fetching new data from ${dataUrl}...`);
+      const res = await axios.get(dataUrl);
+      console.log('  Done!');
+
+      const data = parseData(res.data).map(item => getUpdate(item));
+
+      return updateModels(model, data);
+    }),
+  );
+};
+
+// Initialize Database
+connectDatabase(updateData);

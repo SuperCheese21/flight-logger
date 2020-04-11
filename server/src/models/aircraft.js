@@ -1,6 +1,8 @@
 import cheerio from 'cheerio';
 import { model, Schema } from 'mongoose';
 
+import { parseWikipediaData } from '../db/parseData';
+
 export const AircraftSchema = new Schema({
   _id: String,
   iata: String,
@@ -13,18 +15,11 @@ AircraftSchema.static(
   'https://en.wikipedia.org/wiki/List_of_aircraft_type_designators',
 );
 
-AircraftSchema.static('parseData', data => {
-  const html = data.replace(/\r?\n|\r|N\/A|n\/a/g, '');
-  const $ = cheerio.load(html);
-  return $('.wikitable tr')
-    .map((i, row) => {
-      const tds = $(row).children('td');
-      return model.getUpdate($, tds);
-    })
-    .get();
-});
+AircraftSchema.static('parseData', parseWikipediaData);
 
-AircraftSchema.static('getUpdate', ($, tds) => {
+AircraftSchema.static('getUpdate', item => {
+  const $ = cheerio.load(item);
+  const tds = $('td');
   const icao = tds.eq(0).text();
   const iata = tds.eq(1).text();
   const _id = `${icao}_${iata}`; // eslint-disable-line no-underscore-dangle

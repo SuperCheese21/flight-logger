@@ -1,7 +1,8 @@
-import parse from 'csv-parse/lib/sync';
 import { model, Schema } from 'mongoose';
 
 import { CountrySchema } from './country';
+
+import { parseOurAirportsData } from '../db/parseData';
 
 export const RegionSchema = new Schema({
   _id: String,
@@ -13,11 +14,7 @@ export const RegionSchema = new Schema({
 
 RegionSchema.static('dataUrl', 'https://ourairports.com/data/regions.csv');
 
-RegionSchema.static('parseData', data => {
-  return parse(data, { skip_empty_lines: true })
-    .slice(1)
-    .map(row => model.getUpdate(row));
-});
+RegionSchema.static('parseData', parseOurAirportsData);
 
 RegionSchema.static('getUpdate', row => ({
   _id: row[1],

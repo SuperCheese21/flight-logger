@@ -1,7 +1,8 @@
-import cheerio from 'cheerio';
 import { model, Schema } from 'mongoose';
 
 import { CountrySchema } from './country';
+
+import { parseWikipediaData } from '../db/parseData';
 
 export const AirlineSchema = new Schema({
   iata: String,
@@ -17,16 +18,7 @@ AirlineSchema.static(
   'https://en.wikipedia.org/wiki/List_of_airline_codes',
 );
 
-AirlineSchema.static('parseData', data => {
-  const html = data.replace(/\r?\n|\r|N\/A|n\/a/g, '');
-  const $ = cheerio.load(html);
-  return $('.wikitable tr')
-    .map((i, row) => {
-      const tds = $(row).children('td');
-      return model.getUpdate($, tds);
-    })
-    .get();
-});
+AirlineSchema.static('parseData', parseWikipediaData);
 
 AirlineSchema.static('getUpdate', () => {
   return {};
