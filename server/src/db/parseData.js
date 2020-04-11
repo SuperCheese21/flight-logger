@@ -5,7 +5,15 @@ export const parseOurAirportsData = data =>
   parse(data, { skip_empty_lines: true }).slice(1);
 
 export const parseWikipediaData = data => {
-  const html = data.replace(/\r?\n|\r|N\/A|n\/a/g, '');
+  const html = data.replace(/\r?\n|\r|N\/A|n\/a|\*/g, '');
   const $ = cheerio.load(html);
   return $('.wikitable tr').toArray();
+};
+
+export const getText = node => {
+  return node
+    .children()
+    .remove()
+    .end()
+    .text();
 };

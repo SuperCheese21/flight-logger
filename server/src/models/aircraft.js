@@ -1,7 +1,7 @@
 import cheerio from 'cheerio';
 import { model, Schema } from 'mongoose';
 
-import { parseWikipediaData } from '../db/parseData';
+import { getText, parseWikipediaData } from '../db/parseData';
 
 export const AircraftSchema = new Schema({
   _id: String,
@@ -20,8 +20,8 @@ AircraftSchema.static('parseData', parseWikipediaData);
 AircraftSchema.static('getUpdate', item => {
   const $ = cheerio.load(item);
   const tds = $('td');
-  const icao = tds.eq(0).text();
-  const iata = tds.eq(1).text();
+  const icao = getText(tds.eq(0));
+  const iata = getText(tds.eq(1));
 
   if (!icao || !iata) {
     return null;
