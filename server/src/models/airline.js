@@ -34,9 +34,9 @@ AirlineSchema.static('getUpdate', item => {
   }
 
   const _id = `${iata}_${icao}`; // eslint-disable-line no-underscore-dangle
-  const callsign = getText(tds.eq(3));
+  const callsign = tds.eq(3).text();
 
-  return { _id, icao, iata, name, callsign };
+  return { _id, iata, icao, name, callsign };
 });
 
 export default model('Airline', AirlineSchema, 'airlines');

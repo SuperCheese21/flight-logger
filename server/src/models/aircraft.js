@@ -27,13 +27,13 @@ AircraftSchema.static('getUpdate', item => {
     return null;
   }
 
-  const _id = `${icao}_${iata}`; // eslint-disable-line no-underscore-dangle
+  const _id = `${iata}_${icao}`; // eslint-disable-line no-underscore-dangle
   const names = tds
     .eq(2)
     .children('a')
     .map((j, a) => $(a).text())
     .get();
-  return { _id, icao, iata, names };
+  return { _id, iata, icao, names };
 });
 
 export default model('Aircraft', AircraftSchema, 'aircraft');
