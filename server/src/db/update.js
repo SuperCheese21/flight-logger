@@ -6,7 +6,7 @@ import { argv } from 'yargs';
 import connectDatabase from './connect';
 import models from './models';
 
-const updateModels = async (model, newData) => {
+const updateCollection = async (model, newData) => {
   console.log(`Retrieving old data from database...`);
   const oldData = await model.find({}).exec();
   console.log(`  Done! Number of documents: ${oldData.length}`);
@@ -64,7 +64,7 @@ const updateData = async () => {
         return acc;
       }, []);
 
-      return updateModels(model, data);
+      return updateCollection(model, data);
     }),
   );
 };
