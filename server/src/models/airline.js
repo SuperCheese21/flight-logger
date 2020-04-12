@@ -1,7 +1,7 @@
 import cheerio from 'cheerio';
 import { model, Schema } from 'mongoose';
 
-import { getText, parseWikipediaData } from '../db/parseData';
+import { getLogoURL, getText, parseWikipediaData } from '../db/parseData';
 
 export const AirlineSchema = new Schema({
   _id: String,
@@ -9,6 +9,7 @@ export const AirlineSchema = new Schema({
   icao: String,
   name: String,
   callsign: String,
+  logo: String,
 });
 
 AirlineSchema.static(
@@ -18,25 +19,29 @@ AirlineSchema.static(
 
 AirlineSchema.static('parseData', parseWikipediaData);
 
-AirlineSchema.static('getUpdate', item => {
+AirlineSchema.static('getUpdate', async item => {
   const $ = cheerio.load(item);
   const tds = $('td');
   const iata = getText(tds.eq(0));
   const icao = getText(tds.eq(1));
-  const name = tds
+  const nameLink = tds
     .eq(2)
-    .children('a')
-    .eq(0)
-    .text();
+    .find('a')
+    .eq(0);
 
-  if (!icao || !iata || !name) {
+  const name = nameLink.text();
+  const href = nameLink.attr('href');
+
+  if (!icao || !iata || !name || !href.includes('wiki')) {
     return null;
   }
 
   const _id = `${iata}_${icao}`; // eslint-disable-line no-underscore-dangle
-  const callsign = getText(tds.eq(3));
+  const callsign = tds.eq(3).text();
 
-  return { _id, icao, iata, name, callsign };
+  const logo = await getLogoURL(href);
+
+  return { _id, iata, icao, name, callsign, logo };
 });
 
 export default model('Airline', AirlineSchema, 'airlines');

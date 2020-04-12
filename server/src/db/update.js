@@ -6,10 +6,10 @@ import { argv } from 'yargs';
 import connectDatabase from './connect';
 import models from './models';
 
-const updateModels = async (model, newData) => {
+const updateCollection = async (model, newData) => {
   console.log(`Retrieving old data from database...`);
   const oldData = await model.find({}).exec();
-  console.log(`  Done! Number of documents: ${oldData.length}`);
+  console.log('  Done!');
 
   console.log('Removing obsolete documents...');
   await Promise.all(
@@ -39,34 +39,29 @@ const updateModels = async (model, newData) => {
 };
 
 const updateData = async () => {
-  const collectionNames = argv._[0].split(',');
+  const collectionName = argv._[0];
 
-  console.log(collectionNames);
+  console.log(`Updating ${collectionName} collection`);
 
-  await Promise.all(
-    collectionNames.map(async name => {
-      const model = models[name];
-      if (!model) {
-        return console.error(`Collection ${name} not found! Skipping...`);
-      }
+  const model = models[collectionName];
+  if (!model) {
+    return console.error(`Collection ${collectionName} not found! Skipping...`);
+  }
 
-      const { dataUrl, getUpdate, parseData } = model;
+  const { dataUrl, getUpdate, parseData } = model;
 
-      console.log(`Fetching new data from ${dataUrl}...`);
-      const res = await axios.get(dataUrl);
-      console.log('  Done!');
+  console.log(`Fetching data from ${dataUrl} ...`);
+  const res = await axios.get(dataUrl);
+  console.log('  Done!');
 
-      const data = parseData(res.data).reduce((acc, item) => {
-        const update = getUpdate(item);
-        if (update) {
-          acc.push(update);
-        }
-        return acc;
-      }, []);
+  const rows = parseData(res.data);
 
-      return updateModels(model, data);
-    }),
-  );
+  console.log('Creating new documents...');
+  const data = await Promise.all(rows.map(item => getUpdate(item)));
+  const documents = data.filter(item => item);
+  console.log('  Done!');
+
+  return updateCollection(model, documents);
 };
 
 // Initialize Database
