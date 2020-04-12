@@ -2,26 +2,38 @@ import axios from 'axios';
 import cheerio from 'cheerio';
 import parse from 'csv-parse/lib/sync';
 
-export const getLogoURL = async href => {
-  const url = `https://en.wikipedia.org${href}`;
-  try {
-    const res = await axios.get(url);
-    const $ = cheerio.load(res.data);
-    const src = $('.infobox img').attr('src');
-
-    return src ? `https:${src}` : '';
-  } catch (err) {
-    console.error(`  ${url} - Logo not found (${err.message})`);
-    return '';
-  }
-};
-
 export const getText = node => {
   return node
     .children()
     .remove()
     .end()
     .text();
+};
+
+export const getAirlineDocument = async href => {
+  const url = `https://en.wikipedia.org${href}`;
+  try {
+    const res = await axios.get(url);
+    const $ = cheerio.load(res.data);
+
+    const name = $('#firstHeading').text();
+
+    const [iata, icao, callsign] = $('.infobox table')
+      .eq(0)
+      .find('td')
+      .map((i, td) => getText($(td)))
+      .get();
+
+    const src = $('.infobox img')
+      .eq(0)
+      .attr('src');
+    const logo = src ? `https:${src}` : '';
+
+    return { iata, icao, callsign, name, logo };
+  } catch ({ message }) {
+    console.error(`  ${url} - ${message}`);
+    return {};
+  }
 };
 
 export const parseOurAirportsData = data =>

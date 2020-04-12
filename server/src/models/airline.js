@@ -1,7 +1,11 @@
 import cheerio from 'cheerio';
 import { model, Schema } from 'mongoose';
 
-import { getLogoURL, getText, parseWikipediaData } from '../db/parseData';
+import {
+  getAirlineDocument,
+  getText,
+  parseWikipediaData,
+} from '../db/parseData';
 
 export const AirlineSchema = new Schema({
   _id: String,
@@ -10,6 +14,11 @@ export const AirlineSchema = new Schema({
   name: String,
   callsign: String,
   logo: String,
+});
+
+AirlineSchema.pre('save', next => {
+  this._id = `${this.iata}_${this.icao}`; // eslint-disable-line no-underscore-dangle
+  next();
 });
 
 AirlineSchema.static(
@@ -22,26 +31,23 @@ AirlineSchema.static('parseData', parseWikipediaData);
 AirlineSchema.static('getUpdate', async item => {
   const $ = cheerio.load(item);
   const tds = $('td');
-  const iata = getText(tds.eq(0));
-  const icao = getText(tds.eq(1));
-  const nameLink = tds
+  const href = tds
     .eq(2)
     .find('a')
-    .eq(0);
+    .eq(0)
+    .attr('href');
 
-  const name = nameLink.text();
-  const href = nameLink.attr('href');
-
-  if (!icao || !iata || !name || !href.includes('wiki')) {
+  if (!href || href.slice(0, 6) !== '/wiki/') {
     return null;
   }
 
-  const _id = `${iata}_${icao}`; // eslint-disable-line no-underscore-dangle
-  const callsign = tds.eq(3).text();
+  const iata = getText(tds.eq(0));
+  const icao = getText(tds.eq(1));
+  const callsign = getText(tds.eq(3));
 
-  const logo = await getLogoURL(href);
+  const doc = await getAirlineDocument(href);
 
-  return { _id, iata, icao, name, callsign, logo };
+  return { iata, icao, callsign, ...doc };
 });
 
 export default model('Airline', AirlineSchema, 'airlines');
