@@ -26,7 +26,7 @@ AirlineSchema.static('getUpdate', async item => {
   const icao = getText(tds.eq(1));
   const nameLink = tds
     .eq(2)
-    .children('a')
+    .find('a')
     .eq(0);
 
   const name = nameLink.text();
