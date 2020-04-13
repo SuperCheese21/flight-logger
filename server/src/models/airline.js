@@ -1,11 +1,7 @@
 import cheerio from 'cheerio';
 import { model, Schema } from 'mongoose';
 
-import {
-  getAirlineDocument,
-  getText,
-  parseWikipediaData,
-} from '../db/parseData';
+import { getAirlineDocument, parseWikipediaData } from '../db/parse';
 
 export const AirlineSchema = new Schema({
   _id: String,
@@ -16,17 +12,15 @@ export const AirlineSchema = new Schema({
   logo: String,
 });
 
-AirlineSchema.pre('save', next => {
-  this._id = `${this.iata}_${this.icao}`; // eslint-disable-line no-underscore-dangle
-  next();
-});
-
 AirlineSchema.static(
   'dataUrl',
   'https://en.wikipedia.org/wiki/List_of_airline_codes',
 );
 
-AirlineSchema.static('parseData', parseWikipediaData);
+AirlineSchema.static('parseData', data => {
+  const $ = parseWikipediaData(data);
+  return $('.wikitable tr').toArray();
+});
 
 AirlineSchema.static('getUpdate', async item => {
   const $ = cheerio.load(item);
@@ -41,13 +35,7 @@ AirlineSchema.static('getUpdate', async item => {
     return null;
   }
 
-  const iata = getText(tds.eq(0));
-  const icao = getText(tds.eq(1));
-  const callsign = getText(tds.eq(3));
-
-  const doc = await getAirlineDocument(href);
-
-  return { iata, icao, callsign, ...doc };
+  return getAirlineDocument(href);
 });
 
 export default model('Airline', AirlineSchema, 'airlines');
