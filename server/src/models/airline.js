@@ -25,17 +25,20 @@ AirlineSchema.static('parseData', data => {
 AirlineSchema.static('getUpdate', async item => {
   const $ = cheerio.load(item);
   const tds = $('td');
-  const href = tds
+  const link = tds
     .eq(2)
     .find('a')
-    .eq(0)
-    .attr('href');
+    .eq(0);
 
+  const href = link.attr('href');
   if (!href || href.slice(0, 6) !== '/wiki/') {
     return null;
   }
 
-  return getAirlineDocument(href);
+  const name = link.text();
+  const doc = await getAirlineDocument(href);
+
+  return { name, ...doc };
 });
 
 export default model('Airline', AirlineSchema, 'airlines');

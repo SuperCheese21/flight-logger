@@ -38,14 +38,12 @@ export const getAirlineDocument = async href => {
 
     const _id = `${iata}_${icao}`; // eslint-disable-line no-underscore-dangle
 
-    const name = $('#firstHeading').text();
-
     const src = $('.infobox img')
       .eq(0)
       .attr('src');
     const logo = src ? `https:${src}` : '';
 
-    return { _id, iata, icao, callsign, name, logo };
+    return { _id, iata, icao, callsign, logo };
   } catch ({ message }) {
     return console.error(`  ${url} - ${message}`);
   }
