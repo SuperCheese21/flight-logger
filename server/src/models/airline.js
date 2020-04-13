@@ -37,10 +37,7 @@ AirlineSchema.static('getUpdate', async item => {
 
   const name = link.text();
 
-  console.log(`Fetching data for ${name}...`);
-  const doc = await getAirlineDocument(href);
-
-  return { name, ...doc };
+  return getAirlineDocument(name, href);
 });
 
 export default model('Airline', AirlineSchema, 'airlines');

@@ -21,7 +21,8 @@ export const parseWikipediaData = data => {
   return cheerio.load(html);
 };
 
-export const getAirlineDocument = async href => {
+export const getAirlineDocument = async (name, href) => {
+  console.log(`  Fetching data for ${name}...`);
   const url = `https://en.wikipedia.org${href}`;
   try {
     const res = await axios.get(url);
@@ -36,7 +37,7 @@ export const getAirlineDocument = async href => {
       .map((i, td) => getText($(td)))
       .get();
 
-    if (headers !== 'ICAOIATACallsign' || !iata || !icao) {
+    if (headers !== 'IATAICAOCallsign' || !iata || !icao) {
       return null;
     }
 
@@ -47,10 +48,8 @@ export const getAirlineDocument = async href => {
       .attr('src');
     const logo = src ? `https:${src}` : '';
 
-    console.log(`  Retrieved ${_id} from ${url}`);
-
-    return { _id, iata, icao, callsign, logo };
+    return { name, _id, iata, icao, callsign, logo };
   } catch ({ message }) {
-    return console.error(`  ${url} - ${message}`);
+    return console.error(`    ${url} - ${message}`);
   }
 };
