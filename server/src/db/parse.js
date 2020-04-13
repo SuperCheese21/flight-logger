@@ -2,15 +2,16 @@ import axios from 'axios';
 import cheerio from 'cheerio';
 import parse from 'csv-parse/lib/sync';
 
-export const getText = node => {
-  return node
+export const getText = node =>
+  node
     .children()
     .remove()
     .end()
     .text()
     .replace(/None|-|—|–|\*|N\/A|n\/a/g, '')
-    .split('/')[0];
-};
+    .split('/')[0]
+    .split('(')[0]
+    .trim();
 
 export const parseOurAirportsData = data =>
   parse(data, { skip_empty_lines: true }).slice(1);
@@ -26,13 +27,16 @@ export const getAirlineDocument = async href => {
     const res = await axios.get(url);
     const $ = parseWikipediaData(res.data);
 
-    const [iata, icao, callsign] = $('.infobox table')
-      .eq(0)
+    const infoTable = $('.infobox.vcard')
+      .find('table')
+      .eq(0);
+    const headers = infoTable.find('th a').text();
+    const [iata, icao, callsign] = infoTable
       .find('td')
       .map((i, td) => getText($(td)))
       .get();
 
-    if (!iata || !icao) {
+    if (headers !== 'ICAOIATACallsign' || !iata || !icao) {
       return null;
     }
 
@@ -42,6 +46,8 @@ export const getAirlineDocument = async href => {
       .eq(0)
       .attr('src');
     const logo = src ? `https:${src}` : '';
+
+    console.log(`  Retrieved ${_id} from ${url}`);
 
     return { _id, iata, icao, callsign, logo };
   } catch ({ message }) {
