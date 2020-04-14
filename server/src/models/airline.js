@@ -1,7 +1,7 @@
 import cheerio from 'cheerio';
 import { model, Schema } from 'mongoose';
 
-import { getLogoURL, getText, parseWikipediaData } from '../db/parseData';
+import { getAirlineDocument, parseWikipediaData } from '../db/parse';
 
 export const AirlineSchema = new Schema({
   _id: String,
@@ -17,31 +17,29 @@ AirlineSchema.static(
   'https://en.wikipedia.org/wiki/List_of_airline_codes',
 );
 
-AirlineSchema.static('parseData', parseWikipediaData);
+AirlineSchema.static('parseData', data => {
+  const $ = parseWikipediaData(data);
+  return $('.wikitable tr')
+    .toArray()
+    .slice(1);
+});
 
 AirlineSchema.static('getUpdate', async item => {
   const $ = cheerio.load(item);
   const tds = $('td');
-  const iata = getText(tds.eq(0));
-  const icao = getText(tds.eq(1));
-  const nameLink = tds
+  const link = tds
     .eq(2)
     .find('a')
     .eq(0);
 
-  const name = nameLink.text();
-  const href = nameLink.attr('href');
-
-  if (!icao || !iata || !name || !href.includes('wiki')) {
+  const href = link.attr('href');
+  if (!href || href.slice(0, 6) !== '/wiki/') {
     return null;
   }
 
-  const _id = `${iata}_${icao}`; // eslint-disable-line no-underscore-dangle
-  const callsign = tds.eq(3).text();
+  const name = link.text();
 
-  const logo = await getLogoURL(href);
-
-  return { _id, iata, icao, name, callsign, logo };
+  return getAirlineDocument(name, href);
 });
 
 export default model('Airline', AirlineSchema, 'airlines');

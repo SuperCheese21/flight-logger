@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 
-import { parseOurAirportsData } from '../db/parseData';
+import { parseOurAirportsData } from '../db/parse';
 
 export const CountrySchema = new Schema({
   _id: String,

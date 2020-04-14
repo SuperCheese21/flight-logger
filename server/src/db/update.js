@@ -1,10 +1,13 @@
 import 'regenerator-runtime/runtime';
 
 import axios from 'axios';
+import * as Promise from 'bluebird';
 import { argv } from 'yargs';
 
 import connectDatabase from './connect';
 import models from './models';
+
+const PROMISE_CONCURRENCY = 100;
 
 const updateCollection = async (model, newData) => {
   console.log(`Retrieving old data from database...`);
@@ -57,9 +60,10 @@ const updateData = async () => {
   const rows = parseData(res.data);
 
   console.log('Creating new documents...');
-  const data = await Promise.all(rows.map(item => getUpdate(item)));
+  const data = await Promise.map(rows, item => getUpdate(item), {
+    concurrency: PROMISE_CONCURRENCY,
+  });
   const documents = data.filter(item => item);
-  console.log('  Done!');
 
   return updateCollection(model, documents);
 };

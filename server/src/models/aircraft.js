@@ -1,7 +1,7 @@
 import cheerio from 'cheerio';
 import { model, Schema } from 'mongoose';
 
-import { getText, parseWikipediaData } from '../db/parseData';
+import { getText, parseWikipediaData } from '../db/parse';
 
 export const AircraftSchema = new Schema({
   _id: String,
@@ -15,7 +15,12 @@ AircraftSchema.static(
   'https://en.wikipedia.org/wiki/List_of_aircraft_type_designators',
 );
 
-AircraftSchema.static('parseData', parseWikipediaData);
+AircraftSchema.static('parseData', data => {
+  const $ = parseWikipediaData(data);
+  return $('.wikitable tr')
+    .toArray()
+    .slice(1);
+});
 
 AircraftSchema.static('getUpdate', item => {
   const $ = cheerio.load(item);
@@ -33,6 +38,7 @@ AircraftSchema.static('getUpdate', item => {
     .children('a')
     .map((j, a) => $(a).text())
     .get();
+
   return { _id, iata, icao, names };
 });
 

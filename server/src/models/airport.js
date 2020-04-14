@@ -3,7 +3,7 @@ import { model, Schema } from 'mongoose';
 import { CountrySchema } from './country';
 import { RegionSchema } from './region';
 
-import { parseOurAirportsData } from '../db/parseData';
+import { parseOurAirportsData } from '../db/parse';
 
 export const AirportSchema = new Schema({
   _id: String,
