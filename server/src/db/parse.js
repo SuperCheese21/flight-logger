@@ -4,13 +4,9 @@ import parse from 'csv-parse/lib/sync';
 
 export const getText = node =>
   node
-    .children()
-    .remove()
-    .end()
-    .text()
-    .replace(/None|-|—|–|\*|N\/A|n\/a/g, '')
-    .split('/')[0]
-    .split('(')[0]
+    .html()
+    .replace(/None|Unknown|N\/A|-|–|—|\?|\*/gi, '')
+    .split(/\/|\(|<|,|or/)[0]
     .trim();
 
 export const parseOurAirportsData = data =>
@@ -18,11 +14,10 @@ export const parseOurAirportsData = data =>
 
 export const parseWikipediaData = data => {
   const html = data.replace(/\r?\n|\r/g, '');
-  return cheerio.load(html);
+  return cheerio.load(html, { decodeEntities: false });
 };
 
 export const getAirlineDocument = async (name, href) => {
-  console.log(`  Fetching data for ${name}...`);
   const url = `https://en.wikipedia.org${href}`;
   try {
     const res = await axios.get(url);
@@ -37,7 +32,11 @@ export const getAirlineDocument = async (name, href) => {
       .map((i, td) => getText($(td)))
       .get();
 
-    if (headers !== 'IATAICAOCallsign' || !iata || !icao) {
+    if (
+      headers !== 'IATAICAOCallsign' ||
+      iata.length !== 2 ||
+      icao.length !== 3
+    ) {
       return null;
     }
 
@@ -47,6 +46,8 @@ export const getAirlineDocument = async (name, href) => {
       .eq(0)
       .attr('src');
     const logo = src ? `https:${src}` : '';
+
+    console.log(`  Retrieved ${_id} from ${url}`);
 
     return { name, _id, iata, icao, callsign, logo };
   } catch ({ message }) {
