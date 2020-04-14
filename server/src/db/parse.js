@@ -12,10 +12,8 @@ export const getText = node =>
 export const parseOurAirportsData = data =>
   parse(data, { skip_empty_lines: true }).slice(1);
 
-export const parseWikipediaData = data => {
-  const html = data.replace(/\r?\n|\r/g, '');
-  return cheerio.load(html, { decodeEntities: false });
-};
+export const parseWikipediaData = data =>
+  cheerio.load(data, { decodeEntities: false });
 
 export const getAirlineDocument = async (name, href) => {
   const url = `https://en.wikipedia.org${href}`;
