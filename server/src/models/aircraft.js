@@ -17,7 +17,9 @@ AircraftSchema.static(
 
 AircraftSchema.static('parseData', data => {
   const $ = parseWikipediaData(data);
-  return $('.wikitable tr').toArray();
+  return $('.wikitable tr')
+    .toArray()
+    .slice(1);
 });
 
 AircraftSchema.static('getUpdate', item => {

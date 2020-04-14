@@ -19,7 +19,9 @@ AirlineSchema.static(
 
 AirlineSchema.static('parseData', data => {
   const $ = parseWikipediaData(data);
-  return $('.wikitable tr').toArray();
+  return $('.wikitable tr')
+    .toArray()
+    .slice(1);
 });
 
 AirlineSchema.static('getUpdate', async item => {
