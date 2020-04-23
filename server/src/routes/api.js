@@ -1,6 +1,8 @@
 import 'regenerator-runtime/runtime';
 
 import express from 'express';
+import paginate from 'express-paginate';
+import swaggerUi from 'swagger-ui-express';
 
 import Aircraft from '../models/aircraft';
 import Airline from '../models/airline';
@@ -8,20 +10,49 @@ import Airport from '../models/airport';
 import Country from '../models/country';
 import Region from '../models/region';
 
+import apiSpec from '../../openapi.json';
+
 const router = express.Router();
+
+router.use('/docs', swaggerUi.serve, swaggerUi.setup(apiSpec));
 
 router.get('/', async (req, res) => {
   res.json({ message: 'API home page' });
 });
 
-router.get('/aircraft', async (req, res) => {
-  const { q } = req.query;
-  if (q) {
-    const query = Aircraft.find({});
-    const aircraft = await query.exec();
-    res.json(aircraft);
-  } else {
-    res.sendStatus(400);
+router.use(paginate.middleware(10, 50));
+
+router.get('/aircraft', async (req, res, next) => {
+  const {
+    query: { limit, page },
+    skip,
+  } = req;
+  const getPages = paginate.getArrayPages(req);
+
+  const filter = {};
+  const resultsQuery = Aircraft.find(filter)
+    .limit(limit)
+    .skip(skip)
+    .select({ _id: 0, __v: 0 })
+    .lean();
+  const countQuery = Aircraft.countDocuments(filter);
+
+  try {
+    const [results, itemCount] = await Promise.all([
+      resultsQuery.exec(),
+      countQuery.exec(),
+    ]);
+    const pageCount = Math.ceil(itemCount / limit);
+    const metadata = {
+      page,
+      limit,
+      pageCount,
+      itemCount,
+      pages: getPages(3, pageCount, page),
+    };
+    res.json({ metadata, results });
+  } catch (err) {
+    next(err);
   }
 });
 

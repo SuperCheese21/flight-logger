@@ -2,22 +2,20 @@
   "openapi": "3.0.0",
   "info": {
     "version": "1.0.0",
-    "title": "flight-logger",
-    "license": {
-      "name": "MIT"
-    }
+    "title": "flight-logger"
   },
   "servers": [
     {
-      "url": "http://localhost:3000/api"
+      "url": "http://localhost:3000/api",
+      "description": "Development"
     }
   ],
   "paths": {
-    "/user": {
+    "/users/{userId}": {
       "get": {
         "summary": "Details about a user",
         "operationId": "listUser",
-        "tags": ["user"],
+        "tags": ["users"],
         "parameters": [
           {
             "name": "id",
@@ -60,6 +58,98 @@
             }
           }
         }
+      },
+      "post": {
+        "summary": "Create a new user",
+        "operationId": "createUser",
+        "tags": ["users"]
+      },
+      "patch": {
+        "summary": "Update details for a user",
+        "operationId": "updateUser",
+        "tags": ["users"]
+      },
+      "delete": {
+        "summary": "Delete a user",
+        "operationId": "deleteUser",
+        "tags": ["users"]
+      }
+    },
+    "/trips": {
+      "post": {
+        "summary": "Create a new trip",
+        "operationId": "createTrip",
+        "tags": ["trips"]
+      },
+      "patch": {
+        "summary": "Update trip details",
+        "operationId": "updateTrip",
+        "tags": ["trips"]
+      },
+      "delete": {
+        "summary": "Delete a trip",
+        "operationId": "deleteTrip",
+        "tags": ["trips"]
+      }
+    },
+    "/bookings": {
+      "post": {
+        "summary": "Create a new booking",
+        "operationId": "createBooking",
+        "tags": ["bookings"]
+      },
+      "patch": {
+        "summary": "Update booking details",
+        "operationId": "updateBooking",
+        "tags": ["bookings"]
+      },
+      "delete": {
+        "summary": "Delete a booking",
+        "operationId": "deleteBooking",
+        "tags": ["bookings"]
+      }
+    },
+    "/flights": {
+      "post": {
+        "summary": "Create a new flight",
+        "operationId": "createFlight",
+        "tags": ["flights"]
+      },
+      "patch": {
+        "summary": "Update flight details",
+        "operationId": "updateFlight",
+        "tags": ["flights"]
+      },
+      "delete": {
+        "summary": "Delete a flight",
+        "operationId": "deleteFlight",
+        "tags": ["flights"]
+      }
+    },
+    "/aircraft": {
+      "get": {
+        "summary": "Get all aircraft",
+        "tags": ["aircraft"]
+      }
+    },
+    "/airlines": {
+      "get": {
+        "tags": ["airlines"]
+      }
+    },
+    "/airports": {
+      "get": {
+        "tags": ["airports"]
+      }
+    },
+    "/countries": {
+      "get": {
+        "tags": ["countries"]
+      }
+    },
+    "/regions": {
+      "get": {
+        "tags": ["regions"]
       }
     }
   },
