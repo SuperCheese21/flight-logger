@@ -14,26 +14,24 @@ export const normalizePort = val => {
   return false;
 };
 
-export const searchFilter = searchFields => async (req, res, next) => {
-  const { q } = req.query;
-  if (q) {
-    const regex = new RegExp(q, 'gi');
-    req.filter = {
-      $or: searchFields.map(field => ({
-        [field]: regex,
-      })),
-    };
-  }
-  next();
-};
-
-export const paginatedResults = model => async (req, res) => {
+export const paginatedSearchResults = (model, searchFields) => async (
+  req,
+  res,
+) => {
   const {
-    filter,
-    query: { limit, page },
+    query: { limit, page, q },
     skip,
   } = req;
   const getPages = paginate.getArrayPages(req);
+
+  const regex = new RegExp(q, 'gi');
+  const filter = {
+    ...(searchFields && {
+      $or: searchFields.map(field => ({
+        [field]: regex,
+      })),
+    }),
+  };
 
   const paginatedQuery = model
     .find(filter)
