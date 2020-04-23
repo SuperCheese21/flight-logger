@@ -15,11 +15,16 @@ export const parseOurAirportsData = data =>
 export const parseWikipediaData = data =>
   cheerio.load(data, { decodeEntities: false });
 
-export const getAirlineDocument = async (name, href) => {
+export const getAirlineDocument = async href => {
   const url = `https://en.wikipedia.org${href}`;
   try {
     const res = await axios.get(url);
     const $ = parseWikipediaData(res.data);
+
+    const name = $('#firstHeading')
+      .text()
+      .split('(')[0]
+      .trim();
 
     const infoTable = $('.infobox.vcard')
       .find('table')
@@ -38,7 +43,8 @@ export const getAirlineDocument = async (name, href) => {
       return null;
     }
 
-    const _id = `${iata}_${icao}`; // eslint-disable-line no-underscore-dangle
+    // eslint-disable-next-line no-underscore-dangle
+    const _id = `${iata}_${icao}_${name.replace(/ /g, '_')}`;
 
     const src = $('.infobox img')
       .eq(0)
