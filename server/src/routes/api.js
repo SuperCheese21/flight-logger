@@ -9,7 +9,7 @@ import Airline from '../models/airline';
 import Airport from '../models/airport';
 import Country from '../models/country';
 import Region from '../models/region';
-import { paginatedResults } from '../utils/serverUtils';
+import { paginatedResults, searchFilter } from '../utils/serverUtils';
 
 import apiSpec from '../../openapi.json';
 
@@ -23,24 +23,41 @@ router.get('/', async (req, res) => {
 
 router.use(paginate.middleware(10, 50));
 
-router.get('/aircraft', paginatedResults(Aircraft), (req, res) => {
-  res.json(res.paginatedResults);
-});
+router.get(
+  '/aircraft',
+  searchFilter(['icao', 'iata', 'names']),
+  paginatedResults(Aircraft),
+);
 
-router.get('/airlines', paginatedResults(Airline), (req, res) => {
-  res.json(res.paginatedResults);
-});
+router.get(
+  '/airlines',
+  searchFilter(['icao', 'iata', 'name', 'callsign']),
+  paginatedResults(Airline),
+);
 
-router.get('/airports', paginatedResults(Airport), (req, res) => {
-  res.json(res.paginatedResults);
-});
+router.get(
+  '/airports',
+  searchFilter([
+    '_id',
+    'codes.gps',
+    'codes.iata',
+    'codes.local',
+    'municipality',
+    'name',
+  ]),
+  paginatedResults(Airport),
+);
 
-router.get('/countries', paginatedResults(Country), (req, res) => {
-  res.json(res.paginatedResults);
-});
+router.get(
+  '/countries',
+  searchFilter(['_id', 'name']),
+  paginatedResults(Country),
+);
 
-router.get('/regions', paginatedResults(Region), (req, res) => {
-  res.json(res.paginatedResults);
-});
+router.get(
+  '/regions',
+  searchFilter(['_id', 'localCode', 'name']),
+  paginatedResults(Region),
+);
 
 export default router;
