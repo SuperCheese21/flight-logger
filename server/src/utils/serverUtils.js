@@ -14,7 +14,7 @@ export const normalizePort = val => {
   return false;
 };
 
-export const paginatedSearchResults = (model, searchFields) => async (
+export const paginatedSearchResults = (model, searchFields, sort) => async (
   req,
   res,
 ) => {
@@ -35,9 +35,10 @@ export const paginatedSearchResults = (model, searchFields) => async (
 
   const paginatedQuery = model
     .find(filter)
-    .select({ __v: 0 })
+    .sort(sort)
     .limit(limit)
     .skip(skip)
+    .select({ __v: 0 })
     .lean();
   const countQuery = model.countDocuments(filter);
 
@@ -49,13 +50,13 @@ export const paginatedSearchResults = (model, searchFields) => async (
     const pageCount = Math.ceil(itemCount / limit);
     const metadata = {
       page,
-      limit,
       pageCount,
+      limit,
       itemCount,
       pages: getPages(3, pageCount, page),
     };
     res.json({ metadata, results });
   } catch (err) {
-    console.error(err);
+    res.status(500).json({ message: err.message });
   }
 };

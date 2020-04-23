@@ -16,9 +16,9 @@ export const parseWikipediaData = data =>
   cheerio.load(data, { decodeEntities: false });
 
 export const getAirlineDocument = async href => {
-  const url = `https://en.wikipedia.org${href}`;
+  const wiki = `https://en.wikipedia.org${href}`;
   try {
-    const res = await axios.get(url);
+    const res = await axios.get(wiki);
     const $ = parseWikipediaData(res.data);
 
     const name = $('#firstHeading')
@@ -51,10 +51,10 @@ export const getAirlineDocument = async href => {
       .attr('src');
     const logo = src ? `https:${src}` : '';
 
-    console.log(`  Retrieved ${_id} from ${url}`);
+    console.log(`  Retrieved ${_id} from ${wiki}`);
 
-    return { name, _id, iata, icao, callsign, logo };
+    return { name, _id, iata, icao, callsign, logo, wiki };
   } catch ({ message }) {
-    return console.error(`    ${url} - ${message}`);
+    return console.error(`    ${wiki} - ${message}`);
   }
 };

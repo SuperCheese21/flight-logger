@@ -10,6 +10,7 @@ export const AirlineSchema = new Schema({
   name: String,
   callsign: String,
   logo: String,
+  wiki: String,
 });
 
 AirlineSchema.static(

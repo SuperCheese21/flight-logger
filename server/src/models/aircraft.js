@@ -3,11 +3,19 @@ import { model, Schema } from 'mongoose';
 
 import { getText, parseWikipediaData } from '../db/parse';
 
+const NameSchema = new Schema(
+  {
+    name: String,
+    wiki: String,
+  },
+  { _id: false },
+);
+
 export const AircraftSchema = new Schema({
   _id: String,
   iata: String,
   icao: String,
-  names: [String],
+  names: [NameSchema],
 });
 
 AircraftSchema.static(
@@ -36,7 +44,12 @@ AircraftSchema.static('getUpdate', item => {
   const names = tds
     .eq(2)
     .children('a')
-    .map((j, a) => $(a).text())
+    .map((j, a) => {
+      const name = $(a).text();
+      const href = $(a).attr('href');
+      const wiki = `https://en.wikipedia.org${href}`;
+      return { name, wiki };
+    })
     .get();
 
   return { _id, iata, icao, names };

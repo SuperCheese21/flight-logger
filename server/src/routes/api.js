@@ -25,7 +25,7 @@ router.use(paginate.middleware(10, 50));
 
 router.get(
   '/aircraft',
-  paginatedSearchResults(Aircraft, ['icao', 'iata', 'names']),
+  paginatedSearchResults(Aircraft, ['icao', 'iata', 'names.name']),
 );
 
 router.get(
@@ -35,21 +35,18 @@ router.get(
 
 router.get(
   '/airports',
-  paginatedSearchResults(Airport, [
-    '_id',
-    'codes.gps',
-    'codes.iata',
-    'codes.local',
-    'municipality',
-    'name',
-  ]),
+  paginatedSearchResults(
+    Airport,
+    ['_id', 'codes.iata', 'name', 'municipality', 'codes.gps', 'codes.local'],
+    { scheduledService: -1 },
+  ),
 );
 
-router.get('/countries', paginatedSearchResults(Country, ['_id', 'name']));
+router.get('/countries', paginatedSearchResults(Country, ['name', '_id']));
 
 router.get(
   '/regions',
-  paginatedSearchResults(Region, ['_id', 'localCode', 'name']),
+  paginatedSearchResults(Region, ['name', 'localCode', '_id']),
 );
 
 export default router;

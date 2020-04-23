@@ -10,6 +10,7 @@ export const RegionSchema = new Schema({
   name: String,
   continent: String,
   country: CountrySchema,
+  wiki: String,
 });
 
 RegionSchema.static('dataUrl', 'https://ourairports.com/data/regions.csv');
@@ -22,6 +23,7 @@ RegionSchema.static('getUpdate', row => ({
   name: row[3],
   continent: row[4],
   country: { _id: row[5] },
+  wiki: row[6],
 }));
 
 export default model('Region', RegionSchema, 'regions');

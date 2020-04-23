@@ -25,6 +25,7 @@ export const AirportSchema = new Schema({
     iata: String,
     local: String,
   },
+  wiki: String,
 });
 
 AirportSchema.static('dataUrl', 'https://ourairports.com/data/airports.csv');
@@ -51,6 +52,7 @@ AirportSchema.static('getUpdate', row => ({
     iata: row[13],
     local: row[14],
   },
+  wiki: row[16],
 }));
 
 export default model('Airport', AirportSchema, 'airports');
