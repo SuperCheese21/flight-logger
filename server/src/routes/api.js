@@ -9,6 +9,7 @@ import Airline from '../models/airline';
 import Airport from '../models/airport';
 import Country from '../models/country';
 import Region from '../models/region';
+import { paginatedResults } from '../utils/serverUtils';
 
 import apiSpec from '../../openapi.json';
 
@@ -22,60 +23,16 @@ router.get('/', async (req, res) => {
 
 router.use(paginate.middleware(10, 50));
 
-router.get('/aircraft', async (req, res, next) => {
-  const {
-    query: { limit, page },
-    skip,
-  } = req;
-  const getPages = paginate.getArrayPages(req);
-
-  const filter = {};
-  const resultsQuery = Aircraft.find(filter)
-    .limit(limit)
-    .skip(skip)
-    .select({ _id: 0, __v: 0 })
-    .lean();
-  const countQuery = Aircraft.countDocuments(filter);
-
-  try {
-    const [results, itemCount] = await Promise.all([
-      resultsQuery.exec(),
-      countQuery.exec(),
-    ]);
-    const pageCount = Math.ceil(itemCount / limit);
-    const metadata = {
-      page,
-      limit,
-      pageCount,
-      itemCount,
-      pages: getPages(3, pageCount, page),
-    };
-    res.json({ metadata, results });
-  } catch (err) {
-    next(err);
-  }
+router.get('/aircraft', paginatedResults(Aircraft), (req, res) => {
+  res.json(res.paginatedResults);
 });
 
-router.get('/airlines', async (req, res) => {
-  const { q } = req.query;
-  if (q) {
-    const query = Airline.find({});
-    const airlines = await query.exec();
-    res.json(airlines);
-  } else {
-    res.sendStatus(400);
-  }
+router.get('/airlines', paginatedResults(Airline), (req, res) => {
+  res.json(res.paginatedResults);
 });
 
-router.get('/airports/:id', async (req, res) => {
-  const { id } = req.params;
-  const query = Airport.findOne({ _id: id });
-  const airport = await query.exec();
-  if (airport) {
-    res.json(airport);
-  } else {
-    res.sendStatus(404);
-  }
+router.get('/airports', paginatedResults(Airport), (req, res) => {
+  res.json(res.paginatedResults);
 });
 
 router.get('/countries', async (req, res) => {
