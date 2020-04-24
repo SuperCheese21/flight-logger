@@ -128,28 +128,257 @@
     },
     "/aircraft": {
       "get": {
-        "summary": "Get all aircraft",
-        "tags": ["aircraft"]
+        "summary": "Search for aircraft",
+        "operationId": "searchAircraft",
+        "tags": ["aircraft"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/searchParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/limitParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Aircraft"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/airlines": {
       "get": {
-        "tags": ["airlines"]
+        "summary": "Search for airlines",
+        "operationId": "searchAirlines",
+        "tags": ["airlines"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/searchParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/limitParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Airline"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/airports": {
       "get": {
-        "tags": ["airports"]
+        "summary": "Search for airports",
+        "operationId": "searchAirports",
+        "tags": ["airports"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/searchParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/limitParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Airport"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/countries": {
       "get": {
-        "tags": ["countries"]
+        "summary": "Search for countries",
+        "operationId": "searchCountries",
+        "tags": ["countries"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/searchParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/limitParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Country"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/regions": {
       "get": {
-        "tags": ["regions"]
+        "summary": "Search for regions",
+        "operationId": "searchRegions",
+        "tags": ["regions"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/searchParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/limitParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Region"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -171,17 +400,283 @@
           }
         }
       },
+      "ListMetadata": {
+        "type": "object",
+        "required": ["page", "pageCount", "limit", "itemCount", "pages"],
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "pageCount": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "itemCount": {
+            "type": "integer"
+          },
+          "pages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["number", "url"],
+              "properties": {
+                "number": {
+                  "type": "integer"
+                },
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Aircraft": {
+        "type": "object",
+        "required": ["_id", "iata", "icao", "names"],
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "iata": {
+            "type": "string"
+          },
+          "icao": {
+            "type": "string"
+          },
+          "names": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "wiki"],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "wiki": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Airline": {
+        "type": "object",
+        "required": ["_id", "iata", "icao", "name", "callsign", "logo", "wiki"],
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "iata": {
+            "type": "string"
+          },
+          "icao": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "callsign": {
+            "type": "string"
+          },
+          "logo": {
+            "type": "string"
+          },
+          "wiki": {
+            "type": "string"
+          }
+        }
+      },
+      "Airport": {
+        "type": "object",
+        "required": [
+          "_id",
+          "type",
+          "name",
+          "location",
+          "elevation",
+          "continent",
+          "country",
+          "region",
+          "municipality",
+          "scheduledService",
+          "codes",
+          "wiki"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "required": ["lat", "lon"],
+            "properties": {
+              "lat": {
+                "type": "number"
+              },
+              "lon": {
+                "type": "number"
+              }
+            }
+          },
+          "elevation": {
+            "type": "integer"
+          },
+          "continent": {
+            "type": "string"
+          },
+          "country": {
+            "type": "object",
+            "required": ["_id"],
+            "properties": {
+              "_id": {
+                "type": "string"
+              }
+            }
+          },
+          "region": {
+            "type": "object",
+            "required": ["_id"],
+            "properties": {
+              "_id": {
+                "type": "string"
+              }
+            }
+          },
+          "municipality": {
+            "type": "string"
+          },
+          "scheduledService": {
+            "type": "boolean"
+          },
+          "codes": {
+            "type": "object",
+            "required": ["ident", "gps", "iata", "local"],
+            "properties": {
+              "ident": {
+                "type": "string"
+              },
+              "gps": {
+                "type": "string"
+              },
+              "iata": {
+                "type": "string"
+              },
+              "local": {
+                "type": "string"
+              }
+            }
+          },
+          "wiki": {
+            "type": "string"
+          }
+        }
+      },
+      "Country": {
+        "type": "object",
+        "required": ["_id", "name", "continent", "wiki"],
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "continent": {
+            "type": "string"
+          },
+          "wiki": {
+            "type": "string"
+          }
+        }
+      },
+      "Region": {
+        "type": "object",
+        "required": [
+          "_id",
+          "localCode",
+          "name",
+          "continent",
+          "country",
+          "wiki"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "localCode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "continent": {
+            "type": "string"
+          },
+          "country": {
+            "type": "object",
+            "required": ["_id"],
+            "properties": {
+              "_id": {
+                "type": "string"
+              }
+            }
+          },
+          "wiki": {
+            "type": "string"
+          }
+        }
+      },
       "Error": {
         "type": "object",
         "required": ["code", "message"],
         "properties": {
           "code": {
-            "type": "integer",
-            "format": "int32"
+            "type": "integer"
           },
           "message": {
             "type": "string"
           }
+        }
+      }
+    },
+    "parameters": {
+      "searchParam": {
+        "name": "q",
+        "in": "query",
+        "description": "Search term",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "pageParam": {
+        "name": "page",
+        "in": "query",
+        "description": "Page number",
+        "required": false,
+        "default": 1,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "limitParam": {
+        "name": "limit",
+        "in": "query",
+        "description": "Item limit per page",
+        "required": false,
+        "default": 10,
+        "schema": {
+          "type": "integer"
         }
       }
     }
