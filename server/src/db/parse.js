@@ -12,16 +12,19 @@ export const getText = node =>
 export const parseOurAirportsData = data =>
   parse(data, { skip_empty_lines: true }).slice(1);
 
-export const parseWikipediaData = data => {
-  const html = data.replace(/\r?\n|\r/g, '');
-  return cheerio.load(html, { decodeEntities: false });
-};
+export const parseWikipediaData = data =>
+  cheerio.load(data, { decodeEntities: false });
 
-export const getAirlineDocument = async (name, href) => {
-  const url = `https://en.wikipedia.org${href}`;
+export const getAirlineDocument = async href => {
+  const wiki = `https://en.wikipedia.org${href}`;
   try {
-    const res = await axios.get(url);
+    const res = await axios.get(wiki);
     const $ = parseWikipediaData(res.data);
+
+    const name = $('#firstHeading')
+      .text()
+      .split('(')[0]
+      .trim();
 
     const infoTable = $('.infobox.vcard')
       .find('table')
@@ -40,17 +43,18 @@ export const getAirlineDocument = async (name, href) => {
       return null;
     }
 
-    const _id = `${iata}_${icao}`; // eslint-disable-line no-underscore-dangle
+    // eslint-disable-next-line no-underscore-dangle
+    const _id = `${iata}_${icao}_${name.replace(/ /g, '_')}`;
 
     const src = $('.infobox img')
       .eq(0)
       .attr('src');
     const logo = src ? `https:${src}` : '';
 
-    console.log(`  Retrieved ${_id} from ${url}`);
+    console.log(`  Retrieved ${_id} from ${wiki}`);
 
-    return { name, _id, iata, icao, callsign, logo };
+    return { name, _id, iata, icao, callsign, logo, wiki };
   } catch ({ message }) {
-    return console.error(`    ${url} - ${message}`);
+    return console.error(`    ${wiki} - ${message}`);
   }
 };

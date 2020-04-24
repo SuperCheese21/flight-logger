@@ -10,6 +10,7 @@ export const AirlineSchema = new Schema({
   name: String,
   callsign: String,
   logo: String,
+  wiki: String,
 });
 
 AirlineSchema.static(
@@ -37,9 +38,7 @@ AirlineSchema.static('getUpdate', async item => {
     return null;
   }
 
-  const name = link.text();
-
-  return getAirlineDocument(name, href);
+  return getAirlineDocument(href);
 });
 
 export default model('Airline', AirlineSchema, 'airlines');
