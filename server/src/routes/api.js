@@ -9,7 +9,7 @@ import Airline from '../models/airline';
 import Airport from '../models/airport';
 import Country from '../models/country';
 import Region from '../models/region';
-import { paginatedSearchResults } from '../utils/serverUtils';
+import { paginatedSearchResults, singleResult } from '../utils/serverUtils';
 
 import apiSpec from '../../openapi.json';
 
@@ -28,12 +28,16 @@ router.get(
   paginatedSearchResults(Aircraft, ['icao', 'iata', 'names.name']),
 );
 
+router.get('/aircraft/:id', singleResult(Aircraft));
+
 router.get(
   '/airlines',
   paginatedSearchResults(Airline, ['icao', 'iata', 'name', 'callsign'], {
     fleetSize: -1,
   }),
 );
+
+router.get('/airlines/:id', singleResult(Airline));
 
 router.get(
   '/airports',
@@ -44,11 +48,21 @@ router.get(
   ),
 );
 
+router.get('/airports/:id', singleResult(Airport));
+
 router.get('/countries', paginatedSearchResults(Country, ['name', '_id']));
+
+router.get('/countries/:id', singleResult(Country));
 
 router.get(
   '/regions',
   paginatedSearchResults(Region, ['name', 'localCode', '_id']),
 );
+
+router.get('/regions/:id', singleResult(Region));
+
+router.get('*', (req, res) => {
+  res.status(404).json({ message: 'Not Found' });
+});
 
 export default router;
