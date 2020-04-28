@@ -30,7 +30,9 @@ router.get(
 
 router.get(
   '/airlines',
-  paginatedSearchResults(Airline, ['icao', 'iata', 'name', 'callsign']),
+  paginatedSearchResults(Airline, ['icao', 'iata', 'name', 'callsign'], {
+    fleetSize: -1,
+  }),
 );
 
 router.get(
