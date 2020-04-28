@@ -9,6 +9,8 @@ export const AirlineSchema = new Schema({
   icao: String,
   name: String,
   callsign: String,
+  fleetSize: Number,
+  destinations: Number,
   logo: String,
   wiki: String,
 });

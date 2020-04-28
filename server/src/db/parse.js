@@ -2,12 +2,26 @@ import axios from 'axios';
 import cheerio from 'cheerio';
 import parse from 'csv-parse/lib/sync';
 
-export const getText = node =>
-  node
-    .html()
-    .replace(/None|Unknown|N\/A|-|–|—|\?|\*/gi, '')
-    .split(/\/|\(|<|,|or/)[0]
-    .trim();
+export const getText = node => {
+  const a = node.children('a').html();
+  const html = a || node.html();
+  if (html) {
+    return html
+      .replace(/None|Unknown|N\/A|-|–|—|\?|\*/gi, '')
+      .split(/\/|\(|<|,|or/)[0]
+      .trim();
+  }
+  return '';
+};
+
+const getInt = node => {
+  const text = getText(node);
+  const ints = text.match(/[0-9]+/g);
+  if (ints) {
+    return parseInt(ints.join(''), 10);
+  }
+  return null;
+};
 
 export const parseOurAirportsData = data =>
   parse(data, { skip_empty_lines: true }).slice(1);
@@ -43,6 +57,9 @@ export const getAirlineDocument = async href => {
       return null;
     }
 
+    const fleetSize = getInt($('th:contains("Fleet size")').next());
+    const destinations = getInt($('th:contains("Destinations")').next());
+
     // eslint-disable-next-line no-underscore-dangle
     const _id = `${iata}_${icao}_${name.replace(/ /g, '_')}`;
 
@@ -53,7 +70,17 @@ export const getAirlineDocument = async href => {
 
     console.log(`  Retrieved ${_id} from ${wiki}`);
 
-    return { name, _id, iata, icao, callsign, logo, wiki };
+    return {
+      name,
+      _id,
+      iata,
+      icao,
+      callsign,
+      fleetSize,
+      destinations,
+      logo,
+      wiki,
+    };
   } catch ({ message }) {
     return console.error(`    ${wiki} - ${message}`);
   }
