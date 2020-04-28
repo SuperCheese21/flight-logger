@@ -62,7 +62,8 @@ router.get(
 router.get('/regions/:id', singleResult(Region));
 
 router.get('*', (req, res) => {
-  res.status(404).json({ message: 'Not Found' });
+  const code = 404;
+  res.status(code).json({ code, message: 'Not Found' });
 });
 
 export default router;

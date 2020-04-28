@@ -130,6 +130,40 @@
         "tags": ["flights"]
       }
     },
+    "/aircraft/{id}": {
+      "get": {
+        "summary": "Get aircraft by ID",
+        "operationId": "getAircraft",
+        "tags": ["aircraft"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/idParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Aircraft"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/aircraft": {
       "get": {
         "summary": "Search for aircraft",
@@ -170,6 +204,40 @@
           },
           "default": {
             "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/airlines/{id}": {
+      "get": {
+        "summary": "Get airline by ID",
+        "operationId": "getAirline",
+        "tags": ["airlines"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/idParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Airline"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -232,6 +300,40 @@
         }
       }
     },
+    "/airports/{id}": {
+      "get": {
+        "summary": "Get airport by ID",
+        "operationId": "getAirport",
+        "tags": ["airports"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/idParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Airport"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/airports": {
       "get": {
         "summary": "Search for airports",
@@ -283,6 +385,40 @@
         }
       }
     },
+    "/countries/{id}": {
+      "get": {
+        "summary": "Get country by ID",
+        "operationId": "getCountry",
+        "tags": ["countries"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/idParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Country"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/countries": {
       "get": {
         "summary": "Search for countries",
@@ -323,6 +459,40 @@
           },
           "default": {
             "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/regions/{id}": {
+      "get": {
+        "summary": "Get region by ID",
+        "operationId": "getRegion",
+        "tags": ["regions"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/idParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Region"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -681,6 +851,15 @@
         "default": 10,
         "schema": {
           "type": "integer"
+        }
+      },
+      "idParam": {
+        "name": "id",
+        "in": "path",
+        "description": "ID of document",
+        "required": true,
+        "schema": {
+          "type": "string"
         }
       }
     }
