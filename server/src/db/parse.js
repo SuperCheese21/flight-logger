@@ -2,17 +2,12 @@ import axios from 'axios';
 import cheerio from 'cheerio';
 import parse from 'csv-parse/lib/sync';
 
-export const getText = node => {
-  const a = node.children('a').html();
-  const html = a || node.html();
-  if (html) {
-    return html
-      .replace(/None|Unknown|N\/A|-|–|—|\?|\*/gi, '')
-      .split(/\/|\(|<|,|or/)[0]
-      .trim();
-  }
-  return '';
-};
+export const getText = node =>
+  node
+    .text()
+    .replace(/None|Unknown|N\/A|-|–|—|\?|\*/gi, '')
+    .split(/\/|\(|\[|<|,| or /)[0]
+    .trim();
 
 const getInt = node => {
   const text = getText(node);
@@ -30,10 +25,12 @@ export const parseWikipediaData = data =>
   cheerio.load(data, { decodeEntities: false });
 
 export const getAirlineDocument = async href => {
-  const wiki = `https://en.wikipedia.org${href}`;
+  const url = `https://en.wikipedia.org${href}`;
   try {
-    const res = await axios.get(wiki);
+    const res = await axios.get(url);
     const $ = parseWikipediaData(res.data);
+
+    const wiki = $('link[rel="canonical"]').attr('href');
 
     const name = $('#firstHeading')
       .text()
@@ -82,6 +79,6 @@ export const getAirlineDocument = async href => {
       wiki,
     };
   } catch ({ message }) {
-    return console.error(`    ${wiki} - ${message}`);
+    return console.error(`    ${url} - ${message}`);
   }
 };
