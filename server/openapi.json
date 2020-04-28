@@ -639,7 +639,17 @@
       },
       "Airline": {
         "type": "object",
-        "required": ["_id", "iata", "icao", "name", "callsign", "logo", "wiki"],
+        "required": [
+          "_id",
+          "iata",
+          "icao",
+          "name",
+          "callsign",
+          "fleetSize",
+          "destinations",
+          "logo",
+          "wiki"
+        ],
         "properties": {
           "_id": {
             "type": "string"
@@ -655,6 +665,12 @@
           },
           "callsign": {
             "type": "string"
+          },
+          "fleetSize": {
+            "type": "integer"
+          },
+          "destinations": {
+            "type": "integer"
           },
           "logo": {
             "type": "string"
