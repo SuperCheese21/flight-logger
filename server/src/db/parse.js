@@ -6,14 +6,14 @@ export const getText = node =>
   node
     .text()
     .replace(/None|Unknown|N\/A|-|–|—|\?|\*/gi, '')
-    .split(/\/|\(|\[|<|,| or /)[0]
+    .split(/\/|\(|\[|<|,|;| or /)[0]
     .trim();
 
 const getInt = node => {
   const text = getText(node);
   const ints = text.match(/[0-9]+/g);
   if (ints) {
-    return parseInt(ints.join(''), 10);
+    return parseInt(ints[0], 10);
   }
   return null;
 };
