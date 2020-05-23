@@ -5,6 +5,7 @@ import { mongodb as dbConfig } from '../../config.json';
 export default callback => {
   // Initialize database
   const { main: mongoURL } = dbConfig;
+  mongoose.set('useCreateIndex', true);
   mongoose.set('useNewUrlParser', true);
   mongoose.set('useFindAndModify', false);
   mongoose.set('useUnifiedTopology', true);
