@@ -1,26 +1,14 @@
 import express from 'express';
+import jsonwebtoken from 'jsonwebtoken';
 import passport from 'passport';
 
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import googleStrategy from '../auth/google';
+import jwtStrategy from '../auth/jwt';
+import { jwt } from '../../config.json';
 
-import { google } from '../../config.json';
-import User from '../models/user';
+const { JWT_SECRET } = jwt;
 
 // TODO: Move passport initialization code to separate file
-
-const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = google;
-
-const googleStrategy = new GoogleStrategy(
-  {
-    clientID: GOOGLE_CLIENT_ID,
-    clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: '/auth/google/callback',
-  },
-  (accessToken, refreshToken, profile, callback) => {
-    const email = profile.emails[0].value;
-    User.findOrCreate({ email }, { _id: profile.id, email }, callback);
-  },
-);
 
 passport.serializeUser((user, done) => {
   done(null, user);
@@ -31,6 +19,7 @@ passport.deserializeUser((user, done) => {
 });
 
 passport.use(googleStrategy);
+passport.use(jwtStrategy);
 
 const router = express.Router();
 
@@ -45,7 +34,11 @@ router.get(
   '/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   (req, res) => {
-    res.redirect('/profile');
+    const {
+      user: { _id: id },
+    } = req;
+    const token = jsonwebtoken.sign({ id }, JWT_SECRET, { expiresIn: '24h' });
+    res.json({ token });
   },
 );
 
