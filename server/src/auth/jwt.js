@@ -6,19 +6,14 @@ import { JWT_SECRET } from '../../config.json';
 
 export const generateToken = (req, res) => {
   const {
-    user: { _id: id },
+    user: { _id: id, admin },
   } = req;
-  console.log({ id });
-  const token = jwt.sign({ id }, JWT_SECRET, { expiresIn: '24h' });
+  const token = jwt.sign({ id, admin }, JWT_SECRET, { expiresIn: '24h' });
   res.json({ token });
 };
 
-const opts = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: JWT_SECRET,
-};
-
-export default new JwtStrategy(opts, ({ id }, done) => {
+const verifyToken = ({ id, admin }, done) => {
+  console.log({ admin });
   User.findOne({ _id: id }, (err, user) => {
     if (err) {
       return done(err, false);
@@ -28,4 +23,11 @@ export default new JwtStrategy(opts, ({ id }, done) => {
     }
     return done(null, false);
   });
-});
+};
+
+const opts = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: JWT_SECRET,
+};
+
+export default new JwtStrategy(opts, verifyToken);
