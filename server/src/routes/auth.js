@@ -1,7 +1,6 @@
 import express from 'express';
 
 import { generateToken } from '../auth/jwt';
-
 import passport from '../auth/passport';
 
 const router = express.Router();
