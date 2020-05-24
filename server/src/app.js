@@ -1,5 +1,3 @@
-import path from 'path';
-
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import flash from 'connect-flash';
@@ -16,7 +14,6 @@ app.use(flash());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/auth', authRouter);
 app.use('/api', apiRouter);
