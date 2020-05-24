@@ -1,9 +1,17 @@
+import jwt from 'jsonwebtoken';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 
 import User from '../models/user';
-import { jwt } from '../../config.json';
+import { JWT_SECRET } from '../../config.json';
 
-const { JWT_SECRET } = jwt;
+export const generateToken = (req, res) => {
+  const {
+    user: { _id: id },
+  } = req;
+  console.log({ id });
+  const token = jwt.sign({ id }, JWT_SECRET, { expiresIn: '24h' });
+  res.json({ token });
+};
 
 const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -11,7 +19,7 @@ const opts = {
 };
 
 export default new JwtStrategy(opts, ({ id }, done) => {
-  User.findOne({ id }, (err, user) => {
+  User.findOne({ _id: id }, (err, user) => {
     if (err) {
       return done(err, false);
     }

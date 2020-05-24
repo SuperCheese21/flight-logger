@@ -2,6 +2,7 @@ import 'regenerator-runtime/runtime';
 
 import express from 'express';
 import paginate from 'express-paginate';
+import passport from 'passport';
 import swaggerUi from 'swagger-ui-express';
 
 import Aircraft from '../models/aircraft';
@@ -14,6 +15,8 @@ import { paginatedSearchResults, singleResult } from '../utils/serverUtils';
 import apiSpec from '../../openapi.json';
 
 const router = express.Router();
+
+router.use(passport.authenticate('jwt', { session: false }));
 
 router.use('/docs', swaggerUi.serve, swaggerUi.setup(apiSpec));
 

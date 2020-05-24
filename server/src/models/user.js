@@ -4,11 +4,6 @@ import findOrCreate from 'mongoose-findorcreate';
 const UserSchema = new mongoose.Schema(
   {
     _id: String,
-    googleId: {
-      type: String,
-      required: false,
-      unique: true,
-    },
     email: {
       type: String,
       required: true,

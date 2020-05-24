@@ -1,9 +1,7 @@
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
-import User from '../models/user';
-import { google } from '../../config.json';
-
-const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = google;
+import { profileHandler } from './util';
+import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '../../config.json';
 
 export default new GoogleStrategy(
   {
@@ -11,8 +9,5 @@ export default new GoogleStrategy(
     clientSecret: GOOGLE_CLIENT_SECRET,
     callbackURL: '/auth/google/callback',
   },
-  (accessToken, refreshToken, profile, callback) => {
-    const email = profile.emails[0].value;
-    User.findOrCreate({ email }, { _id: profile.id, email }, callback);
-  },
+  profileHandler,
 );
