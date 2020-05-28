@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 import { UserSchema } from './user';
 
-const TripSchema = new mongoose.Schema({
+export const TripSchema = new mongoose.Schema({
   _id: String,
   name: {
     type: String,
