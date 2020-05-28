@@ -14,6 +14,18 @@ export const normalizePort = val => {
   return false;
 };
 
+export const singleResult = model => async (req, res, next) => {
+  // eslint-disable-next-line no-underscore-dangle
+  const _id = req.params.id;
+  const query = model.findOne({ _id });
+  const result = await query.exec();
+  if (result) {
+    res.json(result);
+  } else {
+    next();
+  }
+};
+
 export const paginatedSearchResults = (model, searchFields, sort) => async (
   req,
   res,

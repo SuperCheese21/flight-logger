@@ -4,10 +4,19 @@ import parse from 'csv-parse/lib/sync';
 
 export const getText = node =>
   node
-    .html()
+    .text()
     .replace(/None|Unknown|N\/A|-|–|—|\?|\*/gi, '')
-    .split(/\/|\(|<|,|or/)[0]
+    .split(/\/|\(|\[|<|,|;| or /)[0]
     .trim();
+
+const getInt = node => {
+  const text = getText(node);
+  const ints = text.match(/[0-9]+/g);
+  if (ints) {
+    return parseInt(ints[0], 10);
+  }
+  return null;
+};
 
 export const parseOurAirportsData = data =>
   parse(data, { skip_empty_lines: true }).slice(1);
@@ -16,10 +25,12 @@ export const parseWikipediaData = data =>
   cheerio.load(data, { decodeEntities: false });
 
 export const getAirlineDocument = async href => {
-  const wiki = `https://en.wikipedia.org${href}`;
+  const url = `https://en.wikipedia.org${href}`;
   try {
-    const res = await axios.get(wiki);
+    const res = await axios.get(url);
     const $ = parseWikipediaData(res.data);
+
+    const wiki = $('link[rel="canonical"]').attr('href');
 
     const name = $('#firstHeading')
       .text()
@@ -43,6 +54,9 @@ export const getAirlineDocument = async href => {
       return null;
     }
 
+    const fleetSize = getInt($('th:contains("Fleet size")').next());
+    const destinations = getInt($('th:contains("Destinations")').next());
+
     // eslint-disable-next-line no-underscore-dangle
     const _id = `${iata}_${icao}_${name.replace(/ /g, '_')}`;
 
@@ -53,8 +67,18 @@ export const getAirlineDocument = async href => {
 
     console.log(`  Retrieved ${_id} from ${wiki}`);
 
-    return { name, _id, iata, icao, callsign, logo, wiki };
+    return {
+      name,
+      _id,
+      iata,
+      icao,
+      callsign,
+      fleetSize,
+      destinations,
+      logo,
+      wiki,
+    };
   } catch ({ message }) {
-    return console.error(`    ${wiki} - ${message}`);
+    return console.error(`    ${url} - ${message}`);
   }
 };
