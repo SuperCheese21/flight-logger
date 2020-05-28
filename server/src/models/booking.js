@@ -1,6 +1,22 @@
+import axios from 'axios';
 import mongoose from 'mongoose';
 
 import { TripSchema } from './trip';
+
+const CURRENCY_API = 'https://api.exchangeratesapi.io/latest?base=USD';
+
+const priceValidator = async value => {
+  try {
+    const res = await axios.get(CURRENCY_API);
+    const codes = Object.keys(res.rates);
+    if (codes.includes(value)) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    return false;
+  }
+};
 
 const PriceSchema = new mongoose.Schema({
   usd: {
@@ -14,6 +30,7 @@ const PriceSchema = new mongoose.Schema({
   currencyCode: {
     type: Number,
     required: true,
+    validate: priceValidator,
   },
 });
 
