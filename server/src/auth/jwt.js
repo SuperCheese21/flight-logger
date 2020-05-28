@@ -6,23 +6,23 @@ import { JWT_SECRET } from '../../config.json';
 
 export const generateToken = (req, res) => {
   const {
-    user: { _id: id, admin },
+    user: { _id, admin },
   } = req;
-  const token = jwt.sign({ id, admin }, JWT_SECRET, { expiresIn: '24h' });
+  const token = jwt.sign({ sub: _id, admin }, JWT_SECRET, { expiresIn: '24h' });
   res.json({ token });
 };
 
-const verifyToken = ({ id, admin }, done) => {
-  console.log({ admin });
-  User.findOne({ _id: id }, (err, user) => {
-    if (err) {
-      return done(err, false);
-    }
+const verifyToken = async ({ sub }, done) => {
+  const query = User.findOne({ _id: sub });
+  try {
+    const user = await query.exec();
     if (user) {
       return done(null, user);
     }
     return done(null, false);
-  });
+  } catch (err) {
+    return done(err, false);
+  }
 };
 
 const opts = {
