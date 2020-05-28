@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import findOrCreate from 'mongoose-findorcreate';
 
-const UserSchema = new mongoose.Schema(
+export const UserSchema = new mongoose.Schema(
   {
     _id: String,
     email: {

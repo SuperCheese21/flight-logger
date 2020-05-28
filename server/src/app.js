@@ -1,6 +1,6 @@
+import flash from 'connect-flash';
 import cookieParser from 'cookie-parser';
 import express from 'express';
-import flash from 'connect-flash';
 import logger from 'morgan';
 
 import apiRouter from './routes/api';
