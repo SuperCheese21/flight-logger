@@ -2,7 +2,7 @@ import { model, Schema } from 'mongoose';
 
 import { AirlineSchema } from './airline';
 import { AirportSchema } from './airport';
-import BookingSchema from './booking';
+import { BookingSchema } from './booking';
 
 export const FlightSchema = new Schema({
   booking: {
