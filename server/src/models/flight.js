@@ -18,6 +18,7 @@ export const FlightSchema = new Schema({
     required: true,
   },
   airline: AirlineSchema,
+  operatorAirline: AirlineSchema,
   flightNumber: Number,
   callsign: String,
   times: {
@@ -31,8 +32,6 @@ export const FlightSchema = new Schema({
       type: Date,
       required: true,
     },
-    block: Number,
-    air: Number,
   },
   class: {
     type: String,
