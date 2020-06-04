@@ -21,5 +21,9 @@ export const profileHandler = (
   callback,
 ) => {
   const email = profile.emails[0].value;
-  User.findOrCreate({ email }, { _id: email, email }, callback);
+  User.findOrCreate(
+    { email },
+    { username: email, admin: false, privacy: 'public' },
+    callback,
+  );
 };

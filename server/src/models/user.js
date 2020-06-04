@@ -13,21 +13,16 @@ export const UserSchema = new Schema(
       required: true,
       unique: true,
     },
-    firstName: {
-      type: String,
-      required: false,
+    admin: {
+      type: Boolean,
+      required: true,
     },
-    lastName: {
-      type: String,
-      required: false,
-    },
+    firstName: String,
+    lastName: String,
     privacy: {
       type: String,
       enum: ['public', 'friends', 'private'],
-    },
-    admin: {
-      type: Boolean,
-      required: false,
+      required: true,
     },
     createdAt: Date,
     updatedAt: Date,
