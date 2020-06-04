@@ -2,6 +2,11 @@ import { model, Schema } from 'mongoose';
 
 export const FlightSchema = new Schema({
   _id: String,
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
   departureAirport: {
     type: String,
     ref: 'Airport',

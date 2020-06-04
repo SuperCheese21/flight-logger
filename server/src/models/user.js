@@ -29,12 +29,6 @@ export const UserSchema = new Schema(
       type: Boolean,
       required: false,
     },
-    trips: [
-      {
-        type: String,
-        ref: 'Trip',
-      },
-    ],
     createdAt: Date,
     updatedAt: Date,
   },
