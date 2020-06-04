@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+import { model, Schema } from 'mongoose';
 
 import { UserSchema } from './user';
 
-export const TripSchema = new mongoose.Schema({
+export const TripSchema = new Schema({
   _id: String,
   name: {
     type: String,
@@ -14,6 +14,6 @@ export const TripSchema = new mongoose.Schema({
   },
 });
 
-const TripModel = mongoose.model('Trip', TripSchema);
+const TripModel = model('Trip', TripSchema);
 
 export default TripModel;

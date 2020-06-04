@@ -35,14 +35,6 @@
         "responses": {
           "200": {
             "description": "Details about a user",
-            "headers": {
-              "x-next": {
-                "description": "A link to the next page of responses",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
