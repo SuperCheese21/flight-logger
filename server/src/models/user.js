@@ -29,6 +29,12 @@ export const UserSchema = new Schema(
       type: Boolean,
       required: false,
     },
+    trips: [
+      {
+        type: String,
+        ref: 'Trip',
+      },
+    ],
     createdAt: Date,
     updatedAt: Date,
   },
@@ -39,6 +45,4 @@ export const UserSchema = new Schema(
 
 UserSchema.plugin(findOrCreate);
 
-const UserModel = model('User', UserSchema);
-
-export default UserModel;
+export default model('User', UserSchema);

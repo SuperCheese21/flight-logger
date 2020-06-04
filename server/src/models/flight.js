@@ -1,27 +1,32 @@
 import { model, Schema } from 'mongoose';
 
-import { AirlineSchema } from './airline';
-import { AirportSchema } from './airport';
-import { TripSchema } from './trip';
-
 export const FlightSchema = new Schema({
   _id: String,
-  trip: {
-    type: TripSchema,
-    required: true,
-  },
   departureAirport: {
-    type: AirportSchema,
+    type: String,
+    ref: 'Airport',
     required: true,
   },
   arrivalAirport: {
-    type: AirportSchema,
+    type: String,
+    ref: 'Airport',
     required: true,
   },
-  airline: AirlineSchema,
-  operatorAirline: AirlineSchema,
+  airline: {
+    type: String,
+    ref: 'Airline',
+  },
+  operatorAirline: {
+    type: String,
+    ref: 'Airline',
+  },
   flightNumber: Number,
   callsign: String,
+  aircraftType: {
+    type: String,
+    ref: 'Aircraft',
+  },
+  tailNumber: String,
   times: {
     out: {
       type: Date,
