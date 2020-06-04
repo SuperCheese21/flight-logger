@@ -5,7 +5,7 @@ import * as Promise from 'bluebird';
 import { argv } from 'yargs';
 
 import connectDatabase from './connect';
-import models from './models';
+import models from '../models';
 
 const PROMISE_CONCURRENCY = 100;
 
