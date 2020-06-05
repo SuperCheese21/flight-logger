@@ -40,7 +40,7 @@ AircraftSchema.static('getUpdate', item => {
     return null;
   }
 
-  const _id = `${iata}_${icao}`; // eslint-disable-line no-underscore-dangle
+  const _id = `${iata}_${icao}`;
   const names = tds
     .eq(2)
     .children('a')

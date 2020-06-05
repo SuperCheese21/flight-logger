@@ -1,72 +1,40 @@
-import 'regenerator-runtime/runtime';
-
 import express from 'express';
-import paginate from 'express-paginate';
 import passport from 'passport';
 import swaggerUi from 'swagger-ui-express';
 
-import Aircraft from '../models/aircraft';
-import Airline from '../models/airline';
-import Airport from '../models/airport';
-import Country from '../models/country';
-import Region from '../models/region';
-import { paginatedSearchResults, singleResult } from '../utils/serverUtils';
+import dataRouter from './data';
 
+import Flight from '../models/flight';
 import apiSpec from '../../openapi.json';
 
 const router = express.Router();
 
-router.use(passport.authenticate('jwt', { session: false }));
-
-router.use('/docs', swaggerUi.serve, swaggerUi.setup(apiSpec));
-
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
   res.json({ message: 'API home page' });
 });
+router.use('/docs', swaggerUi.serve, swaggerUi.setup(apiSpec));
+router.use('/data', dataRouter);
 
-router.use(paginate.middleware(10, 50));
+router.use(passport.authenticate('jwt', { session: false }));
 
-router.get(
-  '/aircraft',
-  paginatedSearchResults(Aircraft, ['icao', 'iata', 'names.name']),
-);
+router.post('/flights', async (req, res) => {
+  const user = req.user._id;
+  const flight = new Flight({
+    user,
+    ...req.body,
+  });
+  try {
+    await Flight.saveFlight(flight);
+    res.json(flight);
+  } catch (err) {
+    res.sendStatus(400);
+  }
+});
 
-router.get('/aircraft/:id', singleResult(Aircraft));
-
-router.get(
-  '/airlines',
-  paginatedSearchResults(Airline, ['icao', 'iata', 'name', 'callsign'], {
-    fleetSize: -1,
-  }),
-);
-
-router.get('/airlines/:id', singleResult(Airline));
-
-router.get(
-  '/airports',
-  paginatedSearchResults(
-    Airport,
-    ['_id', 'codes.iata', 'name', 'municipality', 'codes.gps', 'codes.local'],
-    { scheduledService: -1 },
-  ),
-);
-
-router.get('/airports/:id', singleResult(Airport));
-
-router.get('/countries', paginatedSearchResults(Country, ['name', '_id']));
-
-router.get('/countries/:id', singleResult(Country));
-
-router.get(
-  '/regions',
-  paginatedSearchResults(Region, ['name', 'localCode', '_id']),
-);
-
-router.get('/regions/:id', singleResult(Region));
-
-router.get('*', (req, res) => {
-  const code = 404;
-  res.status(code).json({ code, message: 'Not Found' });
+router.use('*', (req, res) => {
+  const code = req.code || 404;
+  const message = req.message || 'Not Found';
+  res.status(code).json({ code, message });
 });
 
 export default router;

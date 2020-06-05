@@ -1,5 +1,15 @@
 import paginate from 'express-paginate';
 
+export const generateRandomId = length => {
+  let result = '';
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < length; i += 1) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+};
+
 export const normalizePort = val => {
   const newPort = parseInt(val, 10);
 
@@ -15,7 +25,6 @@ export const normalizePort = val => {
 };
 
 export const singleResult = model => async (req, res, next) => {
-  // eslint-disable-next-line no-underscore-dangle
   const _id = req.params.id;
   const query = model.findOne({ _id });
   const result = await query.exec();

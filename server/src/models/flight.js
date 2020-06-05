@@ -1,5 +1,7 @@
 import { model, Schema } from 'mongoose';
 
+import { generateRandomId } from '../utils/serverUtils';
+
 export const FlightSchema = new Schema({
   _id: String,
   user: {
@@ -32,17 +34,15 @@ export const FlightSchema = new Schema({
     ref: 'Aircraft',
   },
   tailNumber: String,
-  times: {
-    out: {
-      type: Date,
-      required: true,
-    },
-    off: Date,
-    on: Date,
-    in: {
-      type: Date,
-      required: true,
-    },
+  outTime: {
+    type: Date,
+    required: true,
+  },
+  offTime: Date,
+  onTime: Date,
+  inTime: {
+    type: Date,
+    required: true,
   },
   class: {
     type: String,
@@ -55,6 +55,23 @@ export const FlightSchema = new Schema({
   },
   comments: String,
   trackingLink: String,
+});
+
+FlightSchema.static('saveFlight', async function saveFlight(flight) {
+  try {
+    await flight.save();
+  } catch (err) {
+    // Duplicate ID error - try to save and generate new ID
+    if (err.name === 'MongoError' && err.code === 11000) {
+      await this.saveFlight(flight);
+    } else {
+      throw new Error();
+    }
+  }
+});
+
+FlightSchema.pre('save', function preSave() {
+  this._id = generateRandomId(6);
 });
 
 export default model('Flight', FlightSchema, 'flights');
