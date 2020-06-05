@@ -27,14 +27,29 @@ router.post('/flights', async (req, res) => {
     await Flight.saveFlight(flight);
     res.json(flight);
   } catch (err) {
-    res.sendStatus(400);
+    if (err.name === 'ValidationError') {
+      res.sendStatus(400);
+    }
+    res.sendStatus(500);
+  }
+});
+
+router.delete('/flights/:id', async (req, res, next) => {
+  const { id } = req.params;
+  const query = Flight.findByIdAndDelete(id);
+  try {
+    const flight = await query.exec();
+    if (!flight) {
+      next();
+    }
+    res.sendStatus(204);
+  } catch (err) {
+    res.sendStatus(500);
   }
 });
 
 router.use('*', (req, res) => {
-  const code = req.code || 404;
-  const message = req.message || 'Not Found';
-  res.status(code).json({ code, message });
+  res.sendStatus(404);
 });
 
 export default router;

@@ -65,7 +65,7 @@ FlightSchema.static('saveFlight', async function saveFlight(flight) {
     if (err.name === 'MongoError' && err.code === 11000) {
       await this.saveFlight(flight);
     } else {
-      throw new Error();
+      throw err;
     }
   }
 });
