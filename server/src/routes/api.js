@@ -34,9 +34,26 @@ router.post('/flights', async (req, res) => {
   }
 });
 
+router.patch('/flights/:id', async (req, res, next) => {
+  const { id } = req.params;
+  const user = req.user._id;
+  const query = Flight.findOneAndUpdate({ _id: id, user }, req.body, {
+    new: true,
+  }).lean();
+  try {
+    const flight = await query.exec();
+    if (!flight) {
+      next();
+    }
+    res.json(flight);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
 router.delete('/flights/:id', async (req, res, next) => {
   const { id } = req.params;
-  const query = Flight.findByIdAndDelete(id);
+  const query = Flight.findByIdAndDelete(id).lean();
   try {
     const flight = await query.exec();
     if (!flight) {

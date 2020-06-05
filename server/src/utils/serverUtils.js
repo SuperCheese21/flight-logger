@@ -78,6 +78,6 @@ export const paginatedSearchResults = (model, searchFields, sort) => async (
     };
     res.json({ metadata, results });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.sendStatus(500);
   }
 };
