@@ -59,7 +59,7 @@ router.delete('/flights/:id', async (req, res, next) => {
     if (!flight) {
       next();
     }
-    res.sendStatus(204);
+    res.json(flight);
   } catch (err) {
     res.sendStatus(500);
   }

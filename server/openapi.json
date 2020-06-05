@@ -88,38 +88,155 @@
         "tags": ["trips"]
       }
     },
-    "/bookings": {
-      "post": {
-        "summary": "Create a new booking",
-        "operationId": "createBooking",
-        "tags": ["bookings"]
-      },
+    "/flights/{id}": {
       "patch": {
-        "summary": "Update booking details",
-        "operationId": "updateBooking",
-        "tags": ["bookings"]
+        "summary": "Update flight details",
+        "operationId": "updateFlight",
+        "tags": ["flights"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/idParam"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated Flight",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Flight"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Flight Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       },
       "delete": {
-        "summary": "Delete a booking",
-        "operationId": "deleteBooking",
-        "tags": ["bookings"]
+        "summary": "Delete a flight",
+        "operationId": "deleteFlight",
+        "tags": ["flights"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/idParam"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted Flight",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Flight"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Flight Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/flights": {
       "post": {
         "summary": "Create a new flight",
         "operationId": "createFlight",
-        "tags": ["flights"]
-      },
-      "patch": {
-        "summary": "Update flight details",
-        "operationId": "updateFlight",
-        "tags": ["flights"]
-      },
-      "delete": {
-        "summary": "Delete a flight",
-        "operationId": "deleteFlight",
-        "tags": ["flights"]
+        "tags": ["flights"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Flight to add",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Flight"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New Flight",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Flight"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incorrect Format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/aircraft/{id}": {
@@ -818,6 +935,65 @@
           }
         }
       },
+      "Flight": {
+        "type": "object",
+        "required": ["departureAirport", "arrivalAirport", "outTime", "inTime"],
+        "properties": {
+          "departureAirport": {
+            "type": "string"
+          },
+          "arrivalAirport": {
+            "type": "string"
+          },
+          "airline": {
+            "type": "string"
+          },
+          "operatorAirline": {
+            "type": "string"
+          },
+          "flightNumber": {
+            "type": "string"
+          },
+          "callsign": {
+            "type": "string"
+          },
+          "aircraftType": {
+            "type": "string"
+          },
+          "tailNumber": {
+            "type": "string"
+          },
+          "outTime": {
+            "type": "string"
+          },
+          "offTime": {
+            "type": "string"
+          },
+          "onTime": {
+            "type": "string"
+          },
+          "inTime": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string",
+            "enum": ["first", "business", "premium", "economy", "basic"]
+          },
+          "seatNumber": {
+            "type": "string"
+          },
+          "seatPosition": {
+            "type": "string",
+            "enum": ["aisle", "middle", "window"]
+          },
+          "comments": {
+            "type": "string"
+          },
+          "trackingLink": {
+            "type": "string"
+          }
+        }
+      },
       "Error": {
         "type": "object",
         "required": ["code", "message"],
@@ -829,6 +1005,13 @@
             "type": "string"
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     },
     "parameters": {
