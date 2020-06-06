@@ -74,4 +74,30 @@ FlightSchema.pre('save', function preSave() {
   this._id = generateRandomId(6);
 });
 
-export default model('Flight', FlightSchema, 'flights');
+const Flight = model('Flight', FlightSchema, 'flights');
+
+export const getFlightById = id => {
+  const query = Flight.findById(id)
+    .populate('user')
+    .populate('departureAirport')
+    .populate('arrivalAirport')
+    .populate('airline')
+    .populate('operatorAirline')
+    .populate('aircraftType')
+    .lean();
+  return query.exec();
+};
+
+export const updateFlight = (_id, user, body) => {
+  const query = Flight.findOneAndUpdate({ _id, user }, body, {
+    new: true,
+  }).lean();
+  return query.exec();
+};
+
+export const deleteFlight = id => {
+  const query = Flight.findByIdAndDelete(id).lean();
+  return query.exec();
+};
+
+export default Flight;

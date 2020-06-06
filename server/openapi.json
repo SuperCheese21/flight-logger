@@ -239,7 +239,7 @@
         }
       }
     },
-    "/aircraft/{id}": {
+    "/data/aircraft/{id}": {
       "get": {
         "summary": "Get aircraft by ID",
         "operationId": "getAircraft",
@@ -273,7 +273,7 @@
         }
       }
     },
-    "/aircraft": {
+    "/data/aircraft": {
       "get": {
         "summary": "Search for aircraft",
         "operationId": "searchAircraft",
@@ -324,7 +324,7 @@
         }
       }
     },
-    "/airlines/{id}": {
+    "/data/airlines/{id}": {
       "get": {
         "summary": "Get airline by ID",
         "operationId": "getAirline",
@@ -358,7 +358,7 @@
         }
       }
     },
-    "/airlines": {
+    "/data/airlines": {
       "get": {
         "summary": "Search for airlines",
         "operationId": "searchAirlines",
@@ -409,7 +409,7 @@
         }
       }
     },
-    "/airports/{id}": {
+    "/data/airports/{id}": {
       "get": {
         "summary": "Get airport by ID",
         "operationId": "getAirport",
@@ -443,7 +443,7 @@
         }
       }
     },
-    "/airports": {
+    "/data/airports": {
       "get": {
         "summary": "Search for airports",
         "operationId": "searchAirports",
@@ -494,7 +494,7 @@
         }
       }
     },
-    "/countries/{id}": {
+    "/data/countries/{id}": {
       "get": {
         "summary": "Get country by ID",
         "operationId": "getCountry",
@@ -528,7 +528,7 @@
         }
       }
     },
-    "/countries": {
+    "/data/countries": {
       "get": {
         "summary": "Search for countries",
         "operationId": "searchCountries",
@@ -579,7 +579,7 @@
         }
       }
     },
-    "/regions/{id}": {
+    "/data/regions/{id}": {
       "get": {
         "summary": "Get region by ID",
         "operationId": "getRegion",
@@ -613,7 +613,7 @@
         }
       }
     },
-    "/regions": {
+    "/data/regions": {
       "get": {
         "summary": "Search for regions",
         "operationId": "searchRegions",

@@ -27,11 +27,15 @@ export const normalizePort = val => {
 export const singleResult = model => async (req, res, next) => {
   const _id = req.params.id;
   const query = model.findOne({ _id });
-  const result = await query.exec();
-  if (result) {
-    res.json(result);
-  } else {
-    next();
+  try {
+    const result = await query.exec();
+    if (result) {
+      res.json(result);
+    } else {
+      next();
+    }
+  } catch (err) {
+    res.sendStatus(500);
   }
 };
 

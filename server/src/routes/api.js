@@ -4,7 +4,11 @@ import swaggerUi from 'swagger-ui-express';
 
 import dataRouter from './data';
 
-import Flight from '../models/flight';
+import Flight, {
+  deleteFlight,
+  getFlightById,
+  updateFlight,
+} from '../models/flight';
 import apiSpec from '../../openapi.json';
 
 const router = express.Router();
@@ -34,14 +38,24 @@ router.post('/flights', async (req, res) => {
   }
 });
 
+router.get('/flights/:id', async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const flight = await getFlightById(id);
+    if (!flight) {
+      next('fdsfsfsdf');
+    }
+    res.json(flight);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
 router.patch('/flights/:id', async (req, res, next) => {
   const { id } = req.params;
   const user = req.user._id;
-  const query = Flight.findOneAndUpdate({ _id: id, user }, req.body, {
-    new: true,
-  }).lean();
   try {
-    const flight = await query.exec();
+    const flight = await updateFlight(id, user, req.body);
     if (!flight) {
       next();
     }
@@ -53,9 +67,8 @@ router.patch('/flights/:id', async (req, res, next) => {
 
 router.delete('/flights/:id', async (req, res, next) => {
   const { id } = req.params;
-  const query = Flight.findByIdAndDelete(id).lean();
   try {
-    const flight = await query.exec();
+    const flight = await deleteFlight(id);
     if (!flight) {
       next();
     }
