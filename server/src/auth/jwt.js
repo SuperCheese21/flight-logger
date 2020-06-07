@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime';
+
 import jwt from 'jsonwebtoken';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 
