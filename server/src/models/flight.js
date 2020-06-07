@@ -1,38 +1,48 @@
 import { model, Schema } from 'mongoose';
 
-import { AirlineSchema } from './airline';
-import { AirportSchema } from './airport';
-import BookingSchema from './booking';
+import { generateRandomId } from '../utils/serverUtils';
 
 export const FlightSchema = new Schema({
-  booking: {
-    type: BookingSchema,
+  _id: String,
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
   departureAirport: {
-    type: AirportSchema,
+    type: String,
+    ref: 'Airport',
     required: true,
   },
   arrivalAirport: {
-    type: AirportSchema,
+    type: String,
+    ref: 'Airport',
     required: true,
   },
-  airline: AirlineSchema,
+  airline: {
+    type: String,
+    ref: 'Airline',
+  },
+  operatorAirline: {
+    type: String,
+    ref: 'Airline',
+  },
   flightNumber: Number,
   callsign: String,
-  times: {
-    out: {
-      type: Date,
-      required: true,
-    },
-    off: Date,
-    on: Date,
-    in: {
-      type: Date,
-      required: true,
-    },
-    block: Number,
-    air: Number,
+  aircraftType: {
+    type: String,
+    ref: 'Aircraft',
+  },
+  tailNumber: String,
+  outTime: {
+    type: Date,
+    required: true,
+  },
+  offTime: Date,
+  onTime: Date,
+  inTime: {
+    type: Date,
+    required: true,
   },
   class: {
     type: String,
@@ -47,4 +57,47 @@ export const FlightSchema = new Schema({
   trackingLink: String,
 });
 
-export default model('Flight', FlightSchema, 'flights');
+FlightSchema.static('saveFlight', async function saveFlight(flight) {
+  try {
+    await flight.save();
+  } catch (err) {
+    // Duplicate ID error - try to save and generate new ID
+    if (err.name === 'MongoError' && err.code === 11000) {
+      await this.saveFlight(flight);
+    } else {
+      throw err;
+    }
+  }
+});
+
+FlightSchema.pre('save', function preSave() {
+  this._id = generateRandomId(6);
+});
+
+const Flight = model('Flight', FlightSchema, 'flights');
+
+export const getFlightById = id => {
+  const query = Flight.findById(id)
+    .populate('user')
+    .populate('departureAirport')
+    .populate('arrivalAirport')
+    .populate('airline')
+    .populate('operatorAirline')
+    .populate('aircraftType')
+    .lean();
+  return query.exec();
+};
+
+export const updateFlight = (_id, user, body) => {
+  const query = Flight.findOneAndUpdate({ _id, user }, body, {
+    new: true,
+  }).lean();
+  return query.exec();
+};
+
+export const deleteFlight = id => {
+  const query = Flight.findByIdAndDelete(id).lean();
+  return query.exec();
+};
+
+export default Flight;

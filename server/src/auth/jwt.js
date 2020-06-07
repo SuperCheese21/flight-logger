@@ -6,9 +6,11 @@ import { JWT_SECRET } from '../../config.json';
 
 export const generateToken = (req, res) => {
   const {
-    user: { _id, admin },
+    user: { _id: sub, privacy },
   } = req;
-  const token = jwt.sign({ sub: _id, admin }, JWT_SECRET, { expiresIn: '24h' });
+  const token = jwt.sign({ sub, privacy }, JWT_SECRET, {
+    expiresIn: '24h',
+  });
   res.json({ token });
 };
 

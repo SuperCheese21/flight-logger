@@ -1,28 +1,15 @@
-import 'regenerator-runtime/runtime';
-
 import express from 'express';
 import paginate from 'express-paginate';
-import passport from 'passport';
-import swaggerUi from 'swagger-ui-express';
 
-import Aircraft from '../models/aircraft';
-import Airline from '../models/airline';
-import Airport from '../models/airport';
-import Country from '../models/country';
-import Region from '../models/region';
-import { paginatedSearchResults, singleResult } from '../utils/serverUtils';
+import Aircraft from '../../models/aircraft';
+import Airline from '../../models/airline';
+import Airport from '../../models/airport';
+import Country from '../../models/country';
+import Region from '../../models/region';
 
-import apiSpec from '../../openapi.json';
+import { paginatedSearchResults, singleResult } from '../../utils/serverUtils';
 
 const router = express.Router();
-
-router.use(passport.authenticate('jwt', { session: false }));
-
-router.use('/docs', swaggerUi.serve, swaggerUi.setup(apiSpec));
-
-router.get('/', async (req, res) => {
-  res.json({ message: 'API home page' });
-});
 
 router.use(paginate.middleware(10, 50));
 
@@ -63,10 +50,5 @@ router.get(
 );
 
 router.get('/regions/:id', singleResult(Region));
-
-router.get('*', (req, res) => {
-  const code = 404;
-  res.status(code).json({ code, message: 'Not Found' });
-});
 
 export default router;

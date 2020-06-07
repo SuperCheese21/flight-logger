@@ -1,29 +1,28 @@
-import mongoose from 'mongoose';
+import { model, Schema } from 'mongoose';
 import findOrCreate from 'mongoose-findorcreate';
 
-const UserSchema = new mongoose.Schema(
+export const UserSchema = new Schema(
   {
-    _id: String,
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     email: {
       type: String,
       required: true,
       unique: true,
     },
-    password: {
-      type: String,
-      required: false,
-    },
-    firstName: {
-      type: String,
-      required: false,
-    },
-    lastName: {
-      type: String,
-      required: false,
-    },
     admin: {
       type: Boolean,
-      required: false,
+      required: true,
+    },
+    firstName: String,
+    lastName: String,
+    privacy: {
+      type: String,
+      enum: ['public', 'friends', 'private'],
+      required: true,
     },
     createdAt: Date,
     updatedAt: Date,
@@ -35,6 +34,4 @@ const UserSchema = new mongoose.Schema(
 
 UserSchema.plugin(findOrCreate);
 
-const UserModel = mongoose.model('User', UserSchema);
-
-export default UserModel;
+export default model('User', UserSchema);

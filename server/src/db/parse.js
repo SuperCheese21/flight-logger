@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime';
+
 import axios from 'axios';
 import cheerio from 'cheerio';
 import parse from 'csv-parse/lib/sync';
@@ -57,7 +59,6 @@ export const getAirlineDocument = async href => {
     const fleetSize = getInt($('th:contains("Fleet size")').next());
     const destinations = getInt($('th:contains("Destinations")').next());
 
-    // eslint-disable-next-line no-underscore-dangle
     const _id = `${iata}_${icao}_${name.replace(/ /g, '_')}`;
 
     const src = $('.infobox img')
