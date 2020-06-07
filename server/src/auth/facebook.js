@@ -8,7 +8,7 @@ export default new FacebookStrategy(
   {
     clientID: FACEBOOK_APP_ID,
     clientSecret: FACEBOOK_APP_SECRET,
-    callbackURL: '/auth/facebook/callback',
+    callbackURL: '/api/auth/facebook/callback',
     profileFields: ['id', 'displayName', 'emails'],
   },
   profileHandler,
