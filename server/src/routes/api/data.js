@@ -1,13 +1,13 @@
 import express from 'express';
 import paginate from 'express-paginate';
 
-import Aircraft from '../models/aircraft';
-import Airline from '../models/airline';
-import Airport from '../models/airport';
-import Country from '../models/country';
-import Region from '../models/region';
+import Aircraft from '../../models/aircraft';
+import Airline from '../../models/airline';
+import Airport from '../../models/airport';
+import Country from '../../models/country';
+import Region from '../../models/region';
 
-import { paginatedSearchResults, singleResult } from '../utils/serverUtils';
+import { paginatedSearchResults, singleResult } from '../../utils/serverUtils';
 
 const router = express.Router();
 
