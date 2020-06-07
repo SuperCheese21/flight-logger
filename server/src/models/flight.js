@@ -57,24 +57,23 @@ export const FlightSchema = new Schema({
   trackingLink: String,
 });
 
-FlightSchema.static('saveFlight', async function saveFlight(flight) {
-  try {
-    await flight.save();
-  } catch (err) {
-    // Duplicate ID error - try to save and generate new ID
-    if (err.name === 'MongoError' && err.code === 11000) {
-      await this.saveFlight(flight);
-    } else {
-      throw err;
-    }
-  }
-});
-
 FlightSchema.pre('save', function preSave() {
   this._id = generateRandomId(6);
 });
 
 const Flight = model('Flight', FlightSchema, 'flights');
+
+export const saveFlight = async (user, body) => {
+  try {
+    return Flight.create({ user, ...body });
+  } catch (err) {
+    // Duplicate ID error - try to save and generate new ID
+    if (err.name === 'MongoError' && err.code === 11000) {
+      return saveFlight(user, body);
+    }
+    throw err;
+  }
+};
 
 export const getFlightById = id => {
   const query = Flight.findById(id)
@@ -95,8 +94,8 @@ export const updateFlight = (_id, user, body) => {
   return query.exec();
 };
 
-export const deleteFlight = id => {
-  const query = Flight.findByIdAndDelete(id).lean();
+export const deleteFlight = (_id, user) => {
+  const query = Flight.findOneAndDelete({ _id, user }).lean();
   return query.exec();
 };
 
