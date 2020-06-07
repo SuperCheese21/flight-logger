@@ -2,7 +2,7 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "dev": "node_modules/.bin/nodemon --exec node_modules/.bin/babel-node ./src/server.js",
-    "prestart": "npm run transpile",
+    "prestart": "rm -rf ./dist && npm run transpile",
     "start": "node ./dist/server.js",
     "transpile": "node_modules/.bin/babel src -d dist",
     "update": "node_modules/.bin/babel-node ./src/db/update"
