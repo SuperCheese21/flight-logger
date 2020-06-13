@@ -11,7 +11,7 @@ router.post('/', async (req, res) => {
   const userId = req.user._id;
   try {
     const flight = await saveTrip(userId, req.body);
-    res.json(flight);
+    res.status(201).json(flight);
   } catch ({ message, name }) {
     if (name === 'ValidationError') {
       res.status(400);

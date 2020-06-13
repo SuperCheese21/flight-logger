@@ -12,7 +12,6 @@ export const FlightSchema = new Schema({
   trip: {
     type: String,
     ref: 'Trip',
-    required: false,
   },
   departureAirport: {
     type: String,
@@ -57,6 +56,10 @@ export const FlightSchema = new Schema({
   seatPosition: {
     type: String,
     enum: ['aisle', 'middle', 'window'],
+  },
+  reason: {
+    type: String,
+    enum: ['leisure', 'business', 'crew'],
   },
   comments: String,
   trackingLink: String,

@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
   const userId = req.user._id;
   try {
     const flight = await saveFlight(userId, req.body);
-    res.json(flight);
+    res.status(201).json(flight);
   } catch ({ message, name }) {
     if (name === 'ValidationError') {
       res.status(400);
@@ -62,7 +62,7 @@ router.delete('/:id', async (req, res, next) => {
     if (!flight) {
       next();
     }
-    res.json(flight);
+    res.sendStatus(204);
   } catch ({ message }) {
     res.status(500).json({ message });
   }

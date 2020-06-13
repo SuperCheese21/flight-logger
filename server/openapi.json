@@ -15,36 +15,104 @@
     }
   ],
   "paths": {
-    "/users/{id}": {
+    "/auth/google": {
       "get": {
-        "summary": "Details about a user",
-        "operationId": "listUser",
-        "tags": ["users"],
+        "summary": "Authenticate using Google OAuth",
+        "tags": ["auth"],
+        "responses": {
+          "302": {
+            "description": "Redirection to Google sign-in page"
+          }
+        }
+      }
+    },
+    "/auth/google/callback": {
+      "get": {
+        "summary": "Retrieve JSON Web Token using Google OAuth",
+        "operationId": "generateToken",
+        "tags": ["auth"],
+        "responses": {
+          "200": {
+            "description": "JSON Web Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/facebook": {
+      "get": {
+        "summary": "Authenticate using Facebook OAuth",
+        "tags": ["auth"],
+        "responses": {
+          "302": {
+            "description": "Redirection to Facebook sign-in page"
+          }
+        }
+      }
+    },
+    "/auth/facebook/callback": {
+      "get": {
+        "summary": "Retrieve JSON Web Token using Facebook OAuth",
+        "operationId": "generateToken",
+        "tags": ["auth"],
+        "responses": {
+          "200": {
+            "description": "JSON Web Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trips/{id}": {
+      "get": {
+        "summary": "Retrieve trip details",
+        "operationId": "getTripById",
+        "tags": ["trips"],
         "parameters": [
           {
-            "name": "id",
-            "in": "query",
-            "description": "ID of the user",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
+            "$ref": "#/components/parameters/idParam"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
           }
         ],
         "responses": {
           "200": {
-            "description": "Details about a user",
+            "description": "Trip Details",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User"
+                  "$ref": "#/components/schemas/Trip"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Trip not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
           },
           "default": {
-            "description": "unexpected error",
+            "description": "Unexpected error",
             "content": {
               "application/json": {
                 "schema": {
@@ -55,40 +123,207 @@
           }
         }
       },
-      "post": {
-        "summary": "Create a new user",
-        "operationId": "createUser",
-        "tags": ["users"]
-      },
       "patch": {
-        "summary": "Update details for a user",
-        "operationId": "updateUser",
-        "tags": ["users"]
+        "summary": "Update trip details",
+        "operationId": "updateTrip",
+        "tags": ["trips"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/idParam"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Trip data to modify",
+          "required": true,
+          "content": {
+            "application/json": {}
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Modified Trip",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Trip"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Trip not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       },
       "delete": {
-        "summary": "Delete a user",
-        "operationId": "deleteUser",
-        "tags": ["users"]
+        "summary": "Delete a trip",
+        "operationId": "deleteTrip",
+        "tags": ["trips"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/idParam"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Flight deleted",
+            "content": {
+              "text/plain": {}
+            }
+          },
+          "404": {
+            "description": "Trip not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/trips": {
       "post": {
         "summary": "Create a new trip",
-        "operationId": "createTrip",
-        "tags": ["trips"]
-      },
-      "patch": {
-        "summary": "Update trip details",
-        "operationId": "updateTrip",
-        "tags": ["trips"]
-      },
-      "delete": {
-        "summary": "Delete a trip",
-        "operationId": "deleteTrip",
-        "tags": ["trips"]
+        "operationId": "saveTrip",
+        "tags": ["trips"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Trip to add",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Trip"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Trip created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Trip"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incorrect Format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/flights/{id}": {
+      "get": {
+        "summary": "Retrieve flight details",
+        "operationId": "getFlightById",
+        "tags": ["flights"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/idParam"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Flight details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Flight"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Flight Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
       "patch": {
         "summary": "Update flight details",
         "operationId": "updateFlight",
@@ -151,14 +386,10 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Deleted Flight",
+          "204": {
+            "description": "Flight deleted",
             "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Flight"
-                }
-              }
+              "text/plain": {}
             }
           },
           "404": {
@@ -206,7 +437,7 @@
           }
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "New Flight",
             "content": {
               "application/json": {
@@ -667,18 +898,42 @@
   },
   "components": {
     "schemas": {
+      "Token": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      },
       "User": {
         "type": "object",
-        "required": ["id", "name"],
+        "required": ["username", "email", "admin", "privacy"],
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
+          "username": {
             "type": "string"
           },
-          "tag": {
+          "email": {
+            "type": "string"
+          },
+          "admin": {
+            "type": "boolean"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "privacy": {
+            "type": "string",
+            "enum": ["public", "friends", "private"]
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
             "type": "string"
           }
         }
@@ -939,6 +1194,12 @@
         "type": "object",
         "required": ["departureAirport", "arrivalAirport", "outTime", "inTime"],
         "properties": {
+          "user": {
+            "type": "string"
+          },
+          "trip": {
+            "type": "string"
+          },
           "departureAirport": {
             "type": "string"
           },
@@ -986,11 +1247,33 @@
             "type": "string",
             "enum": ["aisle", "middle", "window"]
           },
+          "reason": {
+            "type": "string",
+            "enum": ["leisure", "business", "crew"]
+          },
           "comments": {
             "type": "string"
           },
           "trackingLink": {
             "type": "string"
+          }
+        }
+      },
+      "Trip": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "user": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "flights": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Flight"
+            }
           }
         }
       },
@@ -1029,7 +1312,6 @@
         "in": "query",
         "description": "Page number",
         "required": false,
-        "default": 1,
         "schema": {
           "type": "integer"
         }
@@ -1039,7 +1321,6 @@
         "in": "query",
         "description": "Item limit per page",
         "required": false,
-        "default": 10,
         "schema": {
           "type": "integer"
         }
