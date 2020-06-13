@@ -9,6 +9,11 @@ export const FlightSchema = new Schema({
     ref: 'User',
     required: true,
   },
+  trip: {
+    type: String,
+    ref: 'Trip',
+    required: false,
+  },
   departureAirport: {
     type: String,
     ref: 'Airport',

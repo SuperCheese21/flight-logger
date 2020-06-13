@@ -28,6 +28,11 @@ export const AirportSchema = new Schema({
   wiki: String,
 });
 
+AirportSchema.virtual('displayCode').get(function getDisplayCode() {
+  const { iata, local } = this.codes;
+  return iata || local;
+});
+
 AirportSchema.static('dataUrl', 'https://ourairports.com/data/airports.csv');
 
 AirportSchema.static('parseData', parseOurAirportsData);

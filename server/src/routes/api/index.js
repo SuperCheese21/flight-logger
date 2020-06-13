@@ -4,6 +4,7 @@ import swaggerUi from 'swagger-ui-express';
 import authRouter from './auth';
 import dataRouter from './data';
 import flightsRouter from './flights';
+import tripsRouter from './trips';
 
 import apiSpec from '../../../openapi.json';
 
@@ -16,6 +17,7 @@ router.use('/docs', swaggerUi.serve, swaggerUi.setup(apiSpec));
 router.use('/auth', authRouter);
 router.use('/data', dataRouter);
 router.use('/flights', flightsRouter);
+router.use('/trips', tripsRouter);
 
 router.use('*', (req, res) => {
   res.status(404).json({ message: 'Not Found' });
