@@ -13,18 +13,14 @@ const debug = Debug('flight-logger:server');
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-// Initialize database
-connectDatabase();
-
-// Create http server and start listening
+// Create http server
 const server = http.createServer(app);
-server.listen(port);
 
 // Create event listeners
 server.on('listening', () => {
   const addr = server.address();
   const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
-  debug(`Listening on ${bind}`);
+  console.log(`Server listening on ${bind}`);
 });
 server.on('error', err => {
   if (err.syscall !== 'listen') {
@@ -46,3 +42,8 @@ server.on('error', err => {
       throw err;
   }
 });
+
+// Initialize database
+connectDatabase(() => {
+  server.listen(port);
+}, false);

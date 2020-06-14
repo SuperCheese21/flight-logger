@@ -69,4 +69,4 @@ const updateData = async () => {
 };
 
 // Initialize Database
-connectDatabase(updateData);
+connectDatabase(updateData, true);

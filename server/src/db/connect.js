@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 import { mongodb as dbConfig } from '../../config.json';
 
-export default callback => {
+export default (callback, end) => {
   // Initialize database
   const { main: mongoURL } = dbConfig;
   mongoose.set('useCreateIndex', true);
@@ -18,10 +18,11 @@ export default callback => {
     console.error('  Unable to connect to MongoDB');
   });
   mongoose.connection.once('open', async () => {
-    console.log('  Connected!');
+    console.log('Connected to MongoDB instance');
 
-    if (callback) {
-      await callback();
+    await callback();
+
+    if (end) {
       mongoose.disconnect();
     }
   });
