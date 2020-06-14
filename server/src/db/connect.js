@@ -18,7 +18,7 @@ export default (callback, end) => {
     console.error('  Unable to connect to MongoDB');
   });
   mongoose.connection.once('open', async () => {
-    console.log('Connected to MongoDB instance');
+    console.log('  Connected to MongoDB instance');
 
     await callback();
 

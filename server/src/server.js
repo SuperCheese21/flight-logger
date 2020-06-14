@@ -1,13 +1,8 @@
 import http from 'http';
 
-import Debug from 'debug';
-
 import app from './app';
 import connectDatabase from './db/connect';
 import { normalizePort } from './utils/serverUtils';
-
-// Initialize debug logger
-const debug = Debug('flight-logger:server');
 
 // Get normalized port
 const port = normalizePort(process.env.PORT || '3000');

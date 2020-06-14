@@ -1,3 +1,5 @@
+import geoTz from 'geo-tz';
+import moment from 'moment-timezone';
 import paginate from 'express-paginate';
 import * as Promise from 'bluebird';
 
@@ -9,6 +11,18 @@ export const generateRandomId = length => {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
   return result;
+};
+
+export const getTimeZoneName = location => {
+  const { lat, lon } = location;
+  return geoTz(lat, lon)[0];
+};
+
+export const getLocalTime = (location, utcTime) => {
+  const timeZoneName = getTimeZoneName(location);
+  return moment(utcTime)
+    .tz(timeZoneName)
+    .format();
 };
 
 export const normalizePort = val => {

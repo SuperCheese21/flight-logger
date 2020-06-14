@@ -4,33 +4,41 @@ import { CountrySchema } from './country';
 import { RegionSchema } from './region';
 
 import { parseOurAirportsData } from '../db/parse';
+import { getTimeZoneName } from '../utils/serverUtils';
 
-export const AirportSchema = new Schema({
-  _id: String,
-  type: String,
-  name: String,
-  location: {
-    lat: Number,
-    lon: Number,
+export const AirportSchema = new Schema(
+  {
+    _id: String,
+    type: String,
+    name: String,
+    location: {
+      lat: Number,
+      lon: Number,
+    },
+    elevation: Number,
+    continent: String,
+    country: CountrySchema,
+    region: RegionSchema,
+    municipality: String,
+    scheduledService: Boolean,
+    codes: {
+      ident: String,
+      gps: String,
+      iata: String,
+      local: String,
+    },
+    wiki: String,
   },
-  elevation: Number,
-  continent: String,
-  country: CountrySchema,
-  region: RegionSchema,
-  municipality: String,
-  scheduledService: Boolean,
-  codes: {
-    ident: String,
-    gps: String,
-    iata: String,
-    local: String,
-  },
-  wiki: String,
-});
+  { toJSON: { virtuals: true } },
+);
 
 AirportSchema.virtual('displayCode').get(function getDisplayCode() {
   const { iata, local } = this.codes;
   return iata || local;
+});
+
+AirportSchema.virtual('timeZone').get(function getTimeZone() {
+  return getTimeZoneName(this.location);
 });
 
 AirportSchema.static('dataUrl', 'https://ourairports.com/data/airports.csv');
