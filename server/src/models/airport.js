@@ -1,12 +1,9 @@
 import { model, Schema } from 'mongoose';
 
-import { CountrySchema } from './country';
-import { RegionSchema } from './region';
-
 import { parseOurAirportsData } from '../db/parse';
 import { getTimeZoneName } from '../utils/serverUtils';
 
-export const AirportSchema = new Schema(
+const AirportSchema = new Schema(
   {
     _id: String,
     type: String,
@@ -17,8 +14,14 @@ export const AirportSchema = new Schema(
     },
     elevation: Number,
     continent: String,
-    country: CountrySchema,
-    region: RegionSchema,
+    country: {
+      type: String,
+      ref: 'Country',
+    },
+    region: {
+      type: String,
+      ref: 'Region',
+    },
     municipality: String,
     scheduledService: Boolean,
     codes: {
@@ -32,49 +35,51 @@ export const AirportSchema = new Schema(
   { toJSON: { virtuals: true } },
 );
 
-AirportSchema.virtual('displayCode').get(function getDisplayCode() {
-  const { iata, local } = this.codes;
-  return iata || local;
-});
+class Airport {
+  get displayCode() {
+    const { iata, local } = this.codes;
+    return iata || local;
+  }
 
-AirportSchema.virtual('timeZone').get(function getTimeZone() {
-  return getTimeZoneName(this.location);
-});
+  get timeZone() {
+    return getTimeZoneName(this.location);
+  }
 
-AirportSchema.static('dataUrl', 'https://ourairports.com/data/airports.csv');
+  static dataUrl = 'https://ourairports.com/data/airports.csv';
 
-AirportSchema.static('parseData', parseOurAirportsData);
+  static parseData = parseOurAirportsData;
 
-AirportSchema.static('getUpdate', row => ({
-  _id: row[1],
-  type: row[2],
-  name: row[3],
-  location: {
-    lat: Number(row[4]),
-    lon: Number(row[5]),
-  },
-  elevation: Number(row[6]),
-  continent: row[7],
-  country: { _id: row[8] },
-  region: { _id: row[9] },
-  municipality: row[10],
-  scheduledService: row[11] === 'yes',
-  codes: {
-    ident: row[1],
-    gps: row[12],
-    iata: row[13],
-    local: row[14],
-  },
-  wiki: row[16],
-}));
+  static getUpdate = row => ({
+    _id: row[1],
+    type: row[2],
+    name: row[3],
+    location: {
+      lat: Number(row[4]),
+      lon: Number(row[5]),
+    },
+    elevation: Number(row[6]),
+    continent: row[7],
+    country: { _id: row[8] },
+    region: { _id: row[9] },
+    municipality: row[10],
+    scheduledService: row[11] === 'yes',
+    codes: {
+      ident: row[1],
+      gps: row[12],
+      iata: row[13],
+      local: row[14],
+    },
+    wiki: row[16],
+  });
 
-const Airport = model('Airport', AirportSchema, 'airports');
+  static getCoordsById(id) {
+    const query = this.findById(id)
+      .select('location')
+      .lean();
+    return query.exec();
+  }
+}
 
-export const getCoordsById = id => {
-  const query = Airport.findById(id)
-    .select('location')
-    .lean();
-  return query.exec();
-};
+AirportSchema.loadClass(Airport);
 
-export default Airport;
+export default model('Airport', AirportSchema, 'airports');
