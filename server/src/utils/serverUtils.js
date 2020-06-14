@@ -1,4 +1,5 @@
 import paginate from 'express-paginate';
+import * as Promise from 'bluebird';
 
 export const generateRandomId = length => {
   let result = '';
