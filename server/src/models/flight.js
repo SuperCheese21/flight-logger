@@ -1,4 +1,8 @@
+import * as Promise from 'bluebird';
+import parse from 'csv-parse/lib/sync';
 import { model, Schema } from 'mongoose';
+
+import { getCoordsById } from './airport';
 
 import { generateRandomId } from '../utils/serverUtils';
 
@@ -105,6 +109,38 @@ export const updateFlight = (_id, user, body) => {
 export const deleteFlight = (_id, user) => {
   const query = Flight.findOneAndDelete({ _id, user }).lean();
   return query.exec();
+};
+
+const extractAirportCode = text => {
+  const regex = /\([A-Z]{3}\/[A-Z]{4}\)/g;
+  const match = text.match(regex);
+  if (match.length) {
+    return match[0].split('/')[1].split(')')[0];
+  }
+  return '';
+};
+
+export const saveFlightDiaryData = (user, csv) => {
+  const rows = parse(csv, { skip_empty_lines: true }).slice(1);
+
+  return Promise.all(
+    rows.map(async row => {
+      const departureAirport = extractAirportCode(row[2]);
+      const arrivalAirport = extractAirportCode(row[3]);
+      const departureCoords = await getCoordsById(departureAirport);
+      const arrivalCoords = await getCoordsById(arrivalAirport);
+      const body = {
+        user,
+        departureAirport,
+        arrivalAirport,
+        outTime: '2020-05-06T00:00Z',
+        inTime: '2020-05-07T02:00Z',
+        departureCoords,
+        arrivalCoords,
+      };
+      return body;
+    }),
+  );
 };
 
 export default Flight;

@@ -1,4 +1,5 @@
 import express from 'express';
+import multer from 'multer';
 
 import passport from '../../auth/passport';
 import {
@@ -6,9 +7,12 @@ import {
   deleteFlight,
   getFlightById,
   updateFlight,
+  saveFlightDiaryData,
 } from '../../models/flight';
 
 const router = express.Router();
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 router.use(passport.authenticate('jwt', { session: false }));
 
@@ -24,6 +28,20 @@ router.post('/', async (req, res) => {
       res.status(500);
     }
     res.json({ message });
+  }
+});
+
+router.post('/upload/flightdiary', upload.single('file'), async (req, res) => {
+  if (!req.file) {
+    res.status(400).json({ message: 'File not found' });
+  }
+  const csv = req.file.buffer.toString();
+  const userId = req.user._id;
+  try {
+    const flights = await saveFlightDiaryData(userId, csv);
+    res.json(flights);
+  } catch ({ message }) {
+    res.status(500).json({ message });
   }
 });
 

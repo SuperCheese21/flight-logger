@@ -68,4 +68,13 @@ AirportSchema.static('getUpdate', row => ({
   wiki: row[16],
 }));
 
-export default model('Airport', AirportSchema, 'airports');
+const Airport = model('Airport', AirportSchema, 'airports');
+
+export const getCoordsById = id => {
+  const query = Airport.findById(id)
+    .select('location')
+    .lean();
+  return query.exec();
+};
+
+export default Airport;
