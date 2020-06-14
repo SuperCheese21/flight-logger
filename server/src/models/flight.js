@@ -2,7 +2,9 @@ import * as Promise from 'bluebird';
 import parse from 'csv-parse/lib/sync';
 import { model, Schema } from 'mongoose';
 
-import { getCoordsById } from './airport';
+import Aircraft from './aircraft';
+import Airline from './airline';
+import Airport from './airport';
 
 import { generateRandomId } from '../utils/serverUtils';
 
@@ -111,32 +113,22 @@ export const deleteFlight = (_id, user) => {
   return query.exec();
 };
 
-const extractAirportCode = text => {
-  const regex = /\([A-Z]{3}\/[A-Z]{4}\)/g;
-  const match = text.match(regex);
-  if (match.length) {
-    return match[0].split('/')[1].split(')')[0];
-  }
-  return '';
-};
-
 export const saveFlightDiaryData = (user, csv) => {
   const rows = parse(csv, { skip_empty_lines: true }).slice(1);
 
   return Promise.all(
     rows.map(async row => {
-      const departureAirport = extractAirportCode(row[2]);
-      const arrivalAirport = extractAirportCode(row[3]);
-      const departureCoords = await getCoordsById(departureAirport);
-      const arrivalCoords = await getCoordsById(arrivalAirport);
+      const departureAirport = Airport.getIdFromAirportString(row[2]);
+      const arrivalAirport = Airport.getIdFromAirportString(row[3]);
+      const airline = await Airline.getAirlineFromAirlineString(row[7]);
+      const aircraftType = await Aircraft.getAircraftFromAircraftString(row[8]);
       const body = {
         user,
         departureAirport,
         arrivalAirport,
-        outTime: '2020-05-06T00:00Z',
-        inTime: '2020-05-07T02:00Z',
-        departureCoords,
-        arrivalCoords,
+        airline,
+        flightNumber: Number(row[1].substr(2)),
+        aircraftType,
       };
       return body;
     }),

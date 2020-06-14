@@ -72,12 +72,14 @@ class Airport {
     wiki: row[16],
   });
 
-  static getCoordsById(id) {
-    const query = this.findById(id)
-      .select('location')
-      .lean();
-    return query.exec();
-  }
+  static getIdFromAirportString = text => {
+    const regex = /\([A-Z]{3}\/[A-Z]{4}\)/g;
+    const match = text.match(regex);
+    if (!match) {
+      return null;
+    }
+    return match[0].split('/')[1].split(')')[0];
+  };
 }
 
 AirportSchema.loadClass(Airport);

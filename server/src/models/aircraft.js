@@ -53,6 +53,22 @@ class Aircraft {
 
     return { _id, iata, icao, names };
   };
+
+  static async getAircraftFromAircraftString(text) {
+    const regex = /\([A-Z0-9]{3,4}\)/g;
+    const match = text.match(regex);
+    if (!match) {
+      return null;
+    }
+    const icao = match[0].split('(')[1].split(')')[0];
+    const aircraft = await this.findOne({ icao })
+      .lean()
+      .exec();
+    if (!aircraft) {
+      return null;
+    }
+    return aircraft._id;
+  }
 }
 
 AircraftSchema.loadClass(Aircraft);
