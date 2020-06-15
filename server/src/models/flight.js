@@ -113,26 +113,74 @@ export const deleteFlight = (_id, user) => {
   return query.exec();
 };
 
+const getSeatPosition = num => {
+  switch (num) {
+    case 1:
+      return 'window';
+    case 2:
+      return 'middle';
+    case 3:
+      return 'aisle';
+    default:
+      return 'window';
+  }
+};
+
+const getFlightClass = num => {
+  switch (num) {
+    case 1:
+      return 'economy';
+    case 2:
+      return 'premium';
+    case 3:
+      return 'business';
+    case 4:
+      return 'first';
+    default:
+      return 'basic';
+  }
+};
+
+const getFlightReason = num => {
+  switch (num) {
+    case 1:
+      return 'leisure';
+    case 2:
+      return 'business';
+    case 3:
+      return 'crew';
+    default:
+      return 'leisure';
+  }
+};
+
 export const saveFlightDiaryData = (user, csv) => {
   const rows = parse(csv, { skip_empty_lines: true }).slice(1);
 
-  return Promise.all(
-    rows.map(async row => {
-      const departureAirport = Airport.getIdFromAirportString(row[2]);
-      const arrivalAirport = Airport.getIdFromAirportString(row[3]);
-      const airline = await Airline.getAirlineFromAirlineString(row[7]);
-      const aircraftType = await Aircraft.getAircraftFromAircraftString(row[8]);
-      const body = {
-        user,
-        departureAirport,
-        arrivalAirport,
-        airline,
-        flightNumber: Number(row[1].substr(2)),
-        aircraftType,
-      };
-      return body;
-    }),
-  );
+  const promises = rows.map(async row => {
+    const departureAirport = Airport.getIdFromFlightDiaryString(row[2]);
+    const arrivalAirport = Airport.getIdFromFlightDiaryString(row[3]);
+    const airline = await Airline.getIdFromFlightDiaryString(row[7]);
+    const aircraftType = await Aircraft.getIdFromFlightDiaryString(row[8]);
+    const body = {
+      user,
+      departureAirport,
+      arrivalAirport,
+      airline,
+      flightNumber: Number(row[1].substr(2)),
+      aircraftType,
+      tailNumber: row[9],
+      outTime: `${row[0]}T${row[4]}`,
+      inTime: `${row[0]}T${row[5]}`,
+      class: getFlightClass(Number(row[12])),
+      seatNumber: row[10],
+      seatPosition: getSeatPosition(Number(row[11])),
+      reason: getFlightReason(Number(row[13])),
+    };
+    return body;
+  });
+
+  return Promise.all(promises);
 };
 
 export default Flight;

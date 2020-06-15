@@ -72,7 +72,7 @@ class Airport {
     wiki: row[16],
   });
 
-  static getIdFromAirportString = text => {
+  static getIdFromFlightDiaryString = text => {
     const regex = /\([A-Z]{3}\/[A-Z]{4}\)/g;
     const match = text.match(regex);
     if (!match) {

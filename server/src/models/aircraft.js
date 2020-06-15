@@ -54,7 +54,7 @@ class Aircraft {
     return { _id, iata, icao, names };
   };
 
-  static async getAircraftFromAircraftString(text) {
+  static async getIdFromFlightDiaryString(text) {
     const regex = /\([A-Z0-9]{3,4}\)/g;
     const match = text.match(regex);
     if (!match) {
