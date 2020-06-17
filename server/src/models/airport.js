@@ -2,7 +2,6 @@ import geoTz from 'geo-tz';
 import { model, Schema } from 'mongoose';
 
 import { parseOurAirportsData } from '../db/parse';
-import { getTimeZoneName } from '../utils/serverUtils';
 
 const AirportSchema = new Schema(
   {
