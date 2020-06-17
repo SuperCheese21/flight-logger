@@ -41,7 +41,7 @@ class Airline {
     return getAirlineDocument(href);
   };
 
-  static async getIdFromFlightDiaryString(text) {
+  static findByFlightDiaryString(text) {
     const regex = /\([A-Z0-9]{2}\/[A-Z]{3}\)/g;
     const match = text.match(regex);
     if (!match) {
@@ -49,15 +49,11 @@ class Airline {
     }
     const codes = match[0].split('(')[1].split(')')[0];
     const [iata, icao] = codes.split('/');
-    const airline = await this.findOne({
+    return this.findOne({
       $or: [{ iata, icao }, { iata }],
     })
       .lean()
       .exec();
-    if (!airline) {
-      return null;
-    }
-    return airline._id;
   }
 }
 

@@ -1,3 +1,4 @@
+import geoTz from 'geo-tz';
 import { model, Schema } from 'mongoose';
 
 import { parseOurAirportsData } from '../db/parse';
@@ -36,13 +37,9 @@ const AirportSchema = new Schema(
 );
 
 class Airport {
-  get displayCode() {
-    const { iata, local } = this.codes;
-    return iata || local;
-  }
-
   get timeZone() {
-    return getTimeZoneName(this.location);
+    const { lat, lon } = this.location;
+    return geoTz(lat, lon)[0];
   }
 
   static dataUrl = 'https://ourairports.com/data/airports.csv';
@@ -72,14 +69,15 @@ class Airport {
     wiki: row[16],
   });
 
-  static getIdFromFlightDiaryString = text => {
+  static findByFlightDiaryString(text) {
     const regex = /\([A-Z]{3}\/[A-Z]{4}\)/g;
     const match = text.match(regex);
     if (!match) {
       return null;
     }
-    return match[0].split('/')[1].split(')')[0];
-  };
+    const id = match[0].split('/')[1].split(')')[0];
+    return this.findById(id).exec();
+  }
 }
 
 AirportSchema.loadClass(Airport);

@@ -6,7 +6,7 @@ import Aircraft from './aircraft';
 import Airline from './airline';
 import Airport from './airport';
 
-import { generateRandomId } from '../utils/serverUtils';
+import { generateRandomId, getUTCTime } from '../utils/serverUtils';
 
 export const FlightSchema = new Schema({
   _id: String,
@@ -158,26 +158,26 @@ export const saveFlightDiaryData = (user, csv) => {
   const rows = parse(csv, { skip_empty_lines: true }).slice(1);
 
   const promises = rows.map(async row => {
-    const departureAirport = Airport.getIdFromFlightDiaryString(row[2]);
-    const arrivalAirport = Airport.getIdFromFlightDiaryString(row[3]);
-    const airline = await Airline.getIdFromFlightDiaryString(row[7]);
-    const aircraftType = await Aircraft.getIdFromFlightDiaryString(row[8]);
+    const departureAirport = await Airport.findByFlightDiaryString(row[2]);
+    const arrivalAirport = await Airport.findByFlightDiaryString(row[3]);
+    const airline = await Airline.findByFlightDiaryString(row[7]);
+    const aircraftType = await Aircraft.findByFlightDiaryString(row[8]);
     const body = {
       user,
-      departureAirport,
-      arrivalAirport,
-      airline,
+      departureAirport: departureAirport._id,
+      arrivalAirport: arrivalAirport._id,
+      airline: airline._id,
       flightNumber: Number(row[1].substr(2)),
-      aircraftType,
+      aircraftType: aircraftType._id,
       tailNumber: row[9],
-      outTime: `${row[0]}T${row[4]}`,
-      inTime: `${row[0]}T${row[5]}`,
+      outTime: getUTCTime(row[0], row[4], departureAirport.timeZone),
+      inTime: getUTCTime(row[0], row[5], arrivalAirport.timeZone),
       class: getFlightClass(Number(row[12])),
       seatNumber: row[10],
       seatPosition: getSeatPosition(Number(row[11])),
       reason: getFlightReason(Number(row[13])),
     };
-    return body;
+    return Airport.create(body);
   });
 
   return Promise.all(promises);
