@@ -1,6 +1,12 @@
+import * as Promise from 'bluebird';
+import parse from 'csv-parse/lib/sync';
 import { model, Schema } from 'mongoose';
 
-import { generateRandomId } from '../utils/serverUtils';
+import Aircraft from './aircraft';
+import Airline from './airline';
+import Airport from './airport';
+
+import { generateRandomId, getUTCTime } from '../utils/serverUtils';
 
 export const FlightSchema = new Schema({
   _id: String,
@@ -8,6 +14,10 @@ export const FlightSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
+  },
+  trip: {
+    type: String,
+    ref: 'Trip',
   },
   departureAirport: {
     type: String,
@@ -53,6 +63,10 @@ export const FlightSchema = new Schema({
     type: String,
     enum: ['aisle', 'middle', 'window'],
   },
+  reason: {
+    type: String,
+    enum: ['leisure', 'business', 'crew'],
+  },
   comments: String,
   trackingLink: String,
 });
@@ -97,6 +111,76 @@ export const updateFlight = (_id, user, body) => {
 export const deleteFlight = (_id, user) => {
   const query = Flight.findOneAndDelete({ _id, user }).lean();
   return query.exec();
+};
+
+const getSeatPosition = num => {
+  switch (num) {
+    case 1:
+      return 'window';
+    case 2:
+      return 'middle';
+    case 3:
+      return 'aisle';
+    default:
+      return 'window';
+  }
+};
+
+const getFlightClass = num => {
+  switch (num) {
+    case 1:
+      return 'economy';
+    case 2:
+      return 'premium';
+    case 3:
+      return 'business';
+    case 4:
+      return 'first';
+    default:
+      return 'basic';
+  }
+};
+
+const getFlightReason = num => {
+  switch (num) {
+    case 1:
+      return 'leisure';
+    case 2:
+      return 'business';
+    case 3:
+      return 'crew';
+    default:
+      return 'leisure';
+  }
+};
+
+export const saveFlightDiaryData = (user, csv) => {
+  const rows = parse(csv, { skip_empty_lines: true }).slice(1);
+
+  const promises = rows.map(async row => {
+    const departureAirport = await Airport.findByFlightDiaryString(row[2]);
+    const arrivalAirport = await Airport.findByFlightDiaryString(row[3]);
+    const airline = await Airline.findByFlightDiaryString(row[7]);
+    const aircraftType = await Aircraft.findByFlightDiaryString(row[8]);
+    const body = {
+      user,
+      departureAirport: departureAirport._id,
+      arrivalAirport: arrivalAirport._id,
+      airline: airline._id,
+      flightNumber: Number(row[1].substr(2)),
+      aircraftType: aircraftType._id,
+      tailNumber: row[9],
+      outTime: getUTCTime(row[0], row[4], departureAirport.timeZone),
+      inTime: getUTCTime(row[0], row[5], arrivalAirport.timeZone),
+      class: getFlightClass(Number(row[12])),
+      seatNumber: row[10],
+      seatPosition: getSeatPosition(Number(row[11])),
+      reason: getFlightReason(Number(row[13])),
+    };
+    return Airport.create(body);
+  });
+
+  return Promise.all(promises);
 };
 
 export default Flight;

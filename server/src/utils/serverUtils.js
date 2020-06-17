@@ -1,4 +1,6 @@
+import moment from 'moment-timezone';
 import paginate from 'express-paginate';
+import * as Promise from 'bluebird';
 
 export const generateRandomId = length => {
   let result = '';
@@ -9,6 +11,12 @@ export const generateRandomId = length => {
   }
   return result;
 };
+
+export const getUTCTime = (date, time, timeZoneName) =>
+  moment
+    .tz(`${date}T${time}`, timeZoneName)
+    .utc()
+    .format();
 
 export const normalizePort = val => {
   const newPort = parseInt(val, 10);

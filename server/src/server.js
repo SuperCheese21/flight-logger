@@ -1,30 +1,21 @@
 import http from 'http';
 
-import Debug from 'debug';
-
 import app from './app';
 import connectDatabase from './db/connect';
 import { normalizePort } from './utils/serverUtils';
-
-// Initialize debug logger
-const debug = Debug('flight-logger:server');
 
 // Get normalized port
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-// Initialize database
-connectDatabase();
-
-// Create http server and start listening
+// Create http server
 const server = http.createServer(app);
-server.listen(port);
 
 // Create event listeners
 server.on('listening', () => {
   const addr = server.address();
   const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
-  debug(`Listening on ${bind}`);
+  console.log(`Server listening on ${bind}`);
 });
 server.on('error', err => {
   if (err.syscall !== 'listen') {
@@ -46,3 +37,8 @@ server.on('error', err => {
       throw err;
   }
 });
+
+// Initialize database
+connectDatabase(() => {
+  server.listen(port);
+}, false);
