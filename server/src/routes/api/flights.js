@@ -38,8 +38,8 @@ router.post('/upload/flightdiary', upload.single('file'), async (req, res) => {
   const csv = req.file.buffer.toString();
   const userId = req.user._id;
   try {
-    const flights = await saveFlightDiaryData(userId, csv);
-    res.json(flights);
+    await saveFlightDiaryData(userId, csv);
+    res.sendStatus(201);
   } catch ({ message }) {
     res.status(500).json({ message });
   }

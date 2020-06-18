@@ -177,7 +177,7 @@ export const saveFlightDiaryData = (user, csv) => {
       seatPosition: getSeatPosition(Number(row[11])),
       reason: getFlightReason(Number(row[13])),
     };
-    return Airport.create(body);
+    return Flight.create(body);
   });
 
   return Promise.all(promises);
