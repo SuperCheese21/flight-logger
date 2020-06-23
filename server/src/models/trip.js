@@ -2,7 +2,7 @@ import { model, Schema } from 'mongoose';
 
 import { generateRandomId } from '../utils/serverUtils';
 
-export const TripSchema = new Schema({
+const TripSchema = new Schema({
   _id: String,
   user: {
     type: Schema.Types.ObjectId,
@@ -15,6 +15,38 @@ export const TripSchema = new Schema({
   },
 });
 
+class Trip {
+  static saveTrip(user, body) {
+    try {
+      return Trip.create({ user, ...body });
+    } catch (err) {
+      if (err.name === 'MongoError' && err.code === 11000) {
+        return this.saveTrip(user, body);
+      }
+      throw err;
+    }
+  }
+
+  static getTripById(id) {
+    const query = this.findById(id)
+      .populate('flights')
+      .lean();
+    return query.exec();
+  }
+
+  static updateTrip(_id, user, body) {
+    const query = this.findOneAndUpdate({ _id, user }, body, {
+      new: true,
+    }).lean();
+    return query.exec();
+  }
+
+  static deleteTrip(_id, user) {
+    const query = this.findOneAndDelete({ _id, user }).lean();
+    return query.exec();
+  }
+}
+
 TripSchema.virtual('flights', {
   ref: 'Flight',
   localField: '_id',
@@ -26,31 +58,6 @@ TripSchema.pre('save', function preSave() {
   this._id = generateRandomId(6);
 });
 
-const Trip = model('Trip', TripSchema);
+TripSchema.loadClass(Trip);
 
-export const saveTrip = async (user, body) => {
-  try {
-    return Trip.create({ user, ...body });
-  } catch (err) {
-    if (err.name === 'MongoError' && err.code === 11000) {
-      return saveTrip(user, body);
-    }
-    throw err;
-  }
-};
-
-export const getTripById = id => {
-  const query = Trip.findById(id)
-    .populate('flights')
-    .lean();
-  return query.exec();
-};
-
-export const updateTrip = (_id, user, body) => {
-  const query = Trip.findOneAndUpdate({ _id, user }, body, {
-    new: true,
-  }).lean();
-  return query.exec();
-};
-
-export default Trip;
+export default model('Trip', TripSchema);
