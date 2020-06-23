@@ -17,11 +17,10 @@ router.post('/', async (req, res) => {
     res.sendStatus(201);
   } catch ({ message, name }) {
     if (name === 'ValidationError') {
-      res.status(400);
+      res.status(400).json({ message });
     } else {
-      res.status(500);
+      res.status(500).json({ message });
     }
-    res.json({ message });
   }
 });
 
@@ -43,10 +42,11 @@ router.get('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
     const flight = await Flight.getFlightById(id);
-    if (!flight) {
+    if (flight) {
+      res.json(flight);
+    } else {
       next();
     }
-    res.json(flight);
   } catch ({ message }) {
     res.status(500).json({ message });
   }
@@ -57,10 +57,11 @@ router.patch('/:id', async (req, res, next) => {
   const userId = req.user._id;
   try {
     const flight = await Flight.updateFlight(id, userId, req.body);
-    if (!flight) {
+    if (flight) {
+      res.json(flight);
+    } else {
       next();
     }
-    res.json(flight);
   } catch ({ message }) {
     res.status(500).json({ message });
   }
@@ -71,10 +72,11 @@ router.delete('/:id', async (req, res, next) => {
   const userId = req.user._id;
   try {
     const flight = await Flight.deleteFlight(id, userId);
-    if (!flight) {
+    if (flight) {
+      res.sendStatus(204);
+    } else {
       next();
     }
-    res.sendStatus(204);
   } catch ({ message }) {
     res.status(500).json({ message });
   }

@@ -26,10 +26,11 @@ router.get('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
     const trip = await Trip.getTripById(id);
-    if (!trip) {
+    if (trip) {
+      res.json(trip);
+    } else {
       next();
     }
-    res.json(trip);
   } catch ({ message }) {
     res.status(500).json({ message });
   }
@@ -40,10 +41,11 @@ router.patch('/:id', async (req, res, next) => {
   const userId = req.user._id;
   try {
     const flight = await Trip.updateTrip(id, userId, req.body);
-    if (!flight) {
+    if (flight) {
+      res.json(flight);
+    } else {
       next();
     }
-    res.json(flight);
   } catch ({ message }) {
     res.status(500).json({ message });
   }
@@ -54,10 +56,11 @@ router.delete('/:id', async (req, res, next) => {
   const userId = req.user._id;
   try {
     const flight = await Trip.deleteTrip(id, userId);
-    if (!flight) {
+    if (flight) {
+      res.sendStatus(204);
+    } else {
       next();
     }
-    res.sendStatus(204);
   } catch ({ message }) {
     res.status(500).json({ message });
   }

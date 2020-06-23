@@ -32,6 +32,30 @@ export const UserSchema = new Schema(
   },
 );
 
+class User {
+  static getUserByUsername(username) {
+    const query = this.findOne({ username })
+      .populate('flights')
+      .populate('trips')
+      .lean();
+    return query.exec();
+  }
+}
+
+UserSchema.virtual('flights', {
+  ref: 'Flight',
+  localField: '_id',
+  foreignField: 'user',
+  options: { sort: { outTime: -1 } },
+});
+
+UserSchema.virtual('trips', {
+  ref: 'Trip',
+  localField: '_id',
+  foreignField: 'user',
+});
+
+UserSchema.loadClass(User);
 UserSchema.plugin(findOrCreate);
 
 export default model('User', UserSchema);
