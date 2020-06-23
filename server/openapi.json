@@ -418,7 +418,7 @@
     "/flights": {
       "post": {
         "summary": "Create a new flight",
-        "operationId": "createFlight",
+        "operationId": "saveFlight",
         "tags": ["flights"],
         "security": [
           {
@@ -443,6 +443,70 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Flight"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incorrect Format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/flights/upload/flightdiary": {
+      "post": {
+        "summary": "Import flights from MyFlightRadar CSV file",
+        "operationId": "saveFlightDiaryData",
+        "tags": ["flights"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "CSV file to upload",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New Flights",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Flight"
+                  }
                 }
               }
             }

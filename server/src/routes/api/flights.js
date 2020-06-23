@@ -13,8 +13,8 @@ router.use(passport.authenticate('jwt', { session: false }));
 router.post('/', async (req, res) => {
   const userId = req.user._id;
   try {
-    await Flight.saveFlight(userId, req.body);
-    res.sendStatus(201);
+    const flight = await Flight.saveFlight(userId, req.body);
+    res.status(201).json(flight);
   } catch ({ message, name }) {
     if (name === 'ValidationError') {
       res.status(400).json({ message });
@@ -31,8 +31,8 @@ router.post('/upload/flightdiary', upload.single('file'), async (req, res) => {
   const csv = req.file.buffer.toString();
   const userId = req.user._id;
   try {
-    await Flight.saveFlightDiaryData(userId, csv);
-    res.sendStatus(201);
+    const flights = await Flight.saveFlightDiaryData(userId, csv);
+    res.status(201).json(flights);
   } catch ({ message }) {
     res.status(500).json({ message });
   }
