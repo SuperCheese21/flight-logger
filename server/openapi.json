@@ -534,6 +534,55 @@
         }
       }
     },
+    "/users/{id}": {
+      "get": {
+        "summary": "Retrieve user details",
+        "operationId": "getUserByUsername",
+        "tags": ["users"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/idParam"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/data/aircraft/{id}": {
       "get": {
         "summary": "Get aircraft by ID",
@@ -993,6 +1042,16 @@
           "privacy": {
             "type": "string",
             "enum": ["public", "friends", "private"]
+          },
+          "flights": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Flight"
+            }
+          },
+          "trips": {
+            "type": "array",
+            "$ref": "#/components/schemas/Trip"
           },
           "createdAt": {
             "type": "string"
