@@ -22,18 +22,14 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-router.put('/:id/add', async (req, res, next) => {
+router.put('/:id/add', async (req, res) => {
   const { id: recipientUsername } = req.params;
   const { _id: requesterId } = req.user;
   try {
-    const friends = await Friends.addFriend(requesterId, recipientUsername);
-    if (friends) {
-      res.sendStatus(204);
-    } else {
-      next();
-    }
-  } catch ({ message }) {
-    res.status(500).json({ message });
+    await Friends.addFriend(requesterId, recipientUsername);
+    res.sendStatus(204);
+  } catch ({ status = 500, message }) {
+    res.status(status).json({ message });
   }
 });
 
