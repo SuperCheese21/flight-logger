@@ -28,7 +28,7 @@ router.put('/:id/add', async (req, res, next) => {
   try {
     const friends = await Friends.addFriend(requesterId, recipientUsername);
     if (friends) {
-      res.status(201).json(friends);
+      res.sendStatus(204);
     } else {
       next();
     }

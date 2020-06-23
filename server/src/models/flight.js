@@ -1,4 +1,4 @@
-import * as Promise from 'bluebird';
+import Promise from 'bluebird';
 import parse from 'csv-parse/lib/sync';
 import moment from 'moment';
 import { model, Schema } from 'mongoose';
