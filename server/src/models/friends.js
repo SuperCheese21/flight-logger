@@ -32,9 +32,6 @@ class Friends {
   static async addFriend(requesterId, recipientUsername) {
     // Ensure the recipient matches a User
     const recipient = await User.getUserByUsername(recipientUsername);
-    if (!recipient) {
-      throw new AppError(404, 'User not found');
-    }
 
     // Ensure that the recipient and requester are distinct
     const recipientId = recipient._id;
@@ -66,9 +63,6 @@ class Friends {
   static async removeFriend(requesterId, recipientUsername) {
     // Ensure the recipient matches a User
     const recipient = await User.getUserByUsername(recipientUsername);
-    if (!recipient) {
-      throw new AppError(404, 'User not found');
-    }
 
     // Ensure that the recipient and requester are distinct
     const recipientId = recipient._id;
