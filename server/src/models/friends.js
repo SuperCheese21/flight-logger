@@ -39,13 +39,12 @@ class Friends {
     // Ensure that the recipient and requester are distinct
     const recipientId = recipient._id;
     if (requesterId.equals(recipientId)) {
-      throw new AppError(400, "You can't send yourself a friend request");
+      throw new AppError(400, "You can't add yourself as a friend");
     }
 
     // Check if a connection already exists between the two users
     const friends = await this.findFriends(requesterId, recipientId);
     if (!friends) {
-      // Create a new friend request if one doesn't exist
       return this.create({ requesterId, recipientId, status: 'pending' });
     }
 
@@ -62,6 +61,29 @@ class Friends {
     // Update the friend request status to accepted
     const query = friends.updateOne({ status: 'accepted' });
     return query.exec();
+  }
+
+  static async removeFriend(requesterId, recipientUsername) {
+    // Ensure the recipient matches a User
+    const recipient = await User.getUserByUsername(recipientUsername);
+    if (!recipient) {
+      throw new AppError(404, 'User not found');
+    }
+
+    // Ensure that the recipient and requester are distinct
+    const recipientId = recipient._id;
+    if (requesterId.equals(recipientId)) {
+      throw new AppError(400, "You can't unfriend yourself");
+    }
+
+    // Ensure the two users are friends
+    const friends = await this.findFriends(requesterId, recipientId);
+    if (!friends) {
+      throw new AppError(400, 'You are not friends with this user');
+    }
+
+    // Remove friend request from database
+    return friends.remove();
   }
 
   static findFriends(requesterId, recipientId) {

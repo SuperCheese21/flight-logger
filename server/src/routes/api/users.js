@@ -33,4 +33,15 @@ router.put('/:id/add', async (req, res) => {
   }
 });
 
+router.delete('/:id/remove', async (req, res) => {
+  const { id: recipientUsername } = req.params;
+  const { _id: requesterId } = req.user;
+  try {
+    await Friends.removeFriend(requesterId, recipientUsername);
+    res.sendStatus(204);
+  } catch ({ status = 500, message }) {
+    res.status(status).json({ message });
+  }
+});
+
 export default router;
