@@ -12,7 +12,11 @@ router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const user = await User.getUserByUsername(id);
-    res.json(user);
+    const friends = await Friends.getFriends(user._id);
+    res.json({
+      ...user,
+      ...friends,
+    });
   } catch ({ status = 500, message }) {
     res.status(status).json({ message });
   }

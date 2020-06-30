@@ -5,12 +5,12 @@ import User from './user';
 
 const FriendsSchema = new Schema(
   {
-    requesterId: {
+    requester: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
-    recipientId: {
+    recipient: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
@@ -42,7 +42,11 @@ class Friends {
     // Check if a connection already exists between the two users
     const friends = await this.findFriends(requesterId, recipientId);
     if (!friends) {
-      return this.create({ requesterId, recipientId, status: 'pending' });
+      return this.create({
+        requester: requesterId,
+        recipient: recipientId,
+        status: 'pending',
+      });
     }
 
     // Check if the friend request has already been accepted
@@ -51,7 +55,7 @@ class Friends {
     }
 
     // Also check if the requester has already sent a friend request
-    if (requesterId.equals(friends.requesterId)) {
+    if (requesterId.equals(friends.requester._id)) {
       throw new AppError(400, 'You already sent this person a friend request');
     }
 
@@ -83,11 +87,37 @@ class Friends {
   static findFriends(requesterId, recipientId) {
     const query = this.findOne({
       $or: [
-        { requesterId, recipientId },
-        { requesterId: recipientId, recipientId: requesterId },
+        { requester: requesterId, recipient: recipientId },
+        { requester: recipientId, recipient: requesterId },
       ],
     });
     return query.exec();
+  }
+
+  static async getFriends(userId) {
+    const query = this.find({
+      $or: [{ requester: userId }, { recipient: userId }],
+    })
+      .populate('requester')
+      .populate('recipient')
+      .lean();
+    const results = await query.exec();
+    console.log({ results });
+    return results.reduce(
+      (acc, { status, requester, recipient }) => {
+        if (status === 'accepted') {
+          const friend = userId.equals(requester._id) ? recipient : requester;
+          acc.friends.push(friend);
+        } else if (userId.equals(recipient._id)) {
+          acc.receivedFriendRequests.push(requester);
+        }
+        return acc;
+      },
+      {
+        friends: [],
+        receivedFriendRequests: [],
+      },
+    );
   }
 }
 

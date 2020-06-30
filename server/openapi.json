@@ -583,6 +583,110 @@
         }
       }
     },
+    "/users/{id}/add": {
+      "put": {
+        "summary": "Add user as a friend",
+        "operationId": "addFriend",
+        "tags": ["users"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/idParam"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Friend added successfully"
+          },
+          "400": {
+            "description": "Operation not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}/remove": {
+      "delete": {
+        "summary": "Remove user as a friend",
+        "operationId": "removeFriend",
+        "tags": ["users"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/idParam"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User removed successfully"
+          },
+          "400": {
+            "description": "Operation not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/data/aircraft/{id}": {
       "get": {
         "summary": "Get aircraft by ID",
