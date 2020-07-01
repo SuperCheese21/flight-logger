@@ -102,7 +102,6 @@ class Friends {
       .populate('recipient')
       .lean();
     const results = await query.exec();
-    console.log({ results });
     return results.reduce(
       (acc, { status, requester, recipient }) => {
         if (status === 'accepted') {

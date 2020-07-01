@@ -165,19 +165,22 @@ class Flight {
       const departureAirport = await Airport.findByFlightDiaryString(row[2]);
       const arrivalAirport = await Airport.findByFlightDiaryString(row[3]);
       const airline = await Airline.findByFlightDiaryString(row[7]);
+      const flightNumber = Number(row[1].substr(2));
       const aircraftType = await Aircraft.findByFlightDiaryString(row[8]);
+      const tailNumber = row[9];
+      const seatNumber = row[10];
       const body = {
         user,
         departureAirport: departureAirport._id,
         arrivalAirport: arrivalAirport._id,
-        airline: airline._id,
-        flightNumber: Number(row[1].substr(2)),
-        aircraftType: aircraftType._id,
-        tailNumber: row[9],
+        ...(airline && { airline: airline._id }),
+        ...(flightNumber && { flightNumber }),
+        ...(aircraftType && { aircraftType: aircraftType._id }),
+        ...(tailNumber && { tailNumber }),
         outTime: getUTCTime(row[0], row[4], departureAirport.timeZone),
         inTime: getUTCTime(row[0], row[5], arrivalAirport.timeZone),
         class: this.getFlightClass(Number(row[12])),
-        seatNumber: row[10],
+        ...(seatNumber && { seatNumber }),
         seatPosition: this.getSeatPosition(Number(row[11])),
         reason: this.getFlightReason(Number(row[13])),
       };

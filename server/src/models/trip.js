@@ -18,7 +18,7 @@ const TripSchema = new Schema({
 class Trip {
   static saveTrip(user, body) {
     try {
-      return Trip.create({ user, ...body });
+      return this.create({ user, ...body });
     } catch (err) {
       if (err.name === 'MongoError' && err.code === 11000) {
         return this.saveTrip(user, body);
