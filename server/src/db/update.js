@@ -1,7 +1,7 @@
 import 'regenerator-runtime/runtime';
 
 import axios from 'axios';
-import * as Promise from 'bluebird';
+import Promise from 'bluebird';
 import { argv } from 'yargs';
 
 import connectDatabase from './connect';

@@ -1,6 +1,13 @@
-import moment from 'moment-timezone';
+import Promise from 'bluebird';
 import paginate from 'express-paginate';
-import * as Promise from 'bluebird';
+import moment from 'moment-timezone';
+
+export class AppError extends Error {
+  constructor(status, message) {
+    super(message);
+    this.status = status;
+  }
+}
 
 export const generateRandomId = length => {
   let result = '';
@@ -42,8 +49,8 @@ export const singleResult = model => async (req, res, next) => {
     } else {
       next();
     }
-  } catch (err) {
-    res.sendStatus(500);
+  } catch ({ message }) {
+    res.status(500).json({ message });
   }
 };
 
@@ -89,7 +96,7 @@ export const paginatedSearchResults = (model, searchFields, sort) => async (
       pages: getPages(3, pageCount, page),
     };
     res.json({ metadata, results });
-  } catch (err) {
-    res.sendStatus(500);
+  } catch ({ message }) {
+    res.status(500).json({ message });
   }
 };
