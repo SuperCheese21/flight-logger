@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
 import findOrCreate from 'mongoose-findorcreate';
 
-import { AppError } from '../utils/serverUtils';
+import AppError from '../utils/error';
 
 export const UserSchema = new Schema(
   {

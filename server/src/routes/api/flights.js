@@ -9,19 +9,16 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-router.get('/:id', authenticate, async (req, res, next) => {
-  const { id } = req.params;
-  try {
-    const flight = await Flight.getFlightById(id, req.user);
-    if (flight) {
-      res.json(flight);
-    } else {
-      next();
-    }
-  } catch ({ message }) {
-    res.status(500).json({ message });
-  }
-});
+router.get(
+  '/:id',
+  (req, res, next) => {
+    const { id } = req.params;
+    const query = Flight.getFlightById(id);
+    req.query = query;
+    next();
+  },
+  authenticate,
+);
 
 router.use(passport.authenticate('jwt', { session: false }));
 

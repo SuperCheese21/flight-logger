@@ -3,12 +3,8 @@ import paginate from 'express-paginate';
 import moment from 'moment-timezone';
 import passport from 'passport';
 
-export class AppError extends Error {
-  constructor(status, message) {
-    super(message);
-    this.status = status;
-  }
-}
+import Friends from '../models/friends';
+import AppError from './error';
 
 export const generateRandomId = length => {
   let result = '';
@@ -40,14 +36,40 @@ export const normalizePort = val => {
   return false;
 };
 
-export const authenticate = (req, res, next) => {
-  passport.authenticate('jwt', (err, user) => {
-    if (err) {
-      res.status(500).json({ message: err.message });
+export const authenticate = async (req, res, next) => {
+  const { query } = req;
+  try {
+    const entity = await query.populate('user').exec();
+    if (!entity) {
+      throw new AppError(404, `Entity Not Found`);
     }
-    req.user = user;
-    next();
-  })(req, res, next);
+    const { _id: ownerId, privacy } = entity.user;
+    passport.authenticate('jwt', async (err, { _id: userId }) => {
+      if (err) {
+        throw new AppError(500, err.message);
+      }
+      try {
+        const isFriends = await Friends.findFriends(
+          ownerId,
+          userId,
+          'accepted',
+        );
+        if (
+          privacy === 'public' ||
+          (privacy === 'friends' && (await isFriends)) ||
+          (privacy === 'private' && userId.equals(ownerId))
+        ) {
+          res.json(entity);
+        } else {
+          throw new AppError(401, 'Unauthorized to access entity');
+        }
+      } catch (e) {
+        next(e);
+      }
+    })(req, res, next);
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const singleResult = model => async (req, res, next) => {
@@ -58,16 +80,17 @@ export const singleResult = model => async (req, res, next) => {
     if (result) {
       res.json(result);
     } else {
-      next();
+      throw new AppError(404, `${model.modelName} not found`);
     }
-  } catch ({ message }) {
-    res.status(500).json({ message });
+  } catch (err) {
+    next(err);
   }
 };
 
 export const paginatedSearchResults = (model, searchFields, sort) => async (
   req,
   res,
+  next,
 ) => {
   const {
     query: { limit, page, q },
@@ -107,7 +130,7 @@ export const paginatedSearchResults = (model, searchFields, sort) => async (
       pages: getPages(3, pageCount, page),
     };
     res.json({ metadata, results });
-  } catch ({ message }) {
-    res.status(500).json({ message });
+  } catch (err) {
+    next(err);
   }
 };

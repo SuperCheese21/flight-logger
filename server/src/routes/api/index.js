@@ -21,8 +21,11 @@ router.use('/flights', flightsRouter);
 router.use('/trips', tripsRouter);
 router.use('/users', usersRouter);
 
-router.use('*', (req, res) => {
-  res.status(404).json({ message: 'Not Found' });
+// eslint-disable-next-line no-unused-vars
+router.use('*', (err, req, res, next) => {
+  const { message, status = 500 } = err;
+  console.error(err);
+  res.status(status).json({ message });
 });
 
 export default router;

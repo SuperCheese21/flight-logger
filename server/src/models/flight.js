@@ -93,27 +93,13 @@ class Flight {
     }
   }
 
-  static async getFlightById(id, user) {
-    const query = this.findById(id)
-      .populate({
-        path: 'user',
-        populate: {
-          path: 'friends',
-        },
-      })
+  static getFlightById(id) {
+    return this.findById(id)
       .populate('departureAirport')
       .populate('arrivalAirport')
       .populate('airline')
       .populate('operatorAirline')
       .populate('aircraftType');
-    const flight = await query.exec();
-    // User isn't logged in
-    if (!user) {
-      if (flight.user.privacy === 'public') {
-        return flight;
-      }
-    }
-    return null;
   }
 
   static updateFlight(_id, user, body) {

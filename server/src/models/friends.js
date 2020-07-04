@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 
-import { AppError } from '../utils/serverUtils';
+import AppError from '../utils/error';
 import User from './user';
 
 const FriendsSchema = new Schema(
@@ -84,12 +84,13 @@ class Friends {
     return friends.remove();
   }
 
-  static findFriends(requesterId, recipientId) {
+  static findFriends(requesterId, recipientId, status) {
     const query = this.findOne({
       $or: [
         { requester: requesterId, recipient: recipientId },
         { requester: recipientId, recipient: requesterId },
       ],
+      ...(status && { status }),
     });
     return query.exec();
   }
