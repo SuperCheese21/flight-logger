@@ -1,6 +1,7 @@
 import Promise from 'bluebird';
 import paginate from 'express-paginate';
 import moment from 'moment-timezone';
+import passport from 'passport';
 
 export class AppError extends Error {
   constructor(status, message) {
@@ -37,6 +38,16 @@ export const normalizePort = val => {
   }
 
   return false;
+};
+
+export const authenticate = (req, res, next) => {
+  passport.authenticate('jwt', (err, user) => {
+    if (err) {
+      res.status(500).json({ message: err.message });
+    }
+    req.user = user;
+    next();
+  })(req, res, next);
 };
 
 export const singleResult = model => async (req, res, next) => {

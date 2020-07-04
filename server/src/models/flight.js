@@ -93,16 +93,27 @@ class Flight {
     }
   }
 
-  static getFlightById(id) {
+  static async getFlightById(id, user) {
     const query = this.findById(id)
-      .populate('user')
+      .populate({
+        path: 'user',
+        populate: {
+          path: 'friends',
+        },
+      })
       .populate('departureAirport')
       .populate('arrivalAirport')
       .populate('airline')
       .populate('operatorAirline')
-      .populate('aircraftType')
-      .lean();
-    return query.exec();
+      .populate('aircraftType');
+    const flight = await query.exec();
+    // User isn't logged in
+    if (!user) {
+      if (flight.user.privacy === 'public') {
+        return flight;
+      }
+    }
+    return null;
   }
 
   static updateFlight(_id, user, body) {

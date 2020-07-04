@@ -3,10 +3,25 @@ import multer from 'multer';
 
 import passport from '../../auth/passport';
 import Flight from '../../models/flight';
+import { authenticate } from '../../utils/serverUtils';
 
 const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
+
+router.get('/:id', authenticate, async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const flight = await Flight.getFlightById(id, req.user);
+    if (flight) {
+      res.json(flight);
+    } else {
+      next();
+    }
+  } catch ({ message }) {
+    res.status(500).json({ message });
+  }
+});
 
 router.use(passport.authenticate('jwt', { session: false }));
 
@@ -33,20 +48,6 @@ router.post('/upload/flightdiary', upload.single('file'), async (req, res) => {
   try {
     const flights = await Flight.saveFlightDiaryData(userId, csv);
     res.status(201).json(flights);
-  } catch ({ message }) {
-    res.status(500).json({ message });
-  }
-});
-
-router.get('/:id', async (req, res, next) => {
-  const { id } = req.params;
-  try {
-    const flight = await Flight.getFlightById(id);
-    if (flight) {
-      res.json(flight);
-    } else {
-      next();
-    }
   } catch ({ message }) {
     res.status(500).json({ message });
   }
