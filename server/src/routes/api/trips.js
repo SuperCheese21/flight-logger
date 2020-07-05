@@ -2,37 +2,30 @@ import express from 'express';
 import passport from 'passport';
 
 import Trip from '../../models/trip';
+import { authenticate } from '../../utils/serverUtils';
 
 const router = express.Router();
 
+router.get(
+  '/:id',
+  async (req, res, next) => {
+    const { id } = req.params;
+    const query = Trip.getTripById(id);
+    req.query = query;
+    next();
+  },
+  authenticate,
+);
+
 router.use(passport.authenticate('jwt', { session: false }));
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   const userId = req.user._id;
   try {
     const trip = await Trip.saveTrip(userId, req.body);
     res.status(201).json(trip);
-  } catch ({ message, name }) {
-    if (name === 'ValidationError') {
-      res.status(400);
-    } else {
-      res.status(500);
-    }
-    res.json({ message });
-  }
-});
-
-router.get('/:id', async (req, res, next) => {
-  const { id } = req.params;
-  try {
-    const trip = await Trip.getTripById(id);
-    if (trip) {
-      res.json(trip);
-    } else {
-      next();
-    }
-  } catch ({ message }) {
-    res.status(500).json({ message });
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -41,13 +34,9 @@ router.patch('/:id', async (req, res, next) => {
   const userId = req.user._id;
   try {
     const trip = await Trip.updateTrip(id, userId, req.body);
-    if (trip) {
-      res.json(trip);
-    } else {
-      next();
-    }
-  } catch ({ message }) {
-    res.status(500).json({ message });
+    res.json(trip);
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -55,14 +44,10 @@ router.delete('/:id', async (req, res, next) => {
   const { id } = req.params;
   const userId = req.user._id;
   try {
-    const trip = await Trip.deleteTrip(id, userId);
-    if (trip) {
-      res.sendStatus(204);
-    } else {
-      next();
-    }
-  } catch ({ message }) {
-    res.status(500).json({ message });
+    await Trip.deleteTrip(id, userId);
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
   }
 });
 

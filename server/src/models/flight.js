@@ -7,6 +7,7 @@ import Aircraft from './aircraft';
 import Airline from './airline';
 import Airport from './airport';
 
+import AppError from '../utils/error';
 import { generateRandomId, getUTCTime } from '../utils/serverUtils';
 
 const FlightSchema = new Schema({
@@ -85,9 +86,11 @@ class Flight {
     try {
       return this.create({ user, ...body });
     } catch (err) {
-      // Duplicate ID error - try to save and generate new ID
       if (err.name === 'MongoError' && err.code === 11000) {
         return this.saveFlight(user, body);
+      }
+      if (err.name === 'ValidationError') {
+        throw new AppError(400, err.message);
       }
       throw err;
     }
@@ -99,19 +102,27 @@ class Flight {
       .populate('arrivalAirport')
       .populate('airline')
       .populate('operatorAirline')
-      .populate('aircraftType');
+      .populate('aircraftType')
+      .lean();
   }
 
-  static updateFlight(_id, user, body) {
+  static async updateFlight(_id, user, body) {
     const query = this.findOneAndUpdate({ _id, user }, body, {
       new: true,
     }).lean();
-    return query.exec();
+    const flight = await query.exec();
+    if (!flight) {
+      throw new AppError(404, 'Flight Not Found');
+    }
+    return flight;
   }
 
-  static deleteFlight(_id, user) {
+  static async deleteFlight(_id, user) {
     const query = this.findOneAndDelete({ _id, user }).lean();
-    return query.exec();
+    const flight = await query.exec();
+    if (!flight) {
+      throw new AppError(404, 'Flight Not Found');
+    }
   }
 
   static getSeatPosition = num => {
@@ -155,7 +166,11 @@ class Flight {
     }
   };
 
-  static saveFlightDiaryData(user, csv) {
+  static saveFlightDiaryData(user, file) {
+    if (!file) {
+      throw new AppError(400, 'File not found');
+    }
+    const csv = file.buffer.toString();
     const rows = parse(csv, { skip_empty_lines: true }).slice(1);
 
     const promises = rows.map(async row => {

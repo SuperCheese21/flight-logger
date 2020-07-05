@@ -3,8 +3,9 @@ import paginate from 'express-paginate';
 import moment from 'moment-timezone';
 import passport from 'passport';
 
-import Friends from '../models/friends';
 import AppError from './error';
+
+import Friends from '../models/friends';
 
 export const generateRandomId = length => {
   let result = '';
@@ -45,19 +46,15 @@ export const authenticate = async (req, res, next) => {
     }
     const { _id: ownerId, privacy } = entity.user;
     passport.authenticate('jwt', async (err, { _id: userId }) => {
-      if (err) {
-        throw new AppError(500, err.message);
-      }
       try {
-        const isFriends = await Friends.findFriends(
-          ownerId,
-          userId,
-          'accepted',
-        );
+        if (err) {
+          throw new AppError(500, err.message);
+        }
+        const isFriends = Friends.findFriends(ownerId, userId, 'accepted');
         if (
           privacy === 'public' ||
-          (privacy === 'friends' && (await isFriends)) ||
-          (privacy === 'private' && userId.equals(ownerId))
+          (privacy === 'private' && userId.equals(ownerId)) ||
+          (privacy === 'friends' && (await isFriends))
         ) {
           res.json(entity);
         } else {
