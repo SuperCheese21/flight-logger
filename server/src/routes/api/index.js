@@ -24,7 +24,9 @@ router.use('/users', usersRouter);
 // eslint-disable-next-line no-unused-vars
 router.use('*', (err, req, res, next) => {
   const { message, status = 500 } = err;
-  console.error(err);
+  if (status === 500) {
+    console.error(err);
+  }
   res.status(status).json({ message });
 });
 

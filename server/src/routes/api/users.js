@@ -6,9 +6,7 @@ import User from '../../models/user';
 
 const router = express.Router();
 
-router.use(passport.authenticate('jwt', { session: false }));
-
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
     const user = await User.getUserByUsername(id);
@@ -17,10 +15,12 @@ router.get('/:id', async (req, res) => {
       ...user,
       ...friends,
     });
-  } catch ({ status = 500, message }) {
-    res.status(status).json({ message });
+  } catch (err) {
+    next(err);
   }
 });
+
+router.use(passport.authenticate('jwt', { session: false }));
 
 router.put('/:id/add', async (req, res) => {
   const { id: recipientUsername } = req.params;
