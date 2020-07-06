@@ -37,7 +37,7 @@ export const normalizePort = val => {
   return false;
 };
 
-export const authenticate = async (req, res, next) => {
+export const authenticateEntity = async (req, res, next) => {
   const { query } = req;
   try {
     const entity = await query.populate('user').exec();
@@ -67,6 +67,17 @@ export const authenticate = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+export const authenticateOptional = async (req, res, next) => {
+  passport.authenticate('jwt', async (err, user) => {
+    if (err) {
+      next(err);
+    } else {
+      req.user = user;
+      next();
+    }
+  })(req, res, next);
 };
 
 export const singleResult = model => async (req, res, next) => {

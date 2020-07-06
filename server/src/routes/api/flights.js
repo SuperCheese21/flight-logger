@@ -3,7 +3,7 @@ import multer from 'multer';
 
 import passport from '../../auth/passport';
 import Flight from '../../models/flight';
-import { authenticate } from '../../utils/serverUtils';
+import { authenticateEntity } from '../../utils/serverUtils';
 
 const router = express.Router();
 const storage = multer.memoryStorage();
@@ -17,7 +17,7 @@ router.get(
     req.query = query;
     next();
   },
-  authenticate,
+  authenticateEntity,
 );
 
 router.use(passport.authenticate('jwt', { session: false }));

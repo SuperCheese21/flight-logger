@@ -2,7 +2,7 @@ import express from 'express';
 import passport from 'passport';
 
 import Trip from '../../models/trip';
-import { authenticate } from '../../utils/serverUtils';
+import { authenticateEntity } from '../../utils/serverUtils';
 
 const router = express.Router();
 
@@ -14,7 +14,7 @@ router.get(
     req.query = query;
     next();
   },
-  authenticate,
+  authenticateEntity,
 );
 
 router.use(passport.authenticate('jwt', { session: false }));
