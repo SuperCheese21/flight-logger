@@ -8,12 +8,13 @@ import { authenticateOptional } from '../../utils/serverUtils';
 const router = express.Router();
 
 router.get('/:id', authenticateOptional, async (req, res, next) => {
+  const { user } = req;
   const { id } = req.params;
   try {
-    const user = await User.getUserByUsername(id);
-    const friends = await Friends.getFriends(user._id);
+    const owner = await User.getUserByUsername(id, user);
+    const friends = await Friends.getFriends(owner._id);
     res.json({
-      ...user,
+      ...owner,
       ...friends,
     });
   } catch (err) {

@@ -37,6 +37,23 @@ export const normalizePort = val => {
   return false;
 };
 
+export const authorize = async (user, owner) => {
+  if (!user || !owner) {
+    return false;
+  }
+  const { _id: ownerId, privacy } = owner;
+  const { _id: userId } = user;
+  const isFriends = Friends.findFriends(ownerId, userId, 'accepted');
+  if (
+    privacy === 'public' ||
+    (privacy === 'private' && userId.equals(ownerId)) ||
+    (privacy === 'friends' && (await isFriends))
+  ) {
+    return true;
+  }
+  return false;
+};
+
 export const authenticateEntity = async (req, res, next) => {
   const { query } = req;
   try {
@@ -44,18 +61,14 @@ export const authenticateEntity = async (req, res, next) => {
     if (!entity) {
       throw new AppError(404, `Entity Not Found`);
     }
-    const { _id: ownerId, privacy } = entity.user;
-    passport.authenticate('jwt', async (err, { _id: userId }) => {
+    const owner = entity.user;
+    passport.authenticate('jwt', async (err, user) => {
       try {
         if (err) {
           throw new AppError(500, err.message);
         }
-        const isFriends = Friends.findFriends(ownerId, userId, 'accepted');
-        if (
-          privacy === 'public' ||
-          (privacy === 'private' && userId.equals(ownerId)) ||
-          (privacy === 'friends' && (await isFriends))
-        ) {
+        const isAuthorized = await authorize(user, owner);
+        if (isAuthorized) {
           res.json(entity);
         } else {
           throw new AppError(401, 'Unauthorized to access entity');

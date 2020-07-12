@@ -2,6 +2,7 @@ import { model, Schema } from 'mongoose';
 import findOrCreate from 'mongoose-findorcreate';
 
 import AppError from '../utils/error';
+import { authorize } from '../utils/serverUtils';
 
 export const UserSchema = new Schema(
   {
@@ -35,16 +36,17 @@ export const UserSchema = new Schema(
 );
 
 class User {
-  static async getUserByUsername(username) {
-    const query = this.findOne({ username })
-      .populate('flights')
-      .populate('trips')
-      .lean();
-    const user = await query.exec();
-    if (!user) {
+  static async getUserByUsername(username, user) {
+    const query = this.findOne({ username });
+    const owner = await query.exec();
+    if (!owner) {
       throw new AppError(404, 'User not found');
     }
-    return user;
+    const isAuthorized = await authorize(user, owner);
+    if (isAuthorized) {
+      owner.populate('flights').populate('trips');
+    }
+    return owner;
   }
 }
 
