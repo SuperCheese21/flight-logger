@@ -14,21 +14,17 @@ const RegionSchema = new Schema({
   wiki: String,
 });
 
-class Region {
-  static dataUrl = 'https://ourairports.com/data/regions.csv';
+RegionSchema.statics('dataUrl', 'https://ourairports.com/data/regions.csv');
 
-  static parseData = parseOurAirportsData;
+RegionSchema.statics('parseData', parseOurAirportsData);
 
-  static getUpdate = row => ({
-    _id: row[1],
-    localCode: row[2],
-    name: row[3],
-    continent: row[4],
-    country: { _id: row[5] },
-    wiki: row[6],
-  });
-}
-
-RegionSchema.loadClass(Region);
+RegionSchema.statics('getUpdate', row => ({
+  _id: row[1],
+  localCode: row[2],
+  name: row[3],
+  continent: row[4],
+  country: { _id: row[5] },
+  wiki: row[6],
+}));
 
 export default model('Region', RegionSchema, 'regions');

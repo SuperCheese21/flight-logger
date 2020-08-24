@@ -9,19 +9,15 @@ const CountrySchema = new Schema({
   wiki: String,
 });
 
-class Country {
-  static dataUrl = 'https://ourairports.com/data/countries.csv';
+CountrySchema.static('dataUrl', 'https://ourairports.com/data/countries.csv');
 
-  static parseData = parseOurAirportsData;
+CountrySchema.static('parseData', parseOurAirportsData);
 
-  static getUpdate = row => ({
-    _id: row[1],
-    name: row[2],
-    continent: row[3],
-    wiki: row[4],
-  });
-}
-
-CountrySchema.loadClass(Country);
+CountrySchema.static('getUpdate', row => ({
+  _id: row[1],
+  name: row[2],
+  continent: row[3],
+  wiki: row[4],
+}));
 
 export default model('Country', CountrySchema, 'countries');

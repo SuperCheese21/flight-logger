@@ -35,40 +35,36 @@ const AirportSchema = new Schema(
   { toJSON: { virtuals: true } },
 );
 
-class Airport {
-  get timeZone() {
-    const { lat, lon } = this.location;
-    return geoTz(lat, lon)[0];
-  }
+AirportSchema.static('dataUrl', 'https://ourairports.com/data/airports.csv');
 
-  static dataUrl = 'https://ourairports.com/data/airports.csv';
+AirportSchema.static('parseData', parseOurAirportsData);
 
-  static parseData = parseOurAirportsData;
+AirportSchema.static('getUpdate', row => ({
+  _id: row[1],
+  type: row[2],
+  name: row[3],
+  location: {
+    lat: Number(row[4]),
+    lon: Number(row[5]),
+  },
+  elevation: Number(row[6]),
+  continent: row[7],
+  country: { _id: row[8] },
+  region: { _id: row[9] },
+  municipality: row[10],
+  scheduledService: row[11] === 'yes',
+  codes: {
+    ident: row[1],
+    gps: row[12],
+    iata: row[13],
+    local: row[14],
+  },
+  wiki: row[16],
+}));
 
-  static getUpdate = row => ({
-    _id: row[1],
-    type: row[2],
-    name: row[3],
-    location: {
-      lat: Number(row[4]),
-      lon: Number(row[5]),
-    },
-    elevation: Number(row[6]),
-    continent: row[7],
-    country: { _id: row[8] },
-    region: { _id: row[9] },
-    municipality: row[10],
-    scheduledService: row[11] === 'yes',
-    codes: {
-      ident: row[1],
-      gps: row[12],
-      iata: row[13],
-      local: row[14],
-    },
-    wiki: row[16],
-  });
-
-  static findByFlightDiaryString(text) {
+AirportSchema.static(
+  'findByFlightDiaryString',
+  function findByFlightDiaryString(text) {
     const regex = /\([A-Z]{3}\/[A-Z]{4}\)/g;
     const match = text.match(regex);
     if (!match) {
@@ -76,9 +72,12 @@ class Airport {
     }
     const id = match[0].split('/')[1].split(')')[0];
     return this.findById(id).exec();
-  }
-}
+  },
+);
 
-AirportSchema.loadClass(Airport);
+AirportSchema.virtual('timeZone').get(function getTimeZone() {
+  const { lat, lon } = this.location;
+  return geoTz(lat, lon)[0];
+});
 
 export default model('Airport', AirportSchema, 'airports');
