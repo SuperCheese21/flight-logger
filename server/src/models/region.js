@@ -14,11 +14,11 @@ const RegionSchema = new Schema({
   wiki: String,
 });
 
-RegionSchema.statics('dataUrl', 'https://ourairports.com/data/regions.csv');
+RegionSchema.static('dataUrl', 'https://ourairports.com/data/regions.csv');
 
-RegionSchema.statics('parseData', parseOurAirportsData);
+RegionSchema.static('parseData', parseOurAirportsData);
 
-RegionSchema.statics('getUpdate', row => ({
+RegionSchema.static('getUpdate', row => ({
   _id: row[1],
   localCode: row[2],
   name: row[3],
