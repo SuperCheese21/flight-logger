@@ -32,12 +32,14 @@
 }
 
 .search-dropdown {
+  position: fixed;
   width: 400px;
 }
 
 .search-dropdown-item {
   height: 50px;
   display: flex;
+  background-color: white;
   justify-content: center;
   align-items: center;
 }

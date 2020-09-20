@@ -9,12 +9,33 @@ import { useParams } from 'react-router-dom';
 
 import tabs from './tabs';
 
+const getSearchResults = async (collection, term) => {
+  try {
+    const res = await fetch(
+      `http://localhost:3000/api/data/${collection}?q=${term}`,
+    );
+    const json = await res.json();
+    return json.results;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
 const SearchBoxContainer = () => {
-  const [results] = useState([]);
+  const [results, setResults] = useState([]);
   const { type } = useParams();
 
   const keys = Object.keys(tabs);
   const defaultActiveKey = keys.includes(type) ? type : keys[0];
+
+  const onChange = async ({ target: { value } }) => {
+    if (!value) {
+      return setResults([]);
+    }
+    const searchResults = await getSearchResults(defaultActiveKey, value);
+    return setResults(searchResults);
+  };
 
   return (
     <div className="data-search-page">
@@ -35,6 +56,7 @@ const SearchBoxContainer = () => {
           <div className="search-box-container">
             <InputGroup size="lg">
               <FormControl
+                onChange={onChange}
                 className="search-box"
                 aria-label="Search"
                 aria-describedby="inputGroup-sizing-sm"
@@ -46,7 +68,7 @@ const SearchBoxContainer = () => {
                   className="search-dropdown-item"
                   eventKey={index}
                 >
-                  {result.name}
+                  {`${result.iata}/${result.icao} - ${result.names[0].name}`}
                 </Dropdown.Item>
               ))}
             </Dropdown>
