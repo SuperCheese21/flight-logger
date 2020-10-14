@@ -7,7 +7,7 @@ import Nav from 'react-bootstrap/Nav';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useParams } from 'react-router-dom';
 
-import tabs from './tabs';
+import dropdownItems from './dropdown-items';
 
 const getSearchResults = async (collection, term) => {
   try {
@@ -26,14 +26,13 @@ const SearchBoxContainer = () => {
   const [results, setResults] = useState([]);
   const { type } = useParams();
 
-  const keys = Object.keys(tabs);
-  const defaultActiveKey = keys.includes(type) ? type : keys[0];
+  const activeKey = type || dropdownItems[0].name;
 
   const onChange = async ({ target: { value } }) => {
     if (!value) {
       return setResults([]);
     }
-    const searchResults = await getSearchResults(defaultActiveKey, value);
+    const searchResults = await getSearchResults(activeKey, value);
     return setResults(searchResults);
   };
 
@@ -44,11 +43,11 @@ const SearchBoxContainer = () => {
           Data Search Tool
         </Card.Header>
         <Card.Body className="search-card-body">
-          <Nav variant="tabs" defaultActiveKey={defaultActiveKey}>
-            {Object.entries(tabs).map(([key, value]) => (
+          <Nav variant="tabs" defaultActiveKey={activeKey}>
+            {dropdownItems.map(({ name, label }) => (
               <Nav.Item>
-                <LinkContainer to={`/data/${key}`}>
-                  <Nav.Link eventKey={key}>{value}</Nav.Link>
+                <LinkContainer to={`/data/${name}`}>
+                  <Nav.Link eventKey={name}>{label}</Nav.Link>
                 </LinkContainer>
               </Nav.Item>
             ))}
@@ -63,14 +62,7 @@ const SearchBoxContainer = () => {
               />
             </InputGroup>
             <Dropdown className="search-dropdown">
-              {results.map((result, index) => (
-                <Dropdown.Item
-                  className="search-dropdown-item"
-                  eventKey={index}
-                >
-                  {`${result.iata}/${result.icao} - ${result.names[0].name}`}
-                </Dropdown.Item>
-              ))}
+              {results.map(result => null)}
             </Dropdown>
           </div>
         </Card.Body>
