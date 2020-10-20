@@ -1,6 +1,9 @@
 import { number } from 'prop-types';
 import React from 'react';
+
 import DropdownItem from './DropdownItem';
+
+import { aircraftShape } from '../api';
 
 const AircraftDropdownItem = ({ index, result }) => (
   <DropdownItem eventKey={index}>
@@ -8,11 +11,9 @@ const AircraftDropdownItem = ({ index, result }) => (
   </DropdownItem>
 );
 
-const aircraftResultShape = {};
-
 AircraftDropdownItem.propTypes = {
   index: number.isRequired,
-  result: aircraftResultShape.isRequired,
+  result: aircraftShape.isRequired,
 };
 
 export default AircraftDropdownItem;

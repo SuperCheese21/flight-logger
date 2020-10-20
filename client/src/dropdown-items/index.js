@@ -4,7 +4,7 @@ import AirportDropdownItem from './AirportDropdownItem';
 import CountryDropdownItem from './CountryDropdownItem';
 import RegionDropdownItem from './RegionDropdownItem';
 
-export default [
+const items = [
   {
     name: 'aircraft',
     label: 'Aircraft',
@@ -29,5 +29,9 @@ export default [
     name: 'regions',
     label: 'Regions',
     component: RegionDropdownItem,
-  },
+  }
 ];
+
+export default items;
+
+export const getItemByKey = key => items.find(({ name }) => name === key);

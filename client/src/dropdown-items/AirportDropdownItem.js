@@ -1,18 +1,19 @@
 import { number } from 'prop-types';
 import React from 'react';
+
 import DropdownItem from './DropdownItem';
+
+import { airportShape } from '../api';
 
 const AirportDropdownItem = ({ index, result }) => (
   <DropdownItem eventKey={index}>
-    {`${result.iata}/${result.icao} - ${result.names[0].name}`}
+    {`${result.codes.iata || result.codes.local}/${result.codes.ident} - ${result.name}`}
   </DropdownItem>
 );
 
-const airportResultShape = {};
-
 AirportDropdownItem.propTypes = {
   index: number.isRequired,
-  result: airportResultShape.isRequired,
+  result: airportShape.isRequired,
 };
 
 export default AirportDropdownItem;

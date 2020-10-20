@@ -1,18 +1,19 @@
 import { number } from 'prop-types';
 import React from 'react';
+
 import DropdownItem from './DropdownItem';
+
+import { regionShape } from '../api';
 
 const RegionDropdownItem = ({ index, result }) => (
   <DropdownItem eventKey={index}>
-    {`${result.iata}/${result.icao} - ${result.names[0].name}`}
+    {`${result._id} - ${result.name}, ${result.country.name}`}
   </DropdownItem>
 );
 
-const regionResultShape = {};
-
 RegionDropdownItem.propTypes = {
   index: number.isRequired,
-  result: regionResultShape.isRequired,
+  result: regionShape.isRequired,
 };
 
 export default RegionDropdownItem;
