@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Card from 'react-bootstrap/Card';
-import Dropdown from 'react-bootstrap/Dropdown';
 import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Nav from 'react-bootstrap/Nav';
@@ -8,6 +7,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { useParams } from 'react-router-dom';
 
 import dropdownItems from './dropdown-items';
+import ResultsDropdown from './ResultsDropdown';
 
 const getSearchResults = async (collection, term) => {
   try {
@@ -23,10 +23,11 @@ const getSearchResults = async (collection, term) => {
 };
 
 const SearchBoxContainer = () => {
-  const [results, setResults] = useState([]);
   const { type } = useParams();
+  const [results, setResults] = useState([]);
 
-  const activeKey = type || dropdownItems[0].name;
+  const dropdownEntries = Object.entries(dropdownItems);
+  const activeKey = type || dropdownEntries[0][0];
 
   const onChange = async ({ target: { value } }) => {
     if (!value) {
@@ -44,7 +45,7 @@ const SearchBoxContainer = () => {
         </Card.Header>
         <Card.Body className="search-card-body">
           <Nav variant="tabs" defaultActiveKey={activeKey}>
-            {dropdownItems.map(({ name, label }) => (
+            {dropdownEntries.map(([name, { label }]) => (
               <Nav.Item>
                 <LinkContainer to={`/data/${name}`}>
                   <Nav.Link eventKey={name}>{label}</Nav.Link>
@@ -61,9 +62,7 @@ const SearchBoxContainer = () => {
                 aria-describedby="inputGroup-sizing-sm"
               />
             </InputGroup>
-            <Dropdown className="search-dropdown">
-              {results.map(result => null)}
-            </Dropdown>
+            <ResultsDropdown results={results} type={activeKey} />
           </div>
         </Card.Body>
       </Card>

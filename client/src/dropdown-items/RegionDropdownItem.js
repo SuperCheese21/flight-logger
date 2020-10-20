@@ -3,7 +3,7 @@ import React from 'react';
 
 import DropdownItem from './DropdownItem';
 
-import { regionShape } from '../api';
+import { regionShape } from '../api/shapes';
 
 const RegionDropdownItem = ({ index, result }) => (
   <DropdownItem eventKey={index}>

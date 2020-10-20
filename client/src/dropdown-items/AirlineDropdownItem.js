@@ -3,7 +3,7 @@ import React from 'react';
 
 import DropdownItem from './DropdownItem';
 
-import { airlineShape } from '../api';
+import { airlineShape } from '../api/shapes';
 
 const AirlineDropdownItem = ({ index, result }) => (
   <DropdownItem eventKey={index}>

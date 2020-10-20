@@ -4,34 +4,25 @@ import AirportDropdownItem from './AirportDropdownItem';
 import CountryDropdownItem from './CountryDropdownItem';
 import RegionDropdownItem from './RegionDropdownItem';
 
-const items = [
-  {
-    name: 'aircraft',
+export default {
+  aircraft: {
     label: 'Aircraft',
     component: AircraftDropdownItem,
   },
-  {
-    name: 'airlines',
+  airlines: {
     label: 'Airlines',
     component: AirlineDropdownItem,
   },
-  {
-    name: 'airports',
+  airports: {
     label: 'Airports',
     component: AirportDropdownItem,
   },
-  {
-    name: 'countries',
+  countries: {
     label: 'Countries',
     component: CountryDropdownItem,
   },
-  {
-    name: 'regions',
+  regions: {
     label: 'Regions',
     component: RegionDropdownItem,
-  }
-];
-
-export default items;
-
-export const getItemByKey = key => items.find(({ name }) => name === key);
+  },
+};

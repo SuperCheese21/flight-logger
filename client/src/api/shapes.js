@@ -51,6 +51,5 @@ export const airportShape = {
   region: regionShape,
   municipality: string.isRequired,
   scheduledService: bool.isRequired,
-  
   wiki: string.isRequired,
 };

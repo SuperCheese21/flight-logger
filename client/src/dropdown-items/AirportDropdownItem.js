@@ -3,11 +3,13 @@ import React from 'react';
 
 import DropdownItem from './DropdownItem';
 
-import { airportShape } from '../api';
+import { airportShape } from '../api/shapes';
 
 const AirportDropdownItem = ({ index, result }) => (
   <DropdownItem eventKey={index}>
-    {`${result.codes.iata || result.codes.local}/${result.codes.ident} - ${result.name}`}
+    {`${result.codes.iata || result.codes.local}/${result.codes.ident} - ${
+      result.name
+    }`}
   </DropdownItem>
 );
 
