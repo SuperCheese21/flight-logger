@@ -5,10 +5,12 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Nav from 'react-bootstrap/Nav';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
 
 import dropdownItems from './dropdown-items';
 import ResultsDropdown from './ResultsDropdown';
 
+// TODO: Move to API directory
 const getSearchResults = async (collection, term) => {
   try {
     const res = await fetch(
@@ -22,7 +24,42 @@ const getSearchResults = async (collection, term) => {
   }
 };
 
-const SearchBoxContainer = () => {
+const SearchBoxContainer = styled.div`
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const SearchCardHeader = styled(Card.Header)`
+  text-align: center;
+  font-weight: bold;
+  font-size: 28px;
+`;
+
+const SearchCardBody = styled(Card.Body)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 800px;
+  height: 300px;
+  padding-bottom: 70px;
+`;
+
+const SearchInputContainer = styled.div`
+  width: 600px;
+  margin-top: 10px;
+`;
+
+const SearchFormControl = styled(FormControl)`
+  &:focus {
+    box-shadow: none;
+  }
+`;
+
+const SearchBoxPage = () => {
   const { type } = useParams();
   const [results, setResults] = useState([]);
 
@@ -38,12 +75,10 @@ const SearchBoxContainer = () => {
   };
 
   return (
-    <div className="data-search-page">
-      <Card className="search-card-container">
-        <Card.Header className="search-card-header">
-          Data Search Tool
-        </Card.Header>
-        <Card.Body className="search-card-body">
+    <SearchBoxContainer>
+      <Card>
+        <SearchCardHeader>Data Search Tool</SearchCardHeader>
+        <SearchCardBody>
           <Nav variant="tabs" defaultActiveKey={activeKey}>
             {dropdownEntries.map(([name, { label }]) => (
               <Nav.Item>
@@ -53,21 +88,20 @@ const SearchBoxContainer = () => {
               </Nav.Item>
             ))}
           </Nav>
-          <div className="search-box-container">
+          <SearchInputContainer>
             <InputGroup size="lg">
-              <FormControl
+              <SearchFormControl
                 onChange={onChange}
-                className="search-box"
                 aria-label="Search"
                 aria-describedby="inputGroup-sizing-sm"
               />
             </InputGroup>
             <ResultsDropdown results={results} type={activeKey} />
-          </div>
-        </Card.Body>
+          </SearchInputContainer>
+        </SearchCardBody>
       </Card>
-    </div>
+    </SearchBoxContainer>
   );
 };
 
-export default SearchBoxContainer;
+export default SearchBoxPage;

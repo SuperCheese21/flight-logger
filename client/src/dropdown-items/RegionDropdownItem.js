@@ -7,7 +7,7 @@ import { regionShape } from '../api/shapes';
 
 const RegionDropdownItem = ({ index, result }) => (
   <DropdownItem eventKey={index}>
-    {`${result._id} - ${result.name}, ${result.country.name}`}
+    {`${result._id} - ${result.name}, ${result.country}`}
   </DropdownItem>
 );
 
