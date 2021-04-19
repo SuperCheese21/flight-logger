@@ -1,5 +1,6 @@
 import { model, Schema } from 'mongoose';
 
+import AppError from '../utils/error';
 import { generateRandomId } from '../utils/serverUtils';
 
 const TripSchema = new Schema({
@@ -23,27 +24,36 @@ class Trip {
       if (err.name === 'MongoError' && err.code === 11000) {
         return this.saveTrip(user, body);
       }
+      if (err.name === 'ValidationError') {
+        throw new AppError(400, err.message);
+      }
       throw err;
     }
   }
 
   static getTripById(id) {
-    const query = this.findById(id)
+    return this.findById(id)
       .populate('flights')
       .lean();
-    return query.exec();
   }
 
-  static updateTrip(_id, user, body) {
+  static async updateTrip(_id, user, body) {
     const query = this.findOneAndUpdate({ _id, user }, body, {
       new: true,
     }).lean();
-    return query.exec();
+    const trip = await query.exec();
+    if (!trip) {
+      throw new AppError(404, 'Trip Not Found');
+    }
+    return trip;
   }
 
-  static deleteTrip(_id, user) {
+  static async deleteTrip(_id, user) {
     const query = this.findOneAndDelete({ _id, user }).lean();
-    return query.exec();
+    const trip = await query.exec();
+    if (!trip) {
+      throw new AppError(404, 'Trip Not Found');
+    }
   }
 }
 

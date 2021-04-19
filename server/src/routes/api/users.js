@@ -3,44 +3,46 @@ import express from 'express';
 import passport from '../../auth/passport';
 import Friends from '../../models/friends';
 import User from '../../models/user';
+import { authenticateOptional } from '../../utils/serverUtils';
 
 const router = express.Router();
 
-router.use(passport.authenticate('jwt', { session: false }));
-
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticateOptional, async (req, res, next) => {
+  const { user } = req;
   const { id } = req.params;
   try {
-    const user = await User.getUserByUsername(id);
-    const friends = await Friends.getFriends(user._id);
+    const owner = await User.getUserByUsername(id, user);
+    const friends = await Friends.getFriends(owner._id);
     res.json({
-      ...user,
+      ...owner,
       ...friends,
     });
-  } catch ({ status = 500, message }) {
-    res.status(status).json({ message });
+  } catch (err) {
+    next(err);
   }
 });
 
-router.put('/:id/add', async (req, res) => {
+router.use(passport.authenticate('jwt', { session: false }));
+
+router.put('/:id/add', async (req, res, next) => {
   const { id: recipientUsername } = req.params;
   const { _id: requesterId } = req.user;
   try {
     await Friends.addFriend(requesterId, recipientUsername);
     res.sendStatus(204);
-  } catch ({ status = 500, message }) {
-    res.status(status).json({ message });
+  } catch (err) {
+    next(err);
   }
 });
 
-router.delete('/:id/remove', async (req, res) => {
+router.delete('/:id/remove', async (req, res, next) => {
   const { id: recipientUsername } = req.params;
   const { _id: requesterId } = req.user;
   try {
     await Friends.removeFriend(requesterId, recipientUsername);
     res.sendStatus(204);
-  } catch ({ status = 500, message }) {
-    res.status(status).json({ message });
+  } catch (err) {
+    next(err);
   }
 });
 

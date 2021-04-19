@@ -1,13 +1,11 @@
 import Promise from 'bluebird';
 import paginate from 'express-paginate';
 import moment from 'moment-timezone';
+import passport from 'passport';
 
-export class AppError extends Error {
-  constructor(status, message) {
-    super(message);
-    this.status = status;
-  }
-}
+import AppError from './error';
+
+import Friends from '../models/friends';
 
 export const generateRandomId = length => {
   let result = '';
@@ -39,6 +37,62 @@ export const normalizePort = val => {
   return false;
 };
 
+export const authorize = async (user, owner) => {
+  if (!user || !owner) {
+    return false;
+  }
+  const { _id: ownerId, privacy } = owner;
+  const { _id: userId } = user;
+  const isFriends = Friends.findFriends(ownerId, userId, 'accepted');
+  if (
+    privacy === 'public' ||
+    (privacy === 'private' && userId.equals(ownerId)) ||
+    (privacy === 'friends' && (await isFriends))
+  ) {
+    return true;
+  }
+  return false;
+};
+
+export const authenticateEntity = async (req, res, next) => {
+  const { query } = req;
+  try {
+    const entity = await query.populate('user').exec();
+    if (!entity) {
+      throw new AppError(404, `Entity Not Found`);
+    }
+    const owner = entity.user;
+    passport.authenticate('jwt', async (err, user) => {
+      try {
+        if (err) {
+          throw new AppError(500, err.message);
+        }
+        const isAuthorized = await authorize(user, owner);
+        if (isAuthorized) {
+          res.json(entity);
+        } else {
+          throw new AppError(401, 'Unauthorized to access entity');
+        }
+      } catch (e) {
+        next(e);
+      }
+    })(req, res, next);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const authenticateOptional = async (req, res, next) => {
+  passport.authenticate('jwt', async (err, user) => {
+    if (err) {
+      next(err);
+    } else {
+      req.user = user;
+      next();
+    }
+  })(req, res, next);
+};
+
 export const singleResult = model => async (req, res, next) => {
   const _id = req.params.id;
   const query = model.findOne({ _id });
@@ -47,16 +101,17 @@ export const singleResult = model => async (req, res, next) => {
     if (result) {
       res.json(result);
     } else {
-      next();
+      throw new AppError(404, `${model.modelName} not found`);
     }
-  } catch ({ message }) {
-    res.status(500).json({ message });
+  } catch (err) {
+    next(err);
   }
 };
 
 export const paginatedSearchResults = (model, searchFields, sort) => async (
   req,
   res,
+  next,
 ) => {
   const {
     query: { limit, page, q },
@@ -96,7 +151,7 @@ export const paginatedSearchResults = (model, searchFields, sort) => async (
       pages: getPages(3, pageCount, page),
     };
     res.json({ metadata, results });
-  } catch ({ message }) {
-    res.status(500).json({ message });
+  } catch (err) {
+    next(err);
   }
 };

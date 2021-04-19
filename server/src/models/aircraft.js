@@ -18,43 +18,46 @@ const AircraftSchema = new Schema({
   names: [NameSchema],
 });
 
-class Aircraft {
-  static dataUrl =
-    'https://en.wikipedia.org/wiki/List_of_aircraft_type_designators';
+AircraftSchema.static(
+  'dataUrl',
+  'https://en.wikipedia.org/wiki/List_of_aircraft_type_designators',
+);
 
-  static parseData = data => {
-    const $ = parseWikipediaData(data);
-    return $('.wikitable tr')
-      .toArray()
-      .slice(1);
-  };
+AircraftSchema.static('parseData', data => {
+  const $ = parseWikipediaData(data);
+  return $('.wikitable tr')
+    .toArray()
+    .slice(1);
+});
 
-  static getUpdate = item => {
-    const $ = cheerio.load(item);
-    const tds = $('td');
-    const icao = getText(tds.eq(0));
-    const iata = getText(tds.eq(1));
+AircraftSchema.static('getUpdate', item => {
+  const $ = cheerio.load(item);
+  const tds = $('td');
+  const icao = getText(tds.eq(0));
+  const iata = getText(tds.eq(1));
 
-    if (!icao || !iata) {
-      return null;
-    }
+  if (!icao || !iata) {
+    return null;
+  }
 
-    const _id = `${iata}_${icao}`;
-    const names = tds
-      .eq(2)
-      .children('a')
-      .map((j, a) => {
-        const name = $(a).text();
-        const href = $(a).attr('href');
-        const wiki = `https://en.wikipedia.org${href}`;
-        return { name, wiki };
-      })
-      .get();
+  const _id = `${iata}_${icao}`;
+  const names = tds
+    .eq(2)
+    .children('a')
+    .map((j, a) => {
+      const name = $(a).text();
+      const href = $(a).attr('href');
+      const wiki = `https://en.wikipedia.org${href}`;
+      return { name, wiki };
+    })
+    .get();
 
-    return { _id, iata, icao, names };
-  };
+  return { _id, iata, icao, names };
+});
 
-  static findByFlightDiaryString(text) {
+AircraftSchema.static(
+  'findByFlightDiaryString',
+  function findByFlightDiaryString(text) {
     const regex = /\([A-Z0-9]{3,4}\)/g;
     const match = text.match(regex);
     if (!match) {
@@ -64,9 +67,7 @@ class Aircraft {
     return this.findOne({ icao })
       .lean()
       .exec();
-  }
-}
-
-AircraftSchema.loadClass(Aircraft);
+  },
+);
 
 export default model('Aircraft', AircraftSchema, 'aircraft');
