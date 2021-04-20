@@ -7,7 +7,7 @@ import { argv } from 'yargs';
 import connectDatabase from './connect';
 import models from '../models';
 
-const PROMISE_CONCURRENCY = 100;
+const PROMISE_CONCURRENCY = 50;
 
 const updateCollection = async (model, newData) => {
   console.log(`Retrieving old data from database...`);
