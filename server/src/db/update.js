@@ -35,7 +35,7 @@ const updateCollection = async (model, newDocuments) => {
   let count = 0;
   await Promise.all(
     newDocuments.map(document =>
-      model.findByIdAndUpdate(document._id, document, { upsert: true }, e => {
+      model.updateOne({ _id: document._id }, document, { upsert: true }, e => {
         count += 1;
         if (e) console.error(e);
         else if (
