@@ -1,28 +1,26 @@
-import AircraftDropdownItem from './AircraftDropdownItem';
-import AirlineDropdownItem from './AirlineDropdownItem';
-import AirportDropdownItem from './AirportDropdownItem';
-import CountryDropdownItem from './CountryDropdownItem';
-import RegionDropdownItem from './RegionDropdownItem';
+import { DATA_TYPE_KEYS } from '../utils/constants';
 
 export default {
-  aircraft: {
+  [DATA_TYPE_KEYS.aircraft]: {
     label: 'Aircraft',
-    component: AircraftDropdownItem,
+    textExtractor: ({ iata, icao, names }) =>
+      `${iata}/${icao} - ${names[0].name}`,
   },
-  airlines: {
+  [DATA_TYPE_KEYS.airlines]: {
     label: 'Airlines',
-    component: AirlineDropdownItem,
+    textExtractor: ({ iata, icao, name }) => `${iata}/${icao} - ${name}`,
   },
-  airports: {
+  [DATA_TYPE_KEYS.airports]: {
     label: 'Airports',
-    component: AirportDropdownItem,
+    textExtractor: ({ codes, name }) =>
+      `${codes.iata || codes.local}/${codes.ident} - ${name}`,
   },
-  countries: {
+  [DATA_TYPE_KEYS.countries]: {
     label: 'Countries',
-    component: CountryDropdownItem,
+    textExtractor: ({ _id, name }) => `${_id} - ${name}`,
   },
-  regions: {
+  [DATA_TYPE_KEYS.regions]: {
     label: 'Regions',
-    component: RegionDropdownItem,
+    textExtractor: ({ _id, country, name }) => `${_id} - ${name}, ${country}`,
   },
 };

@@ -3,22 +3,24 @@ import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import styled from 'styled-components';
 import dropdownItems from './dropdown-items';
+import StyledDropdownItem from './dropdown-items/StyledDropdownItem';
 
-const ResultsDropdown = ({ className, results, type }) => {
-  const DropdownComponent = dropdownItems[type].component;
+const ResultsDropdown = ({ results, activeKey }) => {
+  const { textExtractor } = dropdownItems[activeKey];
   return (
-    <Dropdown className={className}>
+    <Dropdown>
       {results.map(result => (
-        <DropdownComponent result={result} type={type} />
+        <StyledDropdownItem key={result._id} eventKey={result._id}>
+          {textExtractor(result)}
+        </StyledDropdownItem>
       ))}
     </Dropdown>
   );
 };
 
 ResultsDropdown.propTypes = {
-  className: string.isRequired,
+  activeKey: string.isRequired,
   results: arrayOf(object), // eslint-disable-line react/forbid-prop-types
-  type: string.isRequired,
 };
 
 ResultsDropdown.defaultProps = {

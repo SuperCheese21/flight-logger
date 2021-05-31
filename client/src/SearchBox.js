@@ -9,6 +9,7 @@ import styled from 'styled-components';
 
 import dropdownItems from './dropdown-items';
 import ResultsDropdown from './ResultsDropdown';
+import { DATA_TYPE_KEYS } from './utils/constants';
 
 // TODO: Move to API directory
 const getSearchResults = async (collection, term) => {
@@ -63,8 +64,7 @@ const SearchBoxPage = () => {
   const { type } = useParams();
   const [results, setResults] = useState([]);
 
-  const dropdownEntries = Object.entries(dropdownItems);
-  const activeKey = type || dropdownEntries[0][0];
+  const activeKey = DATA_TYPE_KEYS[type] || DATA_TYPE_KEYS.aircraft;
 
   const onChange = async ({ target: { value } }) => {
     if (!value) {
@@ -80,10 +80,10 @@ const SearchBoxPage = () => {
         <SearchCardHeader>Data Search Tool</SearchCardHeader>
         <SearchCardBody>
           <Nav variant="tabs" defaultActiveKey={activeKey}>
-            {dropdownEntries.map(([name, { label }]) => (
+            {Object.entries(dropdownItems).map(([key, { label }]) => (
               <Nav.Item>
-                <LinkContainer to={`/data/${name}`}>
-                  <Nav.Link eventKey={name}>{label}</Nav.Link>
+                <LinkContainer to={`/data/${key}`}>
+                  <Nav.Link eventKey={key}>{label}</Nav.Link>
                 </LinkContainer>
               </Nav.Item>
             ))}
@@ -96,7 +96,7 @@ const SearchBoxPage = () => {
                 aria-describedby="inputGroup-sizing-sm"
               />
             </InputGroup>
-            <ResultsDropdown results={results} type={activeKey} />
+            <ResultsDropdown results={results} activeKey={activeKey} />
           </SearchInputContainer>
         </SearchCardBody>
       </Card>
