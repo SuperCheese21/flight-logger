@@ -8,7 +8,12 @@ const ResultsDropdown = ({ results, activeKey }) => {
   return (
     <StyledDropdown>
       {results.map(result => (
-        <StyledDropdownItem key={result._id} eventKey={result._id}>
+        <StyledDropdownItem
+          key={result._id}
+          href={result.wiki || result.names[0].wiki || '#'}
+          target="_blank"
+          eventKey={result._id}
+        >
           {textExtractor(result)}
         </StyledDropdownItem>
       ))}
