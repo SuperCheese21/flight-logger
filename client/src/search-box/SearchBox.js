@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import Card from 'react-bootstrap/Card';
-import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Nav from 'react-bootstrap/Nav';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
 
-import dropdownItems from './dropdown-items';
-import ResultsDropdown from './ResultsDropdown';
-import { DATA_TYPE_KEYS } from './utils/constants';
+import {
+  SearchBoxContainer,
+  SearchCardBody,
+  SearchCardHeader,
+  SearchFormControl,
+  SearchInputContainer,
+} from './styled';
+import dropdownItems from '../dropdown-items';
+import ResultsDropdown from '../dropdown-items/ResultsDropdown';
+import { DATA_TYPE_KEYS } from '../utils/constants';
 
 // TODO: Move to API directory
 const getSearchResults = async (collection, term) => {
@@ -24,41 +29,6 @@ const getSearchResults = async (collection, term) => {
     return [];
   }
 };
-
-const SearchBoxContainer = styled.div`
-  display: flex;
-  height: 100vh;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-const SearchCardHeader = styled(Card.Header)`
-  text-align: center;
-  font-weight: bold;
-  font-size: 28px;
-`;
-
-const SearchCardBody = styled(Card.Body)`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 800px;
-  height: 300px;
-  padding-bottom: 70px;
-`;
-
-const SearchInputContainer = styled.div`
-  width: 600px;
-  margin-top: 10px;
-`;
-
-const SearchFormControl = styled(FormControl)`
-  &:focus {
-    box-shadow: none;
-  }
-`;
 
 const SearchBoxPage = () => {
   const { type } = useParams();

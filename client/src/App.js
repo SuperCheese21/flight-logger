@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import SearchBoxContainer from './SearchBox';
+import SearchBoxContainer from './search-box/SearchBox';
 
 function App() {
   return (
