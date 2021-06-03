@@ -1,4 +1,4 @@
-import { DATA_TYPE_KEYS } from '../utils/constants';
+import { DATA_TYPE_KEYS } from '../constants';
 
 export default {
   [DATA_TYPE_KEYS.aircraft]: {
