@@ -1,9 +1,14 @@
 import { func, string } from 'prop-types';
 import React, { useState } from 'react';
 import InputGroup from 'react-bootstrap/InputGroup';
-import { SearchFormControl, SearchInputContainer } from '../search-box/styled';
-import { StyledDropdown, StyledDropdownItem } from './styled';
-import dropdownItems from '.';
+import {
+  StyledDropdown,
+  StyledDropdownItem,
+  StyledFormControl,
+  StyledInputContainer,
+} from './styled';
+
+import dropdownItems from '../search-box/dropdownItems';
 
 const LiveSearchInput = ({ activeKey, getFn }) => {
   const [results, setResults] = useState([]);
@@ -18,9 +23,9 @@ const LiveSearchInput = ({ activeKey, getFn }) => {
   };
 
   return (
-    <SearchInputContainer>
+    <StyledInputContainer>
       <InputGroup size="lg">
-        <SearchFormControl
+        <StyledFormControl
           onChange={onChange}
           aria-label="Search"
           aria-describedby="inputGroup-sizing-sm"
@@ -38,7 +43,7 @@ const LiveSearchInput = ({ activeKey, getFn }) => {
           </StyledDropdownItem>
         ))}
       </StyledDropdown>
-    </SearchInputContainer>
+    </StyledInputContainer>
   );
 };
 
