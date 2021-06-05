@@ -4,11 +4,11 @@ import { usePrevious } from '../common/hooks';
 import { getJsonData } from '../common/utils';
 
 const useLiveSearch = ({
-  debounceTime = 250,
+  debounceTime,
   getUrl,
-  minQueryLength = 1,
+  minQueryLength,
   query,
-  transformData = _ => _,
+  transformData,
 }) => {
   const [results, setResults] = useState([]);
 

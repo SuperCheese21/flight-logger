@@ -64,7 +64,7 @@ LiveSearchInput.propTypes = {
 };
 
 LiveSearchInput.defaultProps = {
-  debounceTime: 250,
+  debounceTime: 300,
   minQueryLength: 1,
   transformData: _ => _,
 };
