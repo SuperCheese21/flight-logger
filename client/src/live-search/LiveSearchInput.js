@@ -1,32 +1,40 @@
-import { func, string } from 'prop-types';
+import { func, number, string } from 'prop-types';
 import React, { useState } from 'react';
 import InputGroup from 'react-bootstrap/InputGroup';
+
 import {
   StyledDropdown,
   StyledDropdownItem,
   StyledFormControl,
   StyledInputContainer,
 } from './styled';
+import useLiveSearch from './useLiveSearch';
 
-import dropdownItems from '../search-box/dropdownItems';
+const LiveSearchInput = ({
+  debounceTime,
+  getUrl,
+  minQueryLength,
+  textExtractor,
+  transformData,
+}) => {
+  const [query, setQuery] = useState('');
 
-const LiveSearchInput = ({ activeKey, getFn }) => {
-  const [results, setResults] = useState([]);
-  const { textExtractor } = dropdownItems[activeKey];
+  const handleChange = ({ target: { value } }) => setQuery(value);
 
-  const onChange = async ({ target: { value } }) => {
-    if (!value) {
-      return setResults([]);
-    }
-    const newResults = await getFn(value);
-    return setResults(newResults);
-  };
+  const results = useLiveSearch({
+    debounceTime,
+    getUrl,
+    minQueryLength,
+    transformData,
+    query,
+  });
 
   return (
     <StyledInputContainer>
       <InputGroup size="lg">
         <StyledFormControl
-          onChange={onChange}
+          onChange={handleChange}
+          value={query}
           aria-label="Search"
           aria-describedby="inputGroup-sizing-sm"
         />
@@ -35,7 +43,7 @@ const LiveSearchInput = ({ activeKey, getFn }) => {
         {results.map(result => (
           <StyledDropdownItem
             key={result._id}
-            href={result.wiki || result.name || result.names[0].wiki || '#'}
+            href={result.wiki || result.names?.[0].wiki || '#'}
             target="_blank"
             eventKey={result._id}
           >
@@ -48,8 +56,17 @@ const LiveSearchInput = ({ activeKey, getFn }) => {
 };
 
 LiveSearchInput.propTypes = {
-  activeKey: string.isRequired,
-  getFn: func.isRequired,
+  debounceTime: number,
+  getUrl: string.isRequired,
+  minQueryLength: number,
+  textExtractor: func.isRequired,
+  transformData: func,
+};
+
+LiveSearchInput.defaultProps = {
+  debounceTime: 250,
+  minQueryLength: 1,
+  transformData: _ => _,
 };
 
 export default LiveSearchInput;

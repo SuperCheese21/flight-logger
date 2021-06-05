@@ -5,3 +5,5 @@ export const DATA_TYPE_KEYS = {
   countries: 'countries',
   regions: 'regions',
 };
+
+export default DATA_TYPE_KEYS;

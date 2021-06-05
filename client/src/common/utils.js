@@ -7,3 +7,5 @@ export const getJsonData = async ({ url, defaultValue = null } = {}) => {
     return defaultValue;
   }
 };
+
+export default getJsonData;

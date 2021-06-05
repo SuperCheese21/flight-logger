@@ -6,13 +6,14 @@ import { useParams } from 'react-router-dom';
 
 import dropdownItems from './dropdownItems';
 import { SearchBoxContainer, SearchCardBody, SearchCardHeader } from './styled';
-import { getSearchResults } from '../api';
 import { DATA_TYPE_KEYS } from '../constants';
 import { LiveSearchInput } from '../live-search';
 
 const SearchBoxPage = () => {
   const { type } = useParams();
   const activeKey = DATA_TYPE_KEYS[type] || DATA_TYPE_KEYS.aircraft;
+
+  const { textExtractor } = dropdownItems[activeKey];
 
   return (
     <SearchBoxContainer>
@@ -29,8 +30,10 @@ const SearchBoxPage = () => {
             ))}
           </Nav>
           <LiveSearchInput
-            activeKey={activeKey}
-            getFn={query => getSearchResults({ collection: activeKey, query })}
+            getUrl={`http://localhost:3000/api/data/${activeKey}`}
+            debounceTime={250}
+            transformData={json => json?.results}
+            textExtractor={textExtractor}
           />
         </SearchCardBody>
       </Card>

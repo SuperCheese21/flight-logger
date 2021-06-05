@@ -1,1 +1,1 @@
-export { default as LiveSearchInput } from './LiveSearchInput';
+export { default, default as LiveSearchInput } from './LiveSearchInput';
