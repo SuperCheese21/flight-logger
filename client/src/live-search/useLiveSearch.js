@@ -11,6 +11,7 @@ const useLiveSearch = ({
   transformData,
 }) => {
   const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const cancel = useRef(null);
   const prevQuery = usePrevious(query);
@@ -19,16 +20,19 @@ const useLiveSearch = ({
     searchQuery => {
       cancel.current?.();
       if (searchQuery.length >= minQueryLength) {
+        setIsLoading(true);
         const debouncedFetchResults = debounce(async () => {
           const json = await getJsonData({
             url: `${getUrl}?q=${searchQuery}`,
           });
+          setIsLoading(false);
           const newResults = transformData(json) || [];
           setResults(newResults);
         }, debounceTime);
         cancel.current = debouncedFetchResults.cancel;
         debouncedFetchResults();
       } else {
+        setIsLoading(false);
         setResults([]);
       }
     },
@@ -39,9 +43,9 @@ const useLiveSearch = ({
     if (query !== prevQuery) {
       fetchResults(query);
     }
-  }, [fetchResults, minQueryLength, prevQuery, query]);
+  }, [fetchResults, prevQuery, query]);
 
-  return results;
+  return { results, isLoading };
 };
 
 export default useLiveSearch;
