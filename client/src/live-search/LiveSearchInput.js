@@ -68,11 +68,9 @@ const LiveSearchInput = ({
               target="_blank"
               eventKey={result._id}
             >
-              {result.logo && (
-                <StyledImageContainer>
-                  <StyledImage src={result.logo} />
-                </StyledImageContainer>
-              )}
+              <StyledImageContainer>
+                {result.logo && <StyledImage src={result.logo} />}
+              </StyledImageContainer>
               <StyledTextContainer>{textExtractor(result)}</StyledTextContainer>
             </StyledDropdownItem>
           ))}

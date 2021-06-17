@@ -31,6 +31,7 @@ export const StyledDropdownItem = styled(Dropdown.Item)`
   width: 100%;
   height: 50px;
   background-color: white;
+  pointer-events: auto;
   display: flex;
   align-items: center;
 `;
