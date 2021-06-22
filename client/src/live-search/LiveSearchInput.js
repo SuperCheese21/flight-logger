@@ -1,5 +1,5 @@
 import { func, number, string } from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import InputGroup from 'react-bootstrap/InputGroup';
 
@@ -32,9 +32,14 @@ const LiveSearchInput = ({
     debounceTime,
     getUrl,
     minQueryLength,
+    textExtractor,
     transformData,
     query,
   });
+
+  useEffect(() => {
+    setQuery('');
+  }, [getUrl]);
 
   return (
     <StyledInputContainer>
@@ -63,15 +68,15 @@ const LiveSearchInput = ({
             )}
           {results.map(result => (
             <StyledDropdownItem
-              key={result._id}
-              href={result.wiki || result.names?.[0].wiki || '#'}
+              key={result.id}
+              href={result.link || '#'}
               target="_blank"
-              eventKey={result._id}
+              eventKey={result.id}
             >
               <StyledImageContainer>
                 {result.logo && <StyledImage src={result.logo} />}
               </StyledImageContainer>
-              <StyledTextContainer>{textExtractor(result)}</StyledTextContainer>
+              <StyledTextContainer>{result.text}</StyledTextContainer>
             </StyledDropdownItem>
           ))}
         </StyledDropdownMenu>

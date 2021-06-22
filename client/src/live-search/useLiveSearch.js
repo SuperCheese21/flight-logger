@@ -8,6 +8,7 @@ const useLiveSearch = ({
   getUrl,
   minQueryLength,
   query,
+  textExtractor,
   transformData,
 }) => {
   const [results, setResults] = useState([]);
@@ -27,7 +28,14 @@ const useLiveSearch = ({
           });
           setIsLoading(false);
           const newResults = transformData(json) || [];
-          setResults(newResults);
+          setResults(
+            newResults.map(result => ({
+              id: result._id,
+              link: result.wiki || result.names?.[0].wiki,
+              logo: result.logo,
+              text: textExtractor(result),
+            })),
+          );
         }, debounceTime);
         cancel.current = debouncedFetchResults.cancel;
         debouncedFetchResults();
@@ -36,7 +44,7 @@ const useLiveSearch = ({
         setResults([]);
       }
     },
-    [debounceTime, getUrl, minQueryLength, transformData],
+    [debounceTime, getUrl, minQueryLength, textExtractor, transformData],
   );
 
   useEffect(() => {
