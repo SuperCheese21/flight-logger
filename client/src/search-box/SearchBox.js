@@ -13,7 +13,7 @@ const SearchBoxPage = () => {
   const { type } = useParams();
   const activeKey = DATA_TYPE_KEYS[type] || DATA_TYPE_KEYS.aircraft;
 
-  const { textExtractor } = dropdownItems[activeKey];
+  const { getItemData, getHref } = dropdownItems[activeKey];
 
   return (
     <SearchBoxContainer>
@@ -32,8 +32,12 @@ const SearchBoxPage = () => {
           <LiveSearchInput
             getUrl={`http://localhost:3000/api/data/${activeKey}`}
             minQueryLength={2}
-            transformData={json => json?.results}
-            textExtractor={textExtractor}
+            transformData={({ results }) => results}
+            getItemData={getItemData}
+            onSelect={result => {
+              const href = getHref(result);
+              if (href) window.open(href);
+            }}
           />
         </SearchCardBody>
       </Card>

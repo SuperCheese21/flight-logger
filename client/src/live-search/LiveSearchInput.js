@@ -19,9 +19,10 @@ import useLiveSearch from './useLiveSearch';
 
 const LiveSearchInput = ({
   debounceTime,
+  getItemData,
   getUrl,
   minQueryLength,
-  textExtractor,
+  onSelect,
   transformData,
 }) => {
   const [query, setQuery] = useState('');
@@ -32,7 +33,6 @@ const LiveSearchInput = ({
     debounceTime,
     getUrl,
     minQueryLength,
-    textExtractor,
     transformData,
     query,
   });
@@ -66,19 +66,25 @@ const LiveSearchInput = ({
             !results.length && (
               <Dropdown.ItemText>No Results</Dropdown.ItemText>
             )}
-          {results.map(result => (
-            <StyledDropdownItem
-              key={result.id}
-              href={result.link || '#'}
-              target="_blank"
-              eventKey={result.id}
-            >
-              <StyledImageContainer>
-                {result.logo && <StyledImage src={result.logo} />}
-              </StyledImageContainer>
-              <StyledTextContainer>{result.text}</StyledTextContainer>
-            </StyledDropdownItem>
-          ))}
+          {results.map(result => {
+            const { key, image, text } = getItemData(result);
+            return (
+              <StyledDropdownItem
+                key={key}
+                eventKey={JSON.stringify(result)}
+                onSelect={(eventKey, event) =>
+                  onSelect(JSON.parse(eventKey), event)
+                }
+              >
+                {image && (
+                  <StyledImageContainer>
+                    <StyledImage src={image} />
+                  </StyledImageContainer>
+                )}
+                <StyledTextContainer>{text}</StyledTextContainer>
+              </StyledDropdownItem>
+            );
+          })}
         </StyledDropdownMenu>
       </StyledDropdown>
     </StyledInputContainer>
@@ -87,15 +93,17 @@ const LiveSearchInput = ({
 
 LiveSearchInput.propTypes = {
   debounceTime: number,
+  getItemData: func.isRequired,
   getUrl: string.isRequired,
   minQueryLength: number,
-  textExtractor: func.isRequired,
+  onSelect: func,
   transformData: func,
 };
 
 LiveSearchInput.defaultProps = {
   debounceTime: 300,
   minQueryLength: 1,
+  onSelect: () => {},
   transformData: _ => _,
 };
 
