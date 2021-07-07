@@ -31,6 +31,7 @@ const SearchBoxPage = () => {
           </Nav>
           <LiveSearchInput
             getUrl={`http://localhost:3000/api/data/${activeKey}`}
+            maxItems={5}
             minQueryLength={2}
             transformData={({ results }) => results}
             getItemData={getItemData}

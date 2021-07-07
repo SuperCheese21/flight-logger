@@ -21,6 +21,7 @@ const LiveSearchInput = ({
   debounceTime,
   getItemData,
   getUrl,
+  maxItems,
   minQueryLength,
   onSelect,
   transformData,
@@ -32,6 +33,7 @@ const LiveSearchInput = ({
   const { results, isLoading } = useLiveSearch({
     debounceTime,
     getUrl,
+    maxItems,
     minQueryLength,
     transformData,
     query,
@@ -95,6 +97,7 @@ LiveSearchInput.propTypes = {
   debounceTime: number,
   getItemData: func.isRequired,
   getUrl: string.isRequired,
+  maxItems: number,
   minQueryLength: number,
   onSelect: func,
   transformData: func,
@@ -102,6 +105,7 @@ LiveSearchInput.propTypes = {
 
 LiveSearchInput.defaultProps = {
   debounceTime: 300,
+  maxItems: 10,
   minQueryLength: 1,
   onSelect: () => {},
   transformData: _ => _,

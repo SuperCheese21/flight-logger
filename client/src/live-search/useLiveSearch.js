@@ -6,6 +6,7 @@ import { getJsonData } from '../common/utils';
 const useLiveSearch = ({
   debounceTime,
   getUrl,
+  maxItems,
   minQueryLength,
   query,
   transformData,
@@ -26,7 +27,7 @@ const useLiveSearch = ({
             url: `${getUrl}?q=${searchQuery}`,
           });
           const newResults = transformData(json) || [];
-          setResults(newResults);
+          setResults(newResults.slice(0, maxItems));
           setIsLoading(false);
         }, debounceTime);
         cancel.current = debouncedFetchResults.cancel;
@@ -36,7 +37,7 @@ const useLiveSearch = ({
         setResults([]);
       }
     },
-    [debounceTime, getUrl, minQueryLength, transformData],
+    [debounceTime, getUrl, maxItems, minQueryLength, transformData],
   );
 
   useEffect(() => {

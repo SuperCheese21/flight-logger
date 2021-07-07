@@ -8,7 +8,7 @@ import models from '../models';
 import { fetchData } from '../utils/serverUtils';
 
 const LOGGING_INTERVAL = 1000;
-const PROMISE_CONCURRENCY = 50;
+const PROMISE_CONCURRENCY = 10;
 
 const updateCollection = async (model, newDocuments) => {
   // Fetch old documents from database
