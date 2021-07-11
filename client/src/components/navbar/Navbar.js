@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from 'react-bootstrap/Navbar';
+
 import { NavbarLogo } from './styled';
 
 export default () => (
