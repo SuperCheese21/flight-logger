@@ -1,7 +1,7 @@
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { usePrevious } from '../common/hooks';
-import { getJsonData } from '../common/utils';
+import { usePrevious } from '../hooks';
+import { getJsonData } from '../utils';
 
 const useLiveSearch = ({
   debounceTime,

@@ -1,17 +1,15 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import SearchBoxContainer from './search-box/SearchBox';
+import { Navbar, PageContainer, PageContent, Router } from './components';
 
 function App() {
   return (
-    <Router>
-      <Switch>
-        <Route path="/data/:type?">
-          <SearchBoxContainer />
-        </Route>
-      </Switch>
-    </Router>
+    <PageContainer>
+      <Navbar />
+      <PageContent>
+        <Router />
+      </PageContent>
+    </PageContainer>
   );
 }
 

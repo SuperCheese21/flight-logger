@@ -6,8 +6,8 @@ import { useParams } from 'react-router-dom';
 
 import dropdownItems from './dropdownItems';
 import { SearchBoxContainer, SearchCardBody, SearchCardHeader } from './styled';
-import { DATA_TYPE_KEYS } from '../constants';
-import { LiveSearchInput } from '../live-search';
+import { DATA_TYPE_KEYS } from '../../common/constants';
+import LiveSearchInput from '../../common/live-search/LiveSearchInput';
 
 const SearchBoxPage = () => {
   const { type } = useParams();
