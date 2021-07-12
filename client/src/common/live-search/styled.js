@@ -1,5 +1,5 @@
 import Dropdown from 'react-bootstrap/Dropdown';
-import FormControl from 'react-bootstrap/FormControl';
+import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
 import Spinner from 'react-bootstrap/Spinner';
 import styled from 'styled-components';
@@ -9,7 +9,7 @@ export const StyledInputContainer = styled.div`
   margin-top: 10px;
 `;
 
-export const StyledFormControl = styled(FormControl)`
+export const StyledFormControl = styled(Form.Control)`
   &:focus {
     box-shadow: none;
   }

@@ -1,2 +1,2 @@
-export { default as AddFlightPage } from './add-flight/styled';
-export { default as SearchBoxPage } from './data-search/SearchBox';
+export { default as AddFlightPage } from './add-flight/AddFlightPage';
+export { default as SearchBoxPage } from './data-search/SearchBoxPage';
