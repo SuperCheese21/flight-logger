@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import { AddFlightPage, SearchBoxPage } from '../pages';
+import { AddFlightPage, LiveSearchTestPage, SearchBoxPage } from '../pages';
 
 export default () => (
   <BrowserRouter>
@@ -11,6 +11,9 @@ export default () => (
       </Route>
       <Route path="/data/:type?">
         <SearchBoxPage />
+      </Route>
+      <Route path="/live-search">
+        <LiveSearchTestPage />
       </Route>
     </Switch>
   </BrowserRouter>
