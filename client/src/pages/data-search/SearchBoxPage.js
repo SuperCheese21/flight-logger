@@ -4,9 +4,9 @@ import Nav from 'react-bootstrap/Nav';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useParams } from 'react-router-dom';
 
+import { DATA_TYPE_KEYS } from './constants';
 import dropdownItems from './dropdownItems';
 import { SearchBoxContainer, SearchCardBody, SearchCardHeader } from './styled';
-import { DATA_TYPE_KEYS } from '../../common/constants';
 import LiveSearchInput from '../../common/live-search/LiveSearchInput';
 
 const SearchBoxPage = () => {

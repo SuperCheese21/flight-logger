@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import InputGroup from 'react-bootstrap/InputGroup';
 
+import { INPUT_SIZES } from './constants';
 import {
   StyledDropdown,
   StyledDropdownItem,
@@ -24,6 +25,7 @@ const LiveSearchInput = ({
   maxItems,
   minQueryLength,
   onSelect,
+  size,
   transformData,
 }) => {
   const [query, setQuery] = useState('');
@@ -45,7 +47,7 @@ const LiveSearchInput = ({
 
   return (
     <StyledInputContainer>
-      <InputGroup size="lg">
+      <InputGroup size={size}>
         <StyledFormControl
           onChange={handleChange}
           value={query}
@@ -100,6 +102,7 @@ LiveSearchInput.propTypes = {
   maxItems: number,
   minQueryLength: number,
   onSelect: func,
+  size: string,
   transformData: func,
 };
 
@@ -108,6 +111,7 @@ LiveSearchInput.defaultProps = {
   maxItems: 10,
   minQueryLength: 1,
   onSelect: () => {},
+  size: INPUT_SIZES.lg,
   transformData: _ => _,
 };
 
