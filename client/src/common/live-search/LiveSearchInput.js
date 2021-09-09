@@ -4,17 +4,14 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import InputGroup from 'react-bootstrap/InputGroup';
 
 import { INPUT_SIZES } from './constants';
+import DropdownItems from './DropdownItems';
 import {
   StyledDropdown,
-  StyledDropdownItem,
   StyledDropdownMenu,
   StyledFormControl,
-  StyledImage,
-  StyledImageContainer,
   StyledInputContainer,
   StyledSpinner,
   StyledSpinnerContainer,
-  StyledTextContainer,
 } from './styled';
 import useLiveSearch from './useLiveSearch';
 
@@ -24,7 +21,7 @@ const LiveSearchInput = ({
   getUrl,
   maxItems,
   minQueryLength,
-  onSelect,
+  onItemSelect,
   size,
   transformData,
   width,
@@ -71,25 +68,11 @@ const LiveSearchInput = ({
             !results.length && (
               <Dropdown.ItemText>No Results</Dropdown.ItemText>
             )}
-          {results.map(result => {
-            const { key, image, text } = getItemData(result);
-            return (
-              <StyledDropdownItem
-                key={key}
-                eventKey={JSON.stringify(result)}
-                onSelect={(eventKey, event) =>
-                  onSelect(JSON.parse(eventKey), event)
-                }
-              >
-                {image && (
-                  <StyledImageContainer>
-                    <StyledImage src={image} />
-                  </StyledImageContainer>
-                )}
-                <StyledTextContainer>{text}</StyledTextContainer>
-              </StyledDropdownItem>
-            );
-          })}
+          <DropdownItems
+            getItemData={getItemData}
+            onItemSelect={onItemSelect}
+            results={results}
+          />
         </StyledDropdownMenu>
       </StyledDropdown>
     </StyledInputContainer>
@@ -102,7 +85,7 @@ LiveSearchInput.propTypes = {
   getUrl: string.isRequired,
   maxItems: number,
   minQueryLength: number,
-  onSelect: func,
+  onItemSelect: func,
   size: string,
   transformData: func,
   width: number,
@@ -112,7 +95,7 @@ LiveSearchInput.defaultProps = {
   debounceTime: 300,
   maxItems: 10,
   minQueryLength: 1,
-  onSelect: () => {},
+  onItemSelect: () => {},
   size: INPUT_SIZES.lg,
   transformData: _ => _,
   width: null,

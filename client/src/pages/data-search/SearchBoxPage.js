@@ -35,7 +35,7 @@ const SearchBoxPage = () => {
             minQueryLength={2}
             transformData={({ results }) => results}
             getItemData={getItemData}
-            onSelect={result => {
+            onItemSelect={result => {
               const href = getHref(result);
               if (href) window.open(href);
             }}
