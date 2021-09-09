@@ -5,7 +5,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import styled from 'styled-components';
 
 export const StyledInputContainer = styled.div`
-  width: ${({ width }) => (width ? `${width}px` : 'auto')};
+  ${({ width }) => width && `width: ${width}px;`}
   margin-top: 10px;
 `;
 

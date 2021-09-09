@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import InputGroup from 'react-bootstrap/InputGroup';
 
-import { INPUT_SIZES } from './constants';
+import { DEFAULT_WIDTH_MAP, INPUT_SIZES } from './constants';
 import DropdownItems from './DropdownItems';
 import {
   StyledDropdown,
@@ -44,7 +44,7 @@ const LiveSearchInput = ({
   }, [getUrl]);
 
   return (
-    <StyledInputContainer width={width}>
+    <StyledInputContainer width={width || DEFAULT_WIDTH_MAP[size]}>
       <InputGroup size={size}>
         <StyledFormControl
           onChange={handleChange}
