@@ -27,6 +27,7 @@ const LiveSearchInput = ({
   onSelect,
   size,
   transformData,
+  width,
 }) => {
   const [query, setQuery] = useState('');
 
@@ -46,7 +47,7 @@ const LiveSearchInput = ({
   }, [getUrl]);
 
   return (
-    <StyledInputContainer>
+    <StyledInputContainer width={width}>
       <InputGroup size={size}>
         <StyledFormControl
           onChange={handleChange}
@@ -104,6 +105,7 @@ LiveSearchInput.propTypes = {
   onSelect: func,
   size: string,
   transformData: func,
+  width: number,
 };
 
 LiveSearchInput.defaultProps = {
@@ -113,6 +115,7 @@ LiveSearchInput.defaultProps = {
   onSelect: () => {},
   size: INPUT_SIZES.lg,
   transformData: _ => _,
+  width: null,
 };
 
 export default LiveSearchInput;
