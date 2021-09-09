@@ -39,6 +39,7 @@ const SearchBoxPage = () => {
               const href = getHref(result);
               if (href) window.open(href);
             }}
+            width={600}
           />
         </SearchCardBody>
       </Card>

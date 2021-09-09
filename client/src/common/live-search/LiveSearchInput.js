@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import InputGroup from 'react-bootstrap/InputGroup';
 
-import { DEFAULT_WIDTH_MAP, INPUT_SIZES } from './constants';
+import { INPUT_SIZES } from './constants';
 import DropdownItems from './DropdownItems';
 import {
   StyledDropdown,
@@ -44,7 +44,7 @@ const LiveSearchInput = ({
   }, [getUrl]);
 
   return (
-    <StyledInputContainer width={width || DEFAULT_WIDTH_MAP[size]}>
+    <StyledInputContainer width={width}>
       <InputGroup size={size}>
         <StyledFormControl
           onChange={handleChange}
@@ -56,7 +56,7 @@ const LiveSearchInput = ({
           <StyledSpinner animation="border" role="status" />
         </StyledSpinnerContainer>
       </InputGroup>
-      <StyledDropdown>
+      <StyledDropdown size={size}>
         <StyledDropdownMenu show={query.length}>
           {query.length && query.length < minQueryLength && (
             <Dropdown.ItemText>{`Type at least ${minQueryLength} characters`}</Dropdown.ItemText>
@@ -72,6 +72,7 @@ const LiveSearchInput = ({
             getItemData={getItemData}
             onItemSelect={onItemSelect}
             results={results}
+            size={size}
           />
         </StyledDropdownMenu>
       </StyledDropdown>

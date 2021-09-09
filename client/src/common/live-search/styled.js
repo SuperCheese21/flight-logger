@@ -4,6 +4,8 @@ import Image from 'react-bootstrap/Image';
 import Spinner from 'react-bootstrap/Spinner';
 import styled from 'styled-components';
 
+import { DROPDOWN_ITEM_HEIGHTS, DROPDOWN_MENU_WIDTHS } from './constants';
+
 export const StyledInputContainer = styled.div`
   ${({ width }) => width && `width: ${width}px;`}
   margin-top: 10px;
@@ -19,7 +21,7 @@ export const StyledFormControl = styled(Form.Control)`
 
 export const StyledDropdown = styled.div`
   position: fixed;
-  width: 400px;
+  width: ${({ size }) => `${DROPDOWN_MENU_WIDTHS[size]}px`};
 `;
 
 export const StyledDropdownMenu = styled(Dropdown.Menu)`
@@ -29,7 +31,7 @@ export const StyledDropdownMenu = styled(Dropdown.Menu)`
 
 export const StyledDropdownItem = styled(Dropdown.Item)`
   width: 100%;
-  height: 50px;
+  height: ${({ size }) => `${DROPDOWN_ITEM_HEIGHTS[size]}px`};
   background-color: white;
   pointer-events: auto;
   display: flex;

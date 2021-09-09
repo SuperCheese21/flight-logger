@@ -1,7 +1,9 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
 import styled from 'styled-components';
+
 import dropdownItems from './data-search/dropdownItems';
+import { INPUT_SIZES } from '../common/live-search/constants';
 import LiveSearchInput from '../common/live-search/LiveSearchInput';
 
 const LiveSearchTestContainer = styled.div`
@@ -27,6 +29,7 @@ const LiveSearchTestPage = () => {
           const href = getHref(result);
           if (href) window.open(href);
         }}
+        size={INPUT_SIZES.md}
       />
     </LiveSearchTestContainer>
   );
