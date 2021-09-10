@@ -34,14 +34,9 @@ export const getAirlineDocument = async href => {
 
     const wiki = $('link[rel="canonical"]').attr('href');
 
-    const name = $('#firstHeading')
-      .text()
-      .split('(')[0]
-      .trim();
+    const name = $('#firstHeading').text().split('(airline')[0].trim();
 
-    const infoTable = $('.infobox.vcard')
-      .find('table')
-      .eq(0);
+    const infoTable = $('.infobox.vcard').find('table').eq(0);
     const headers = infoTable.find('th a').text();
     const [iata, icao, callsign] = infoTable
       .find('td')
@@ -61,9 +56,7 @@ export const getAirlineDocument = async href => {
 
     const _id = `${iata}_${icao}_${name.replace(/ /g, '_')}`;
 
-    const src = $('.infobox img')
-      .eq(0)
-      .attr('src');
+    const src = $('.infobox-image img').eq(0).attr('src');
     const logo = src ? `https:${src}` : '';
 
     console.log(`  Retrieved ${_id} from ${wiki}`);

@@ -22,18 +22,12 @@ AirlineSchema.static(
 
 AirlineSchema.static('parseData', data => {
   const $ = parseWikipediaData(data);
-  return $('.wikitable tr')
-    .toArray()
-    .slice(1);
+  return $('.wikitable tr').toArray().slice(1);
 });
 
 AirlineSchema.static('getUpdate', async item => {
   const $ = cheerio.load(item);
-  const tds = $('td');
-  const link = tds
-    .eq(2)
-    .find('a')
-    .eq(0);
+  const link = $('td').eq(2).find('a').eq(0);
 
   const href = link.attr('href');
   if (!href || href.slice(0, 6) !== '/wiki/') {

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Promise from 'bluebird';
 import paginate from 'express-paginate';
 import moment from 'moment-timezone';
@@ -17,11 +18,18 @@ export const generateRandomId = length => {
   return result;
 };
 
+export const fetchData = async url => {
+  try {
+    const res = await axios.get(url);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
 export const getUTCTime = (date, time, timeZoneName) =>
-  moment
-    .tz(`${date}T${time}`, timeZoneName)
-    .utc()
-    .format();
+  moment.tz(`${date}T${time}`, timeZoneName).utc().format();
 
 export const normalizePort = val => {
   const newPort = parseInt(val, 10);

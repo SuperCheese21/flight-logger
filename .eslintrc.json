@@ -14,10 +14,11 @@
   },
   "plugins": ["react"],
   "rules": {
-    "import/prefer-default-export": "off",
+    "import/prefer-default-export": "warn",
     "no-console": "off",
+    "no-underscore-dangle": "off",
+    "no-unused-vars": "warn",
     "react/jsx-filename-extension": "off",
-    "react/prop-types": "off",
-    "no-underscore-dangle": "off"
+    "react/prop-types": "warn"
   }
 }
