@@ -8,7 +8,6 @@ import { DROPDOWN_ITEM_HEIGHTS, DROPDOWN_MENU_WIDTHS } from './constants';
 
 export const StyledInputContainer = styled.div`
   ${({ width }) => width && `width: ${width}px;`}
-  margin-top: 10px;
 `;
 
 export const StyledFormControl = styled(Form.Control)`

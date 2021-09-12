@@ -1,5 +1,10 @@
 import Card from 'react-bootstrap/Card';
+import Nav from 'react-bootstrap/Nav';
 import styled from 'styled-components';
+
+export const StyledNavbar = styled(Nav)`
+  padding-bottom: 10px;
+`;
 
 export const SearchBoxContainer = styled.div`
   display: flex;
