@@ -47,7 +47,7 @@ const LiveSearchInput = ({
   return (
     <ThemeProvider theme={DROPDOWN_THEMES[size]}>
       <StyledInputContainer width={width}>
-        <InputGroup>
+        <InputGroup size={size}>
           <StyledFormControl
             onChange={handleChange}
             value={query}

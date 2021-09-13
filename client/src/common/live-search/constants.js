@@ -18,24 +18,24 @@ export const DROPDOWN_ITEM_HEIGHTS = {
 
 export const DROPDOWN_THEMES = {
   [INPUT_SIZES.sm]: {
-    fontSize: 0.6,
+    fontSize: 0.7,
     menu: {
       width: 250,
     },
     menuItem: {
-      height: 25,
+      height: 35,
       image: {
-        width: 60,
+        width: 50,
       },
     },
   },
   [INPUT_SIZES.md]: {
-    fontSize: 0.75,
+    fontSize: 0.8,
     menu: {
       width: 300,
     },
     menuItem: {
-      height: 30,
+      height: 40,
       image: {
         width: 60,
       },
