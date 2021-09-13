@@ -14,23 +14,29 @@ const LiveSearchTestContainer = styled.div`
   align-items: center;
 `;
 
+const LiveSearchSelectionContainer = styled.div`
+  width: 600px;
+`;
+
 const LiveSearchTestPage = () => {
   const { getHref, getItemData } = dropdownItems.airlines;
   return (
     <LiveSearchTestContainer>
       <Card>Test lmao</Card>
-      <LiveSearchInput
-        getUrl="http://localhost:3000/api/data/airlines"
-        maxItems={5}
-        minQueryLength={2}
-        transformData={({ results }) => results}
-        getItemData={getItemData}
-        onItemSelect={result => {
-          const href = getHref(result);
-          if (href) window.open(href);
-        }}
-        size={INPUT_SIZES.md}
-      />
+      <LiveSearchSelectionContainer>
+        <LiveSearchInput
+          getUrl="http://localhost:3000/api/data/airlines"
+          maxItems={5}
+          minQueryLength={2}
+          transformData={({ results }) => results}
+          getItemData={getItemData}
+          onItemSelect={result => {
+            const href = getHref(result);
+            if (href) window.open(href);
+          }}
+          size={INPUT_SIZES.md}
+        />
+      </LiveSearchSelectionContainer>
     </LiveSearchTestContainer>
   );
 };
