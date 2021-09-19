@@ -8,7 +8,7 @@ export const DROPDOWN_THEMES = {
   [INPUT_SIZES.sm]: {
     fontSize: 0.7,
     menu: {
-      width: 250,
+      width: 300,
     },
     menuItem: {
       height: 35,
@@ -20,7 +20,7 @@ export const DROPDOWN_THEMES = {
   [INPUT_SIZES.md]: {
     fontSize: 0.8,
     menu: {
-      width: 300,
+      width: 350,
     },
     menuItem: {
       height: 40,
