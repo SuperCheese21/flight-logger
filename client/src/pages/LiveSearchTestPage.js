@@ -25,7 +25,7 @@ const LiveSearchTestPage = () => {
       <Card>Test lmao</Card>
       <LiveSearchSelectionContainer>
         <LiveSearchInput
-          getUrl="http://localhost:3000/api/data/airlines"
+          getUrl="http://localhost:8080/api/data/airlines"
           maxItems={5}
           minQueryLength={2}
           transformData={({ results }) => results}
