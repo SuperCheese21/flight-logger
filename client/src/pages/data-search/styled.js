@@ -3,7 +3,7 @@ import Nav from 'react-bootstrap/Nav';
 import styled from 'styled-components';
 
 export const StyledNavbar = styled(Nav)`
-  padding-bottom: 10px;
+  border: none;
 `;
 
 export const SearchBoxContainer = styled.div`

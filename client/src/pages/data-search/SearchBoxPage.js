@@ -27,7 +27,7 @@ const SearchBoxPage = () => {
         <SearchCardBody>
           <StyledNavbar variant="tabs" defaultActiveKey={activeKey}>
             {Object.entries(dropdownItems).map(([key, { label }]) => (
-              <Nav.Item>
+              <Nav.Item key={key}>
                 <LinkContainer to={`/data/${key}`}>
                   <Nav.Link eventKey={key}>{label}</Nav.Link>
                 </LinkContainer>

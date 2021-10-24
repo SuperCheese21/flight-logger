@@ -58,7 +58,11 @@ const LiveSearchInput = ({
             <StyledSpinner animation="border" role="status" />
           </StyledSpinnerContainer>
         </InputGroup>
-        <StyledDropdown>
+        <StyledDropdown
+          onSelect={(eventKey, event) =>
+            onItemSelect(JSON.parse(eventKey), event)
+          }
+        >
           <StyledDropdownMenu show={query.length}>
             {query.length && query.length < minQueryLength && (
               <Dropdown.ItemText>{`Type at least ${minQueryLength} characters`}</Dropdown.ItemText>
@@ -70,11 +74,7 @@ const LiveSearchInput = ({
               !results.length && (
                 <Dropdown.ItemText>No Results</Dropdown.ItemText>
               )}
-            <DropdownItems
-              getItemData={getItemData}
-              onItemSelect={onItemSelect}
-              results={results}
-            />
+            <DropdownItems getItemData={getItemData} results={results} />
           </StyledDropdownMenu>
         </StyledDropdown>
       </StyledInputContainer>

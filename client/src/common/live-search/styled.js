@@ -16,7 +16,7 @@ export const StyledFormControl = styled(Form.Control)`
   padding-right: 30px !important;
 `;
 
-export const StyledDropdown = styled.div`
+export const StyledDropdown = styled(Dropdown)`
   position: fixed;
   width: ${({ theme }) => `${theme.menu.width}px`};
 `;
@@ -24,7 +24,6 @@ export const StyledDropdown = styled.div`
 export const StyledDropdownMenu = styled(Dropdown.Menu)`
   font-size: ${({ theme }) => theme.fontSize}rem;
   width: 100%;
-  opacity: 1 !important;
 `;
 
 export const StyledDropdownItem = styled(Dropdown.Item)`
