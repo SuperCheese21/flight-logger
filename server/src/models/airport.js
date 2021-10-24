@@ -23,6 +23,7 @@ const AirportSchema = new Schema(
       ref: 'Region',
     },
     municipality: String,
+    timeZones: [String],
     scheduledService: Boolean,
     codes: {
       ident: String,
@@ -39,28 +40,33 @@ AirportSchema.static('dataUrl', 'https://ourairports.com/data/airports.csv');
 
 AirportSchema.static('parseData', parseOurAirportsData);
 
-AirportSchema.static('getUpdate', row => ({
-  _id: row[1],
-  type: row[2],
-  name: row[3],
-  location: {
+AirportSchema.static('getUpdate', row => {
+  const location = {
     lat: Number(row[4]),
     lon: Number(row[5]),
-  },
-  elevation: Number(row[6]),
-  continent: row[7],
-  country: { _id: row[8] },
-  region: { _id: row[9] },
-  municipality: row[10],
-  scheduledService: row[11] === 'yes',
-  codes: {
-    ident: row[1],
-    gps: row[12],
-    iata: row[13],
-    local: row[14],
-  },
-  wiki: row[16],
-}));
+  };
+  const timeZones = geoTz(location.lat, location.lon);
+  return {
+    _id: row[1],
+    type: row[2],
+    name: row[3],
+    location,
+    elevation: Number(row[6]),
+    continent: row[7],
+    country: { _id: row[8] },
+    region: { _id: row[9] },
+    municipality: row[10],
+    timeZones,
+    scheduledService: row[11] === 'yes',
+    codes: {
+      ident: row[1],
+      gps: row[12],
+      iata: row[13],
+      local: row[14],
+    },
+    wiki: row[16]
+  };
+});
 
 AirportSchema.static(
   'findByFlightDiaryString',
@@ -74,10 +80,5 @@ AirportSchema.static(
     return this.findById(id).exec();
   },
 );
-
-AirportSchema.virtual('timeZone').get(function getTimeZone() {
-  const { lat, lon } = this.location;
-  return geoTz(lat, lon)[0];
-});
 
 export default model('Airport', AirportSchema, 'airports');

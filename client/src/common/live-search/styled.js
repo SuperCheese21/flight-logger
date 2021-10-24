@@ -4,11 +4,8 @@ import Image from 'react-bootstrap/Image';
 import Spinner from 'react-bootstrap/Spinner';
 import styled from 'styled-components';
 
-import { DROPDOWN_ITEM_HEIGHTS, DROPDOWN_MENU_WIDTHS } from './constants';
-
 export const StyledInputContainer = styled.div`
   ${({ width }) => width && `width: ${width}px;`}
-  margin-top: 10px;
 `;
 
 export const StyledFormControl = styled(Form.Control)`
@@ -19,19 +16,19 @@ export const StyledFormControl = styled(Form.Control)`
   padding-right: 30px !important;
 `;
 
-export const StyledDropdown = styled.div`
+export const StyledDropdown = styled(Dropdown)`
   position: fixed;
-  width: ${({ size }) => `${DROPDOWN_MENU_WIDTHS[size]}px`};
+  width: ${({ theme }) => `${theme.menu.width}px`};
 `;
 
 export const StyledDropdownMenu = styled(Dropdown.Menu)`
+  font-size: ${({ theme }) => theme.fontSize}rem;
   width: 100%;
-  opacity: 1 !important;
 `;
 
 export const StyledDropdownItem = styled(Dropdown.Item)`
   width: 100%;
-  height: ${({ size }) => `${DROPDOWN_ITEM_HEIGHTS[size]}px`};
+  height: ${({ theme }) => theme.menuItem.height}px;
   background-color: white;
   pointer-events: auto;
   display: flex;
@@ -39,7 +36,7 @@ export const StyledDropdownItem = styled(Dropdown.Item)`
 `;
 
 export const StyledImageContainer = styled.div`
-  width: 100px;
+  width: ${({ theme }) => theme.menuItem.image.width}px;
   height: 100%;
   padding: 5px;
   display: flex;

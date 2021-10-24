@@ -2,8 +2,9 @@ import { func, number, string } from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import InputGroup from 'react-bootstrap/InputGroup';
+import { ThemeProvider } from 'styled-components';
 
-import { INPUT_SIZES } from './constants';
+import { DROPDOWN_THEMES, INPUT_SIZES } from './constants';
 import DropdownItems from './DropdownItems';
 import {
   StyledDropdown,
@@ -44,39 +45,40 @@ const LiveSearchInput = ({
   }, [getUrl]);
 
   return (
-    <StyledInputContainer width={width}>
-      <InputGroup size={size}>
-        <StyledFormControl
-          onChange={handleChange}
-          value={query}
-          aria-label="Search"
-          aria-describedby="inputGroup-sizing-sm"
-        />
-        <StyledSpinnerContainer opacity={isLoading ? 0.6 : 0}>
-          <StyledSpinner animation="border" role="status" />
-        </StyledSpinnerContainer>
-      </InputGroup>
-      <StyledDropdown size={size}>
-        <StyledDropdownMenu show={query.length}>
-          {query.length && query.length < minQueryLength && (
-            <Dropdown.ItemText>{`Type at least ${minQueryLength} characters`}</Dropdown.ItemText>
-          )}
-          {isLoading && <Dropdown.ItemText>Loading...</Dropdown.ItemText>}
-          {!isLoading &&
-            query.length &&
-            query.length >= minQueryLength &&
-            !results.length && (
-              <Dropdown.ItemText>No Results</Dropdown.ItemText>
-            )}
-          <DropdownItems
-            getItemData={getItemData}
-            onItemSelect={onItemSelect}
-            results={results}
-            size={size}
+    <ThemeProvider theme={DROPDOWN_THEMES[size]}>
+      <StyledInputContainer width={width}>
+        <InputGroup size={size}>
+          <StyledFormControl
+            onChange={handleChange}
+            value={query}
+            aria-label="Search"
+            aria-describedby="inputGroup-sizing-sm"
           />
-        </StyledDropdownMenu>
-      </StyledDropdown>
-    </StyledInputContainer>
+          <StyledSpinnerContainer opacity={isLoading ? 0.6 : 0}>
+            <StyledSpinner animation="border" role="status" />
+          </StyledSpinnerContainer>
+        </InputGroup>
+        <StyledDropdown
+          onSelect={(eventKey, event) =>
+            onItemSelect(JSON.parse(eventKey), event)
+          }
+        >
+          <StyledDropdownMenu show={query.length}>
+            {query.length && query.length < minQueryLength && (
+              <Dropdown.ItemText>{`Type at least ${minQueryLength} characters`}</Dropdown.ItemText>
+            )}
+            {isLoading && <Dropdown.ItemText>Loading...</Dropdown.ItemText>}
+            {!isLoading &&
+              query.length &&
+              query.length >= minQueryLength &&
+              !results.length && (
+                <Dropdown.ItemText>No Results</Dropdown.ItemText>
+              )}
+            <DropdownItems getItemData={getItemData} results={results} />
+          </StyledDropdownMenu>
+        </StyledDropdown>
+      </StyledInputContainer>
+    </ThemeProvider>
   );
 };
 

@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Row from 'react-bootstrap/Row';
 
 import {
   AddFlightContainer,
@@ -24,7 +25,7 @@ export default () => {
       <AddFlightTitle>Add Flight</AddFlightTitle>
       <StyledAddFlightCard>
         <Form noValidate validated={showValidation} onSubmit={handleSubmit}>
-          <Form.Row>
+          <Row>
             <Form.Group as={Col}>
               <Form.Label>Departure Airport *</Form.Label>
               <Form.Control
@@ -49,8 +50,9 @@ export default () => {
                 Please choose an arrival airport
               </Form.Control.Feedback>
             </Form.Group>
-          </Form.Row>
-          <Form.Row>
+          </Row>
+          <br />
+          <Row>
             <Form.Group as={Col}>
               <Form.Label>Departure Date/Time (UTC) *</Form.Label>
               <InputGroup hasValidation>
@@ -77,9 +79,9 @@ export default () => {
                 </Form.Control.Feedback>
               </InputGroup>
             </Form.Group>
-          </Form.Row>
+          </Row>
           <br />
-          <Form.Row>
+          <Row>
             <Form.Group as={Col} md={6}>
               <Form.Label>Airline</Form.Label>
               <Form.Control name="airline" placeholder="Search Airlines..." />
@@ -98,7 +100,8 @@ export default () => {
               <Form.Label>Aircraft</Form.Label>
               <Form.Control name="aircraft" placeholder="Search Aircraft..." />
             </Form.Group>
-          </Form.Row>
+          </Row>
+          <br />
           <Button variant="primary" type="submit">
             Submit
           </Button>

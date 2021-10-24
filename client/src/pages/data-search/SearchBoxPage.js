@@ -6,7 +6,12 @@ import { useParams } from 'react-router-dom';
 
 import { DATA_TYPE_KEYS } from './constants';
 import dropdownItems from './dropdownItems';
-import { SearchBoxContainer, SearchCardBody, SearchCardHeader } from './styled';
+import {
+  SearchBoxContainer,
+  SearchCardBody,
+  SearchCardHeader,
+  StyledNavbar,
+} from './styled';
 import LiveSearchInput from '../../common/live-search/LiveSearchInput';
 
 const SearchBoxPage = () => {
@@ -20,17 +25,17 @@ const SearchBoxPage = () => {
       <Card>
         <SearchCardHeader>Data Search Tool</SearchCardHeader>
         <SearchCardBody>
-          <Nav variant="tabs" defaultActiveKey={activeKey}>
+          <StyledNavbar variant="tabs" defaultActiveKey={activeKey}>
             {Object.entries(dropdownItems).map(([key, { label }]) => (
-              <Nav.Item>
+              <Nav.Item key={key}>
                 <LinkContainer to={`/data/${key}`}>
                   <Nav.Link eventKey={key}>{label}</Nav.Link>
                 </LinkContainer>
               </Nav.Item>
             ))}
-          </Nav>
+          </StyledNavbar>
           <LiveSearchInput
-            getUrl={`http://localhost:3000/api/data/${activeKey}`}
+            getUrl={`http://localhost:8080/api/data/${activeKey}`}
             maxItems={5}
             minQueryLength={2}
             transformData={({ results }) => results}
