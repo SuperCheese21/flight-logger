@@ -22,7 +22,7 @@
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.26.0",
-    "moment-timezone": "^0.5.31",
+    "moment-timezone": "^0.5.35",
     "mongoose": "^5.13.9",
     "mongoose-findorcreate": "^3.0.0",
     "morgan": "~1.9.1",
